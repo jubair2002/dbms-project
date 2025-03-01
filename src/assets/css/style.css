@@ -1,0 +1,463 @@
+/* Global Styles */
+:root {
+    --primary-color: #e84545;
+    --secondary-color: #2b2e4a;
+    --light-color: #f8f9fa;
+    --dark-color: #212529;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Open Sans', sans-serif;
+    line-height: 1.6;
+    color: var(--dark-color);
+}
+
+/* Navigation */
+.navbar {
+    transition: all 0.3s ease;
+    padding: 1rem 0;
+}
+
+.navbar.scrolled {
+    background: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 0.5rem 0;
+}
+
+.navbar-brand {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--primary-color) !important;
+}
+
+.nav-link {
+    font-size: 1.1rem;
+    padding: 0.8rem 1.2rem !important;
+    margin: 0 0.3rem;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+    color: var(--primary-color) !important;
+}
+
+.nav-link.active {
+    color: var(--primary-color) !important;
+    font-weight: 600;
+}
+
+.navbar .btn-primary {
+    padding: 0.8rem 1.5rem !important;
+    font-size: 1.1rem;
+    margin-left: 0.5rem;
+}
+
+/* Hero Section */
+.hero {
+    height: 100vh;
+    min-height: 600px;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+                url('https://images.unsplash.com/photo-1434030216411-0b793f4b4173');
+    background-size: cover;
+    background-position: center;
+    color: white;
+}
+
+.hero-content {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+/* About Section */
+.about {
+    padding: 6rem 0;
+    background-color: var(--light-color);
+}
+
+/* Volunteer Section */
+
+.volunteer {
+    padding: 6rem 0;
+    background-color: #f8f9fa;  /* Light background color */
+}
+
+.left-side img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.right-side {
+    padding: 2rem;
+    text-align: left;
+}
+
+.right-side h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+}
+
+.right-side p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+}
+
+.right-side .btn {
+    font-size: 1.2rem;
+    padding: 1rem 2rem;
+    border-radius: 5px;
+    background-color: var(--primary-color);
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.right-side .btn:hover {
+    background-color: #d23737;
+}
+
+/* Responsive Design for Volunteer Section */
+@media (max-width: 768px) {
+    /* Stack content for smaller screens */
+    .volunteer .row {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    /* Adjust image size for mobile screens */
+    .left-side img {
+        height: 300px;
+    }
+
+    .right-side {
+        padding: 1.5rem;
+    }
+
+    .right-side h2 {
+        font-size: 2rem;
+    }
+
+    .right-side p {
+        font-size: 1rem;
+    }
+
+    .right-side .btn {
+        font-size: 1rem;
+        padding: 0.8rem 1.5rem;
+    }
+
+    /* Reduce the space between sections for mobile */
+    .container {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+}
+
+
+
+.contact {
+    padding: 6rem 0;
+}
+
+/* Contact Info Styles */
+.contact-info h4 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 1.5rem;
+}
+
+.contact-info p {
+    font-size: 1.1rem;
+    color: #555;
+    margin-bottom: 1rem;
+}
+
+.contact-info .social-icons a {
+    font-size: 20px;
+    margin-right: 15px;
+    transition: color 0.3s ease;
+}
+
+.contact-info .social-icons a:hover {
+    color: #e84545; /* Primary hover color */
+}
+
+/* Contact Form Styles */
+#contact-form .form-control {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: 5px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+}
+
+#contact-form button {
+    background-color: #e84545;
+    color: white;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+#contact-form button:hover {
+    background-color: #d23737;
+}
+
+/* Responsive Google Map */
+.embed-responsive {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    max-width: 100%;
+    height: 300px;
+}
+
+.embed-responsive iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .contact-info h4 {
+        font-size: 1.2rem;
+    }
+
+    .contact-info p {
+        font-size: 1rem;
+    }
+
+    .contact-info .social-icons a {
+        font-size: 18px;
+    }
+}
+
+
+/* Newsletter Section */
+.newsletter .input-group {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.newsletter .input-group input {
+    border-radius: 50px;
+    padding: 10px 20px;
+    font-size: 1rem;
+}
+
+.newsletter .input-group button {
+    border-radius: 50px;
+    background-color: #e84545; /* Primary color */
+    color: white;
+    padding: 10px 30px;
+    font-size: 1rem;
+    margin-left: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.newsletter .input-group button:hover {
+    background-color: #d23737;
+}
+
+
+/* CTA Buttons */
+.btn-primary {
+    background-color: #007bff; /* Primary color */
+    border: 1px solid #007bff;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: all 0.3s ease-in-out;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3; /* Manually define a darker shade */
+    border-color: #0056b3;
+    transform: translateY(-2px);
+}
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero h1 {
+        font-size: 2.5rem;
+    }
+
+    .section-padding {
+        padding: 4rem 0;
+    }
+}
+
+/* Gallery Section */
+.gallery {
+    background-color: var(--light-color);
+}
+
+.gallery-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+}
+
+.gallery-item:hover {
+    transform: scale(1.05);
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+}
+
+/* Mission & Vision */
+.about h4.text-primary {
+    color: var(--primary-color, #007bff); /* Default fallback color */
+    margin-bottom: 1rem;
+}
+
+footer {
+    background-color: #212529; /* Dark background for footer */
+    color: #f8f9fa; /* Light text color */
+    padding: 40px 0;
+}
+
+footer h5, footer h4 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+footer .list-unstyled {
+    padding-left: 0;
+}
+
+footer .list-unstyled li {
+    margin-bottom: 10px;
+}
+
+footer .list-unstyled li a {
+    color: #f8f9fa;
+    text-decoration: none;
+}
+
+footer .list-unstyled li a:hover {
+    text-decoration: underline;
+}
+
+footer .social-icons i {
+    font-size: 20px;
+    margin-right: 10px;
+    color: #f8f9fa;
+}
+
+footer .social-icons i:hover {
+    color: #e84545; /* Primary hover color */
+}
+
+footer .btn-primary {
+    background-color: #e84545;
+    color: white;
+    font-weight: 600;
+    padding: 10px 25px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+footer .btn-primary:hover {
+    background-color: #d23737; /* Darker shade for hover */
+}
+
+/* FAQ Section */
+.faq-section {
+    padding: 4rem 0;
+    background-color: #f7f7f7;
+}
+
+.faq-section h2 {
+    font-size: 2.5rem; /* Slightly larger font size for the section title */
+    font-weight: 700;
+    margin-bottom: 2rem;
+    text-align: center;
+    color: var(--primary-color);
+}
+
+.faq-item {
+    margin-bottom: 1.5rem;
+}
+
+.faq-item h3 {
+    font-size: 1.3rem; /* Increased font size for question titles */
+    font-weight: 600;
+    color: #333;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.faq-item h3:hover {
+    color: var(--primary-color);
+}
+
+.faq-item p {
+    font-size: 1.1rem; /* Increased font size for answers */
+    color: #555;
+    line-height: 1.6;
+    margin-top: 0.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .faq-section h2 {
+        font-size: 2rem; /* Slightly smaller font size for mobile screens */
+    }
+
+    .faq-item h3 {
+        font-size: 1.2rem; /* Slightly smaller font size for mobile */
+    }
+
+    .faq-item p {
+        font-size: 1rem; /* Slightly smaller font size for mobile */
+    }
+}
+
+
+.accordion-button {
+    font-weight: bold;
+    background-color: #f8f9fa;  /* Light grayish white for the button */
+    color: #333;  /* Dark text for better readability */
+    border: 1px solid #ddd;  /* Subtle border around buttons */
+    border-radius: 5px;
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: #e9ecef;  /* Slightly darker grayish white when expanded */
+}
+
+.accordion-body {
+    background-color: #ffffff;  /* White background for the body of the FAQ */
+    font-size: 1rem;
+    color: #333;  /* Darker text for readability */
+}
+
+/* Optional: Add smooth hover effect */
+.accordion-button:hover {
+    background-color: #e2e6ea;  /* Slightly darker shade of grayish white when hovered */
+    border-color: #ccc;  /* Lighter border color on hover */
+}
