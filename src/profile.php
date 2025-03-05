@@ -4,13 +4,13 @@ require 'config.php'; // Include your database connection file
 
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
+    header("Location: auth.php");
     exit();
 }
 
 // Get user details
 $user_id = $_SESSION['user_id'];
-$query = $conn->prepare("SELECT fname, lname, email, location, picture FROM users WHERE id = ?");
+$query = $conn->prepare("SELECT fname, lname, email,phone ,location, picture FROM users WHERE id = ?");
 $query->bind_param("i", $user_id); // Bind the parameter
 $query->execute(); // Execute the query
 $result = $query->get_result(); // Get the result set
@@ -24,13 +24,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $lname = htmlspecialchars($_POST['lname']);
         $email = htmlspecialchars($_POST['email']);
         $location = htmlspecialchars($_POST['location']);
+        $phone =htmlspecialchars($_POST['phone']);
 
-        $updateQuery = $conn->prepare("UPDATE users SET fname = ?, lname = ?, email = ?, location = ? WHERE id = ?");
-        $updateQuery->bind_param("ssssi", $fname, $lname, $email, $location, $user_id); // Bind parameters
+        $updateQuery = $conn->prepare("UPDATE users SET fname = ?, lname = ?, email = ?, location = ?,phone =? WHERE id = ?");
+        $updateQuery->bind_param("sssssi", $fname, $lname, $email, $location, $phone , $user_id); // Bind parameters
         $updateQuery->execute(); // Execute the query
 
         $_SESSION['success'] = "Profile updated successfully!";
-        header("Location: volunteer_dashboard.php");
+        header("Location: profile.php");
         exit();
     }
 
@@ -60,36 +61,49 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit();
     }
 
-    // Update Profile Picture
-    if (isset($_POST['upload_picture']) && isset($_FILES['picture'])) {
-        $img_name = $_FILES['picture']['name'];
-        $img_tmp = $_FILES['picture']['tmp_name'];
-        $img_size = $_FILES['picture']['size'];
-        $img_type = strtolower(pathinfo($img_name, PATHINFO_EXTENSION));
+     }
+    
+// Update Profile Picture
+if (isset($_POST['upload_picture']) && isset($_FILES['picture'])) {
+    $img_name = $_FILES['picture']['name'];
+    $img_tmp = $_FILES['picture']['tmp_name'];
+    $img_size = $_FILES['picture']['size'];
+    $img_type = strtolower(pathinfo($img_name, PATHINFO_EXTENSION));
 
-        // Validate file type
-        $allowed_types = ['jpg', 'jpeg', 'png', 'gif'];
-        if (!in_array($img_type, $allowed_types)) {
-            $_SESSION['error'] = "Only JPG, JPEG, PNG, and GIF files are allowed!";
-        } elseif ($img_size > 5 * 1024 * 1024) { // 5MB limit
-            $_SESSION['error'] = "File size must be less than 5MB!";
-        } else {
-            $img_path = "uploads/" . time() . "_" . basename($img_name);
+    // Validate file type
+    $allowed_types = ['jpg', 'jpeg', 'png', 'gif'];
+    if (!in_array($img_type, $allowed_types)) {
+        $_SESSION['error'] = "Only JPG, JPEG, PNG, and GIF files are allowed!";
+    } elseif ($img_size > 5 * 1024 * 1024) { // 5MB limit
+        $_SESSION['error'] = "File size must be less than 5MB!";
+    } else {
+        // Create uploads folder if not exists
+        $upload_dir = "uploads/";
+        if (!is_dir($upload_dir)) {
+            mkdir($upload_dir, 0777, true);
+        }
 
-            if (move_uploaded_file($img_tmp, $img_path)) {
-                $updatePic = $conn->prepare("UPDATE users SET picture = ? WHERE id = ?");
-                $updatePic->bind_param("si", $img_path, $user_id); // Bind parameters
-                $updatePic->execute(); // Execute the query
+        // Create unique file name to avoid conflicts
+        $new_file_name = "user_" . $user_id . "_" . time() . "." . $img_type;
+        $img_path = $upload_dir . $new_file_name;
 
+        if (move_uploaded_file($img_tmp, $img_path)) {
+            // Store in Database
+            $updatePic = $conn->prepare("UPDATE users SET picture = ? WHERE id = ?");
+            $updatePic->bind_param("si", $img_path, $user_id);
+            if ($updatePic->execute()) {
                 $_SESSION['success'] = "Profile picture updated!";
             } else {
-                $_SESSION['error'] = "Failed to upload image!";
+                $_SESSION['error'] = "Database update failed!";
             }
+        } else {
+            $_SESSION['error'] = "Failed to upload image!";
         }
-        header("Location: profile.php");
-        exit();
     }
+    header("Location: profile.php");
+    exit();
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -187,6 +201,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <div class="mb-3">
                             <label class="form-label">Location</label>
                             <input type="text" name="location" value="<?php echo htmlspecialchars($user['location']); ?>" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Phone No</label>
+                            <input type="text" name="phone" value="<?php echo htmlspecialchars($user['phone']); ?>" class="form-control" required>
                         </div>
                         <button type="submit" name="update_profile" class="btn btn-primary btn-submit">Update Profile</button>
                     </form>

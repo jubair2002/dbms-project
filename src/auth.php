@@ -69,6 +69,7 @@ function handleRegistration($conn)
     $fname = trim($_POST['fname']);
     $lname = trim($_POST['lname']);
     $email = trim($_POST['email']);
+    $phone = trim($_POST['phone']);
     $password = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
     $location = trim($_POST['location']);
@@ -94,8 +95,8 @@ function handleRegistration($conn)
 
     // Insert new user
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-    $stmt = $conn->prepare("INSERT INTO users (fname, lname, email, password, picture, location, user_type) VALUES (?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("sssssss", $fname, $lname, $email, $hashed_password, $picture_path, $location, $user_type);
+    $stmt = $conn->prepare("INSERT INTO users (fname, lname, email,phone, password, picture, location, user_type) VALUES (?, ?, ?, ?, ?, ?, ?,?)");
+    $stmt->bind_param("ssssssss", $fname, $lname, $email,$phone, $hashed_password, $picture_path, $location, $user_type);
 
     if ($stmt->execute()) {
         $success = "Registration successful! Please login.";
@@ -269,6 +270,8 @@ function handleResetPassword($conn)
                         <div class="mb-3">
                             <input type="email" name="email" class="form-control" placeholder="Email" required>
                         </div>
+
+
                         <div class="mb-3 position-relative">
                             <input type="password" name="password" id="password" class="form-control" placeholder="Password" required>
                             <i class="fas fa-eye toggle-password" data-target="password"></i>
@@ -279,6 +282,9 @@ function handleResetPassword($conn)
                         </div>
                         <div class="mb-3">
                             <input type="text" name="location" class="form-control" placeholder="Location" required>
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" name="phone" class="form-control" placeholder="Phone Number" required>
                         </div>
                         <!-- Join As dropdown -->
                         <div class="mb-3">

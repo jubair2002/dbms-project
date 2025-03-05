@@ -8,10 +8,12 @@ CREATE TABLE users (
     fname VARCHAR(50) NOT NULL,
     lname VARCHAR(50) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
+    phone VARCHAR(20) NOT NULL, -- Added phone number (mandatory)
     password VARCHAR(255) NOT NULL,
     picture VARCHAR(255) NOT NULL,
     location VARCHAR(100) NOT NULL,
-    user_type ENUM('volunteer', 'regular','admin') NOT NULL,
+    user_type ENUM('volunteer', 'regular', 'admin') NOT NULL,
+    status ENUM('active', 'inactive') NOT NULL DEFAULT 'active', -- Added status field
     reset_token VARCHAR(64) DEFAULT NULL,
     reset_expires DATETIME DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
