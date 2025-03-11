@@ -1,0 +1,110 @@
+/* Custom CSS for Admin Dashboard */
+
+/* Global Styles */
+body {
+    background-color: #f4f7fc;
+    font-family: 'Arial', sans-serif;
+}
+
+.navbar {
+    border-bottom: 1px solid #dee2e6;
+}
+
+.navbar .nav-link {
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.navbar .nav-link:hover {
+    color: #ffc107;
+}
+
+.navbar .dropdown-menu {
+    min-width: 200px;
+}
+
+/* Card Styles */
+.card {
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.card-body {
+    padding: 20px;
+}
+
+/* Stats Cards */
+.card.bg-primary, .card.bg-success, .card.bg-info, .card.bg-warning {
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.card.bg-primary {
+    background-color: #007bff;
+}
+
+.card.bg-success {
+    background-color: #28a745;
+}
+
+.card.bg-info {
+    background-color: #17a2b8;
+}
+
+.card.bg-warning {
+    background-color: #ffc107;
+}
+
+.card h5 {
+    font-size: 18px;
+}
+
+.card h2 {
+    font-size: 30px;
+}
+
+/* Table Styles */
+.table thead {
+    background-color: #f8f9fa;
+}
+
+.table td, .table th {
+    vertical-align: middle;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Badge Styling */
+.badge {
+    font-size: 12px;
+}
+
+.badge.bg-success {
+    background-color: #28a745;
+}
+
+.badge.bg-danger {
+    background-color: #dc3545;
+}
+
+.badge.bg-warning {
+    background-color: #ffc107;
+}
+
+/* Footer */
+footer {
+    background-color: #212529;
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+}
+
+/* iframe styling */
+#profileIframe, #notificationsIframe {
+    display: none;
+    margin-top: 20px;
+    border-radius: 8px;
+}

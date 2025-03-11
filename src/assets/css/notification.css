@@ -1,0 +1,63 @@
+/* Custom CSS for Notification Dropdown */
+#notificationsBtn {
+    position: relative;
+}
+
+#notificationList {
+    max-height: 400px; /* Limit the height */
+    overflow-y: auto; /* Add scroll if content overflows */
+    width: 300px; /* Set a fixed width */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+#notificationList .dropdown-item {
+    padding: 10px 15px;
+    border-bottom: 1px solid #f1f1f1;
+    color: #333;
+}
+
+#notificationList .dropdown-item:last-child {
+    border-bottom: none;
+}
+
+#notificationList .dropdown-item:hover {
+    background-color: #f1f1f1; /* Highlight on hover */
+}
+
+#notificationList .text-muted {
+    font-size: 0.8em;
+}
+
+/* Style for the "See All" link */
+#notificationList .see-all {
+    text-align: center;
+    padding: 10px;
+    font-weight: bold;
+    color: #007bff;
+    text-decoration: none;
+}
+
+#notificationList .see-all:hover {
+    text-decoration: underline;
+}
+
+#notificationList {
+    display: none; /* Hide by default */
+}
+
+#notificationList.show {
+    display: block; /* Show when the 'show' class is added */
+}
+
+/* Unread notifications */
+.unread {
+    font-weight: bold;
+    background-color: #f8d7da; /* Red background for unread notifications */
+}
+
+/* Read notifications */
+.read {
+    font-weight: normal;
+    background-color: #d4edda; /* Green background for read notifications */
+}
