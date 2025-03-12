@@ -1,0 +1,143 @@
+/* Sidebar Styles */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 250px;
+    background-color: #ffffff; /* Light background */
+    color: #000; /* Black text */
+    padding-top: 50px;
+    display: block;
+    z-index: 1000;
+    transition: all 0.3s ease-in-out;
+}
+
+.sidebar.active {
+    display: block;
+}
+
+.sidebar-header {
+    padding-left: 20px;
+    padding-right: 20px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.sidebar-content {
+    margin-top: 20px;
+}
+
+.sidebar-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sidebar-list li {
+    padding: 15px 20px;
+    border-bottom: 1px solid #ddd;
+}
+
+.sidebar-list li a {
+    text-decoration: none;
+    color: #000 !important; /* Force black text color */
+    display: block;
+}
+
+.sidebar-list li a:hover {
+    background-color: #f1f1f1; /* Slight hover effect */
+}
+
+/* Main Content Area */
+#pageIframe {
+    display: block;
+}
+
+#profileIframe, #notificationsIframe {
+    display: none;
+    margin-top: 20px;
+    border-radius: 8px;
+}
+
+/* Navbar */
+.navbar {
+    padding: 15px 20px;
+    background-color: #ffffff; /* Light background */
+}
+
+.navbar-nav .nav-item .nav-link {
+    color: black !important; /* Black text */
+    font-size: 16px;
+}
+
+.nav-item .dropdown-menu {
+    background-color: #ffffff !important; /* Light background for dropdown */
+    border-radius: 5px;
+    padding: 10px 20px;
+}
+
+.nav-item .dropdown-item {
+    color: black !important; /* Black text for dropdown items */
+}
+
+.nav-item .dropdown-item:hover {
+    background-color: #f1f1f1 !important; /* Slight hover effect */
+}
+
+/* Table Styles */
+.table thead {
+    background-color: #f8f9fa;
+}
+
+/* Fixing the header to be sticky at the top */
+.table th {
+    position: sticky;
+    top: 0;
+    background-color: #f8f9fa;
+    z-index: 1;
+    color: black;
+}
+
+/* Table Cells */
+.table td, .table th {
+    vertical-align: middle;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Badge Styling */
+.badge {
+    font-size: 12px;
+}
+
+.badge.bg-success {
+    background-color: #28a745;
+}
+
+.badge.bg-danger {
+    background-color: #dc3545;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .sidebar {
+        display: none;
+    }
+    .sidebar.active {
+        display: block;
+    }
+
+    .navbar-toggler {
+        display: block;
+    }
+
+    .table-responsive {
+        margin-top: 20px;
+    }
+
+    .table {
+        font-size: 12px;
+    }
+}
