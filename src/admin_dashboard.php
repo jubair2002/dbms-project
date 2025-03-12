@@ -37,61 +37,87 @@ $unread_count = $unread_count_result->fetch_assoc()['unread_count'];
 </head>
 
 <body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="admin_dashboard.php">CrisisLink Admin</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <!-- Notifications Button -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link" href="#" id="notificationsBtn" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-bell"></i>
-                            <span class="badge bg-danger" id="notification-count"><?php echo $unread_count; ?></span>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationsBtn" id="notificationList">
-                            <?php if (count($notifications) > 0): ?>
-                                <?php foreach ($notifications as $notification): ?>
-                                    <li class="dropdown-item">
-                                        <p><strong><?php echo htmlspecialchars($notification['message']); ?></strong></p>
-                                        <small class="text-muted"><?php echo date('M d, Y h:i A', strtotime($notification['created_at'])); ?></small>
-                                    </li>
-                                <?php endforeach; ?>
-                            <?php else: ?>
-                                <li class="dropdown-item">No new notifications.</li>
-                            <?php endif; ?>
-                            <li class="dropdown-item see-all">
-                                <a href="#" onclick="loadNotifications()">See All</a>
-                            </li>
-                        </ul>
-                    </li>
-
-                    <!-- Profile Dropdown -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <?php echo htmlspecialchars($user['fname']); ?> (Admin)
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="profileDropdown">
-                            <li><a class="dropdown-item" href="#" onclick="loadProfile()">Profile</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="logout.php">Logout</a></li>
-                        </ul>
-                    </li>
+    <div class="dashboard-container">
+        <!-- Sidebar Section -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h4>CrisisLink Network</h4>
+            </div>
+            <div class="sidebar-content">
+                <ul class="sidebar-list">
+                    <li><a href="#" onclick="loadPage('dashboard.php')">Dashboard</a></li>
+                    <li><a href="#" onclick="loadPage('user_management.php')">User Management</a></li>
+                    <li><a href="#" onclick="loadPage('tasks.php')">Tasks</a></li>
+                    <li><a href="#" onclick="loadPage('report.php')">Reports</a></li>
+                    <li><a href="#" onclick="loadPage('campaign.php')">Campaign</a></li>
+                    <li><a href="#" onclick="loadPage('chat.php')">Chat</a></li>
+                    <li><a href="#" onclick="loadPage('donations.php')">Donations</a></li>
                 </ul>
             </div>
         </div>
-    </nav>
 
-    <!-- Main Content Area -->
-    <div class="container-fluid mt-4">
-        <!-- Profile iframe (Initially shown when profile link is clicked) -->
-        <iframe src="profile.php" id="profileIframe" width="100%" height="600px" style="border: none; display: none;"></iframe>
+        <!-- Main Content Container -->
+        <div class="main-content" id="mainContent">
+            <!-- Navigation (Top Navbar) -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="admin_dashboard.php">Home</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav ms-auto">
+                            <!-- Notifications Button -->
+                            <li class="nav-item dropdown">
+                                <a class="nav-link" href="#" id="notificationsBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-bell"></i>
+                                    <span class="badge bg-danger" id="notification-count"><?php echo $unread_count; ?></span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationsBtn" id="notificationList">
+                                    <?php if (count($notifications) > 0): ?>
+                                        <?php foreach ($notifications as $notification): ?>
+                                            <li class="dropdown-item">
+                                                <p><strong><?php echo htmlspecialchars($notification['message']); ?></strong></p>
+                                                <small class="text-muted"><?php echo date('M d, Y h:i A', strtotime($notification['created_at'])); ?></small>
+                                            </li>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
+                                        <li class="dropdown-item">No new notifications.</li>
+                                    <?php endif; ?>
+                                    <li class="dropdown-item see-all">
+                                        <a href="#" onclick="loadNotifications()">See All</a>
+                                    </li>
+                                </ul>
+                            </li>
 
-        <!-- Notifications iframe (Initially hidden until "See All" is clicked) -->
-        <iframe src="notification.php" id="notificationsIframe" width="100%" height="600px" style="border: none; display: none;"></iframe>
+                            <!-- Profile Dropdown -->
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <?php echo htmlspecialchars($user['fname']); ?> (Admin)
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                                    <li><a class="dropdown-item" href="#" onclick="loadProfile()">Profile</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="logout.php">Logout</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Main Content Area -->
+            <div class="container-fluid mt-4 content-area">
+                <!-- Profile iframe -->
+                <iframe src="profile.php" id="profileIframe" width="100%" height="600px" style="border: none; display: none;"></iframe>
+
+                <!-- Notifications iframe -->
+                <iframe src="notification.php" id="notificationsIframe" width="100%" height="600px" style="border: none; display: none;"></iframe>
+
+                <!-- Dynamic Page Content iframe -->
+                <iframe src="dashboard.php" id="pageIframe" width="100%" height="600px" style="border: none;"></iframe>
+            </div>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
