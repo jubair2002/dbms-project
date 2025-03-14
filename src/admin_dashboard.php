@@ -45,14 +45,21 @@ $unread_count = $unread_count_result->fetch_assoc()['unread_count'];
             </div>
             <div class="sidebar-content">
                 <ul class="sidebar-list">
+<<<<<<< HEAD
                     <li><a href="#" onclick="loadPage('dashboard.php')">Dashboard Summary</a></li>
+=======
+                    <li><a href="#" onclick="loadPage('dashboard.php')">Dashboard</a></li>
+>>>>>>> 931d6e0b6ed26eace264f1d8c8c6d79527eb7f0c
                     <li><a href="#" onclick="loadPage('user_management.php')">User Management</a></li>
                     <li><a href="#" onclick="loadPage('tasks.php')">Tasks</a></li>
                     <li><a href="#" onclick="loadPage('report.php')">Reports</a></li>
                     <li><a href="#" onclick="loadPage('campaign.php')">Campaign</a></li>
                     <li><a href="#" onclick="loadPage('chat.php')">Chat</a></li>
                     <li><a href="#" onclick="loadPage('donations.php')">Donations</a></li>
+<<<<<<< HEAD
                     <li><a href="#" onclick="loadPage('settings.php')">Settings</a></li>
+=======
+>>>>>>> 931d6e0b6ed26eace264f1d8c8c6d79527eb7f0c
                 </ul>
             </div>
         </div>
@@ -94,7 +101,11 @@ $unread_count = $unread_count_result->fetch_assoc()['unread_count'];
                             <!-- Profile Dropdown -->
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+<<<<<<< HEAD
                                     <?php echo htmlspecialchars($user['lname']); ?> (Admin)
+=======
+                                    <?php echo htmlspecialchars($user['fname']); ?> (Admin)
+>>>>>>> 931d6e0b6ed26eace264f1d8c8c6d79527eb7f0c
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
                                     <li><a class="dropdown-item" href="#" onclick="loadProfile()">Profile</a></li>

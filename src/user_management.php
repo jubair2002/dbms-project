@@ -136,6 +136,10 @@ if ($result) {
                             <option value="">Select User Type</option>
                             <option value="volunteer">Volunteer</option>
                             <option value="regular">Regular</option>
+<<<<<<< HEAD
+=======
+                            <option value="admin">Admin</option>
+>>>>>>> 931d6e0b6ed26eace264f1d8c8c6d79527eb7f0c
                         </select>
                     </div>
                     <div class="col-md-3">
@@ -199,7 +203,11 @@ if ($result) {
                             <?php endforeach; ?>
                         <?php else: ?>
                             <tr>
+<<<<<<< HEAD
                                 <td colspan="8" class="text-center">Not found.</td>
+=======
+                                <td colspan="8" class="text-center">No users found.</td>
+>>>>>>> 931d6e0b6ed26eace264f1d8c8c6d79527eb7f0c
                             </tr>
                         <?php endif; ?>
                     </tbody>
