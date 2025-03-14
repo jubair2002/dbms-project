@@ -213,7 +213,7 @@ function handleResetPassword($conn)
 
         <!-- no Navbar only button-->
         <div class="nav-content">
-            <a href="index.php" class="navbar-brand">CrisisLink</a>
+            <a href="index.php" class="navbar-brand">CrisisLink Network</a>
         </div>
 
 

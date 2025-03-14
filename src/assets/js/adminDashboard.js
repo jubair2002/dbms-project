@@ -12,6 +12,11 @@ function loadPage(page) {
     // Set the source of the iframe to the selected page and show it
     pageIframe.src = page;
     pageIframe.style.display = 'block';
+    
+    // Update active state in sidebar
+    updateActiveSidebarItem(page);
+    
+    return false; // Prevent default link behavior
 }
 
 // Function to load the profile page in iframe
@@ -25,8 +30,13 @@ function loadProfile() {
     notificationsIframe.style.display = 'none';
     pageIframe.style.display = 'none';
 
-    // Show the profile iframe
+    // Set source (if not already set) and show the profile iframe
+    if (!profileIframe.src || profileIframe.src === '') {
+        profileIframe.src = 'profile.php';
+    }
     profileIframe.style.display = 'block';
+    
+    return false; // Prevent default link behavior
 }
 
 // Function to load notifications page in iframe
@@ -40,8 +50,28 @@ function loadNotifications() {
     notificationsIframe.style.display = 'none';
     pageIframe.style.display = 'none';
 
-    // Show the notifications iframe
+    // Set source (if not already set) and show the notifications iframe
+    if (!notificationsIframe.src || notificationsIframe.src === '') {
+        notificationsIframe.src = 'notification.php';
+    }
     notificationsIframe.style.display = 'block';
+    
+    return false; // Prevent default link behavior
+}
+
+// Update active state in sidebar
+function updateActiveSidebarItem(page) {
+    // Remove active class from all sidebar links
+    const sidebarLinks = document.querySelectorAll('.sidebar-list li a');
+    sidebarLinks.forEach(link => {
+        link.classList.remove('active');
+    });
+    
+    // Add active class to the clicked link
+    const activeLink = document.querySelector(`.sidebar-list li a[onclick*="${page}"]`);
+    if (activeLink) {
+        activeLink.classList.add('active');
+    }
 }
 
 // Update iframe heights on window resize
