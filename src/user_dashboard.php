@@ -50,21 +50,7 @@ $user = getUserDetails($conn, $_SESSION['user_id']);
     <!-- Dashboard Content -->
     <div class="container mt-4">
         <div class="row">
-            <!-- Sidebar -->
-            <div class="col-lg-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Quick Links</h5>
-                        <div class="list-group">
-                            <a href="#" class="list-group-item list-group-item-action active">Dashboard</a>
-                            <a href="#" class="list-group-item list-group-item-action">Request Help</a>
-                            <a href="#" class="list-group-item list-group-item-action">My Requests</a>
-                            <a href="#" class="list-group-item list-group-item-action">Messages</a>
-                            <a href="#" class="list-group-item list-group-item-action">Resources</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            
 
             <!-- Main Content -->
             <div class="col-lg-9">
