@@ -26,114 +26,131 @@ $unread_count = $unread_count_result->fetch_assoc()['unread_count'];
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - CrisisLink</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/adminDashboard.css"> <!-- Custom CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- Boxicons -->
+    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+    <!-- My CSS -->
+    <link rel="stylesheet" href="assets/css/adminDashboard.css">
+
+    <title>CrisisLink Admin</title>
 </head>
-
 <body>
-    <div class="dashboard-container">
-        <!-- Sidebar Section -->
-        <div class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <h4>CrisisLink Network</h4>
-            </div>
-            <div class="sidebar-content">
-                <ul class="sidebar-list">
-<<<<<<< HEAD
-                    <li><a href="#" onclick="loadPage('dashboard.php')">Dashboard Summary</a></li>
-=======
-                    <li><a href="#" onclick="loadPage('dashboard.php')">Dashboard</a></li>
->>>>>>> 931d6e0b6ed26eace264f1d8c8c6d79527eb7f0c
-                    <li><a href="#" onclick="loadPage('user_management.php')">User Management</a></li>
-                    <li><a href="#" onclick="loadPage('tasks.php')">Tasks</a></li>
-                    <li><a href="#" onclick="loadPage('report.php')">Reports</a></li>
-                    <li><a href="#" onclick="loadPage('campaign.php')">Campaign</a></li>
-                    <li><a href="#" onclick="loadPage('chat.php')">Chat</a></li>
-                    <li><a href="#" onclick="loadPage('donations.php')">Donations</a></li>
-<<<<<<< HEAD
-                    <li><a href="#" onclick="loadPage('settings.php')">Settings</a></li>
-=======
->>>>>>> 931d6e0b6ed26eace264f1d8c8c6d79527eb7f0c
-                </ul>
-            </div>
-        </div>
 
-        <!-- Main Content Container -->
-        <div class="main-content" id="mainContent">
-            <!-- Navigation (Top Navbar) -->
-            <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                <div class="container-fluid">
-                    <a class="navbar-brand" href="admin_dashboard.php">Home</a>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="collapse navbar-collapse" id="navbarNav">
-                        <ul class="navbar-nav ms-auto">
-                            <!-- Notifications Button -->
-                            <li class="nav-item dropdown">
-                                <a class="nav-link" href="#" id="notificationsBtn" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="fas fa-bell"></i>
-                                    <span class="badge bg-danger" id="notification-count"><?php echo $unread_count; ?></span>
-                                </a>
-                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationsBtn" id="notificationList">
-                                    <?php if (count($notifications) > 0): ?>
-                                        <?php foreach ($notifications as $notification): ?>
-                                            <li class="dropdown-item">
-                                                <p><strong><?php echo htmlspecialchars($notification['message']); ?></strong></p>
-                                                <small class="text-muted"><?php echo date('M d, Y h:i A', strtotime($notification['created_at'])); ?></small>
-                                            </li>
-                                        <?php endforeach; ?>
-                                    <?php else: ?>
-                                        <li class="dropdown-item">No new notifications.</li>
-                                    <?php endif; ?>
-                                    <li class="dropdown-item see-all">
-                                        <a href="#" onclick="loadNotifications()">See All</a>
-                                    </li>
-                                </ul>
-                            </li>
+    <!-- SIDEBAR -->
+    <section id="sidebar">
+        <a href="#" class="brand">
+            <i class='bx bxs-happy'></i>
+            <span class="text">CrisisLink Network</span>
+        </a>
+        <ul class="side-menu top">
+            <li class="active">
+                <a href="dashboard.php">
+                    <i class='bx bxs-dashboard' ></i>
+                    <span class="text">Dashboard Summary</span>
+                </a>
+            </li>
+            <li>
+                <a href="profile.php">
+                    <i class='bx bxs-shopping-bag-alt' ></i>
+                    <span class="text">Profile</span>
+                </a>
+            </li>
+            <li>
+                <a href="user_management.php">
+                    <i class='bx bxs-doughnut-chart' ></i>
+                    <span class="text">Users</span>
+                </a>
+            </li>
+            <li>
+                <a href="message.php">
+                    <i class='bx bxs-message-dots' ></i>
+                    <span class="text">Message</span>
+                </a>
+            </li>
+            <li>
+                <a href="team.php">
+                    <i class='bx bxs-group' ></i>
+                    <span class="text">Team</span>
+                </a>
+            </li>
+        </ul>
+        <ul class="side-menu">
+            <li>
+                <a href="settings.php">
+                    <i class='bx bxs-cog' ></i>
+                    <span class="text">Settings</span>
+                </a>
+            </li>
+            <li>
+                <a href="logout.php" class="logout">
+                    <i class='bx bxs-log-out-circle' ></i>
+                    <span class="text">Logout</span>
+                </a>
+            </li>
+        </ul>
+    </section>
+    <!-- SIDEBAR -->
 
-                            <!-- Profile Dropdown -->
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-<<<<<<< HEAD
-                                    <?php echo htmlspecialchars($user['lname']); ?> (Admin)
-=======
-                                    <?php echo htmlspecialchars($user['fname']); ?> (Admin)
->>>>>>> 931d6e0b6ed26eace264f1d8c8c6d79527eb7f0c
-                                </a>
-                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-                                    <li><a class="dropdown-item" href="#" onclick="loadProfile()">Profile</a></li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="logout.php">Logout</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </div>
+
+    <!-- CONTENT -->
+    <section id="content">
+        <!-- NAVBAR -->
+        <nav>
+            <i class='bx bx-menu' ></i>
+            <form action="#">
+                <div class="form-input">
+                    <input type="search" placeholder="Search...">
+                    <button type="submit" class="search-btn"><i class='bx bx-search' ></i></button>
                 </div>
-            </nav>
+            </form>
+            <input type="checkbox" id="switch-mode" hidden>
+            <label for="switch-mode" class="switch-mode"></label>
+            <a href="#" class="notification">
+                <i class='bx bxs-bell' ></i>
+                <span class="num"><?php echo $unread_count; ?></span>
+            </a>
+            <a class="profile">
+                <span><?php echo htmlspecialchars($user['fname']); ?></span> <!-- Displaying user's name -->
+            </a>
+        </nav>
+        <!-- NAVBAR -->
 
-            <!-- Main Content Area -->
-            <div class="container-fluid mt-4 content-area">
-                <!-- Profile iframe -->
-                <iframe src="profile.php" id="profileIframe" width="100%" height="600px" style="border: none; display: none;"></iframe>
+        <!-- MAIN -->
+        <main>
+            
 
-                <!-- Notifications iframe -->
-                <iframe src="notification.php" id="notificationsIframe" width="100%" height="600px" style="border: none; display: none;"></iframe>
+            <ul class="box-info">
+                <li>
+                    <i class='bx bxs-calendar-check' ></i>
+                    <span class="text">
+                        <h3>1020</h3>
+                        <p>total user</p>
+                    </span>
+                </li>
+                <li>
+                    <i class='bx bxs-group' ></i>
+                    <span class="text">
+                        <h3>2834</h3>
+                        <p>campaign</p>
+                    </span>
+                </li>
+                <li>
+                    <i class='bx bxs-dollar-circle' ></i>
+                    <span class="text">
+                        <h3>$2543</h3>
+                        <p>Total volunteer</p>
+                    </span>
+                </li>
+            </ul>
+        </main>
+        <!-- MAIN -->
+    </section>
+    <!-- CONTENT -->
+    
 
-                <!-- Dynamic Page Content iframe -->
-                <iframe src="dashboard.php" id="pageIframe" width="100%" height="600px" style="border: none;"></iframe>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/js/adminDashboard.js"></script> <!-- Custom JS -->
+    <script src="assets/js/adminDashboard.js"></script>
 </body>
-
 </html>
