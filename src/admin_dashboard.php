@@ -26,6 +26,7 @@ $unread_count = $unread_count_result->fetch_assoc()['unread_count'];
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -37,6 +38,7 @@ $unread_count = $unread_count_result->fetch_assoc()['unread_count'];
 
     <title>CrisisLink Admin</title>
 </head>
+
 <body>
 
     <!-- SIDEBAR -->
@@ -48,45 +50,52 @@ $unread_count = $unread_count_result->fetch_assoc()['unread_count'];
         <ul class="side-menu top">
             <li class="active">
                 <a href="dashboard.php">
-                    <i class='bx bxs-dashboard' ></i>
+                    <i class='bx bxs-home'></i>
                     <span class="text">Dashboard Summary</span>
                 </a>
             </li>
-            <li>
-                <a href="profile.php">
-                    <i class='bx bxs-shopping-bag-alt' ></i>
-                    <span class="text">Profile</span>
-                </a>
-            </li>
+
             <li>
                 <a href="user_management.php">
-                    <i class='bx bxs-doughnut-chart' ></i>
+                    <i class='bx bxs-user-detail'></i>
                     <span class="text">Users</span>
                 </a>
             </li>
             <li>
                 <a href="message.php">
-                    <i class='bx bxs-message-dots' ></i>
+                    <i class='bx bxs-message-dots'></i>
                     <span class="text">Message</span>
                 </a>
             </li>
             <li>
-                <a href="team.php">
-                    <i class='bx bxs-group' ></i>
-                    <span class="text">Team</span>
+                <a href="campaign.php">
+                    <i class='bx bxs-help-circle'></i>
+                    <span class="text">Campaign</span>
+                </a>
+            </li>
+            <li>
+                <a href="report.php">
+                    <i class='bx bxs-file'></i>
+                    <span class="text">Report</span>
                 </a>
             </li>
         </ul>
         <ul class="side-menu">
             <li>
                 <a href="settings.php">
-                    <i class='bx bxs-cog' ></i>
+                    <i class='bx bxs-cog'></i>
                     <span class="text">Settings</span>
                 </a>
             </li>
             <li>
+                <a href="profile.php">
+                    <i class='bx bxs-user'></i>
+                    <span class="text">Profile</span>
+                </a>
+            </li>
+            <li>
                 <a href="logout.php" class="logout">
-                    <i class='bx bxs-log-out-circle' ></i>
+                    <i class='bx bxs-exit'></i>
                     <span class="text">Logout</span>
                 </a>
             </li>
@@ -99,49 +108,49 @@ $unread_count = $unread_count_result->fetch_assoc()['unread_count'];
     <section id="content">
         <!-- NAVBAR -->
         <nav>
-            <i class='bx bx-menu' ></i>
+            <i class='bx bx-menu'></i>
             <form action="#">
                 <div class="form-input">
                     <input type="search" placeholder="Search...">
-                    <button type="submit" class="search-btn"><i class='bx bx-search' ></i></button>
+                    <button type="submit" class="search-btn"><i class='bx bx-search'></i></button>
                 </div>
             </form>
             <input type="checkbox" id="switch-mode" hidden>
             <label for="switch-mode" class="switch-mode"></label>
             <a href="#" class="notification">
-                <i class='bx bxs-bell' ></i>
+                <i class='bx bxs-bell'></i>
                 <span class="num"><?php echo $unread_count; ?></span>
             </a>
             <a class="profile">
-                <span><?php echo htmlspecialchars($user['fname']); ?></span> <!-- Displaying user's name -->
+                <span><?php echo htmlspecialchars($user['fname']); ?>(admin)</span> <!-- Displaying user's name -->
             </a>
         </nav>
         <!-- NAVBAR -->
 
         <!-- MAIN -->
         <main>
-            
+
 
             <ul class="box-info">
                 <li>
-                    <i class='bx bxs-calendar-check' ></i>
+                    <i class='bx bxs-calendar-check'></i>
                     <span class="text">
                         <h3>1020</h3>
                         <p>total user</p>
                     </span>
                 </li>
                 <li>
-                    <i class='bx bxs-group' ></i>
+                    <i class='bx bxs-group'></i>
                     <span class="text">
                         <h3>2834</h3>
                         <p>campaign</p>
                     </span>
                 </li>
                 <li>
-                    <i class='bx bxs-dollar-circle' ></i>
+                    <i class='bx bxs-dollar-circle'></i>
                     <span class="text">
                         <h3>$2543</h3>
-                        <p>Total volunteer</p>
+                        <p>Transections</p>
                     </span>
                 </li>
             </ul>
@@ -149,8 +158,9 @@ $unread_count = $unread_count_result->fetch_assoc()['unread_count'];
         <!-- MAIN -->
     </section>
     <!-- CONTENT -->
-    
+
 
     <script src="assets/js/adminDashboard.js"></script>
 </body>
+
 </html>
