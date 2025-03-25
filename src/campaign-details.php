@@ -52,7 +52,6 @@ $days_remaining = $today <= $end_date ? $today->diff($end_date)->days : 0;
     <div class="container">
         <div class="header">
             <h1>Campaign Details</h1>
-            <a href="campaign.php" class="back-btn">BACK TO CAMPAIGNS</a>
         </div>
         
         <div class="campaign-details">
@@ -112,6 +111,8 @@ $days_remaining = $today <= $end_date ? $today->diff($end_date)->days : 0;
                     <button class="tab-btn active" data-tab="story">Campaign Story</button>
                     <button class="tab-btn" data-tab="updates">Updates</button>
                     <button class="tab-btn" data-tab="donors">Donors</button>
+                    <button class="tab-btn" data-tab="Volunteer">Volunteers</button>
+
                 </div>
                 
                 <div class="tab-content">

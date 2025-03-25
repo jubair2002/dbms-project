@@ -1,0 +1,10 @@
+page design 
+
+
+admin dashboard ---> campaign.php ---> all campaign list  ----> campaign-details.php 
+		     	----> donation.php (handle money transection and store in database) 
+
+		        campaignRequest.php --->assign-volunteer.php (admin assign task and set priority to volunteer) 
+
+
+		    

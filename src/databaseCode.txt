@@ -41,4 +41,5 @@ CREATE TABLE campaigns (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP, 
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending'
+    progress ENUM('ongoing', 'end') DEFAULT 'ongoing'
 );

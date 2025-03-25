@@ -1,3 +1,4 @@
+/* Reset and box-sizing for consistency */
 * {
     margin: 0;
     padding: 0;
@@ -7,62 +8,102 @@
 body, html {
     height: 100%;
     width: 100%;
-    background-color: white;
+    background-color: #f4f7fc;
+    font-family: 'Arial', sans-serif;
 }
 
+/* Center the content on the page */
 main {
     height: 100vh;
     width: 100vw;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: white;
+    padding: 20px;
 }
 
+/* Box Container */
 .box-container {
     width: 100%;
     max-width: 1200px;
-    padding: 0 15px;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
 }
 
+/* Box Info: Flex for responsive layout */
 .box-info {
     display: flex;
     justify-content: space-between;
     gap: 20px;
+    flex-wrap: wrap;
+    width: 100%;
 }
 
+/* Individual Box Styles */
 .box {
     flex: 1;
-    background-color: #f9f9f9;
+    min-width: 250px; /* To ensure responsiveness */
+    background-color: #ffffff;
     border: 1px solid #e0e0e0;
-    border-radius: 8px;
+    border-radius: 12px;
     padding: 25px;
     display: flex;
     align-items: center;
     text-align: center;
     flex-direction: column;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
+/* Add a shadow effect and scale on hover */
+.box:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Icon Styles inside the Box */
 .box i {
-    font-size: 3rem;
-    margin-bottom: 10px;
+    font-size: 4rem;
+    margin-bottom: 15px;
     color: #007bff;
+    transition: color 0.3s ease;
 }
 
+/* Header Styling in Boxes */
 .box h3 {
-    font-size: 2rem;
+    font-size: 1.5rem;
     color: #333;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
+    font-weight: 600;
 }
 
+/* Paragraph Text inside the Box */
 .box p {
     font-size: 1rem;
     color: #666;
     text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
-@media screen and (max-width: 600px) {
+/* Box hover icon color change */
+.box:hover i {
+    color: #0056b3;
+}
+
+/* Responsive Layout for Mobile Devices */
+@media screen and (max-width: 768px) {
     .box-info {
         flex-direction: column;
+        align-items: center;
+    }
+}
+
+/* Responsive Design for Very Small Devices */
+@media screen and (max-width: 600px) {
+    .box-container {
+        flex-direction: column;
+        align-items: center;
     }
 }

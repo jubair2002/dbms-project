@@ -9,19 +9,6 @@ checkAccess('admin');
 // Get user details
 $user = getUserDetails($conn, $_SESSION['user_id']);
 
-// Fetch notifications from the database
-$notifications = array();
-$result = $conn->query("SELECT * FROM notifications ORDER BY created_at DESC LIMIT 5"); // Get the latest 5 notifications
-
-if ($result) {
-    while ($row = $result->fetch_assoc()) {
-        $notifications[] = $row;
-    }
-}
-
-// Count the total unread notifications
-$unread_count_result = $conn->query("SELECT COUNT(*) AS unread_count FROM notifications WHERE status = 'unread'");
-$unread_count = $unread_count_result->fetch_assoc()['unread_count'];
 ?>
 
 <!DOCTYPE html>
@@ -126,7 +113,6 @@ $unread_count = $unread_count_result->fetch_assoc()['unread_count'];
             <label for="switch-mode" class="switch-mode"></label>
             <a href="#" class="notification">
                 <i class='bx bxs-bell'></i>
-                <span class="num"><?php echo $unread_count; ?></span>
             </a>
             <a class="profile">
                 <span><?php echo htmlspecialchars($user['fname']); ?>(admin)</span>

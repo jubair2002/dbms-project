@@ -8,26 +8,26 @@
     <link rel="stylesheet" type="text/css" href="assets/css/dashboardSummary.css">
 </head>
 <body>
-    <main>
-        <div class="box-container">
-            <div class="box-info">
-                <div class="box">
-                    <i class='bx bxs-calendar-check'></i>
-                    <h3>1020</h3>
-                    <p>Total Users</p>
-                </div>
-                <div class="box">
-                    <i class='bx bxs-group'></i>
-                    <h3>2834</h3>
-                    <p>Campaigns</p>
-                </div>
-                <div class="box">
-                    <i class='bx bxs-dollar-circle'></i>
-                    <h3>$2,543</h3>
-                    <p>Transactions</p>
-                </div>
+<main>
+    <div class="box-container">
+        <div class="box-info">
+            <div class="box">
+                <i class="bx bxs-heart"></i>
+                <h3>Total Donations</h3>
+                <p>Amount raised for the campaigns</p>
+            </div>
+            <div class="box">
+                <i class="bx bxs-chart"></i>
+                <h3>Campaign Progress</h3>
+                <p>Track all active campaigns</p>
+            </div>
+            <div class="box">
+                <i class="bx bxs-user"></i>
+                <h3>Users</h3>
+                <p>Total users registered</p>
             </div>
         </div>
-    </main>
+    </div>
+</main>
 </body>
 </html>
