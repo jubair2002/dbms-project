@@ -26,7 +26,6 @@ $unread_count = $unread_count_result->fetch_assoc()['unread_count'];
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -36,11 +35,21 @@ $unread_count = $unread_count_result->fetch_assoc()['unread_count'];
     <!-- My CSS -->
     <link rel="stylesheet" href="assets/css/adminDashboard.css">
 
+    <style>
+        /* Iframe Specific Styles */
+        #content-iframe {
+            width: 100%;
+            border: none;
+            min-height: calc(100vh - 100px); /* Adjust based on your navbar height */
+        }
+        .side-menu a {
+            cursor: pointer;
+        }
+    </style>
+
     <title>CrisisLink Admin</title>
 </head>
-
 <body>
-
     <!-- SIDEBAR -->
     <section id="sidebar">
         <a href="#" class="brand">
@@ -49,32 +58,31 @@ $unread_count = $unread_count_result->fetch_assoc()['unread_count'];
         </a>
         <ul class="side-menu top">
             <li class="active">
-                <a href="dashboard.php">
+                <a onclick="loadContent('dashboardSummary.php')">
                     <i class='bx bxs-home'></i>
                     <span class="text">Dashboard Summary</span>
                 </a>
             </li>
-
             <li>
-                <a href="user_management.php">
+                <a onclick="loadContent('user_management.php')">
                     <i class='bx bxs-user-detail'></i>
                     <span class="text">Users</span>
                 </a>
             </li>
             <li>
-                <a href="message.php">
+                <a onclick="loadContent('message.php')">
                     <i class='bx bxs-message-dots'></i>
                     <span class="text">Message</span>
                 </a>
             </li>
             <li>
-                <a href="campaign.php">
+                <a onclick="loadContent('campaign.php')">
                     <i class='bx bxs-help-circle'></i>
                     <span class="text">Campaign</span>
                 </a>
             </li>
             <li>
-                <a href="report.php">
+                <a onclick="loadContent('report.php')">
                     <i class='bx bxs-file'></i>
                     <span class="text">Report</span>
                 </a>
@@ -82,13 +90,13 @@ $unread_count = $unread_count_result->fetch_assoc()['unread_count'];
         </ul>
         <ul class="side-menu">
             <li>
-                <a href="settings.php">
+                <a onclick="loadContent('settings.php')">
                     <i class='bx bxs-cog'></i>
                     <span class="text">Settings</span>
                 </a>
             </li>
             <li>
-                <a href="profile.php">
+                <a onclick="loadContent('profile.php')">
                     <i class='bx bxs-user'></i>
                     <span class="text">Profile</span>
                 </a>
@@ -102,7 +110,6 @@ $unread_count = $unread_count_result->fetch_assoc()['unread_count'];
         </ul>
     </section>
     <!-- SIDEBAR -->
-
 
     <!-- CONTENT -->
     <section id="content">
@@ -122,45 +129,40 @@ $unread_count = $unread_count_result->fetch_assoc()['unread_count'];
                 <span class="num"><?php echo $unread_count; ?></span>
             </a>
             <a class="profile">
-                <span><?php echo htmlspecialchars($user['fname']); ?>(admin)</span> <!-- Displaying user's name -->
+                <span><?php echo htmlspecialchars($user['fname']); ?>(admin)</span>
             </a>
         </nav>
         <!-- NAVBAR -->
 
-        <!-- MAIN -->
+        <!-- MAIN - Replace with iframe -->
         <main>
-
-
-            <ul class="box-info">
-                <li>
-                    <i class='bx bxs-calendar-check'></i>
-                    <span class="text">
-                        <h3>1020</h3>
-                        <p>total user</p>
-                    </span>
-                </li>
-                <li>
-                    <i class='bx bxs-group'></i>
-                    <span class="text">
-                        <h3>2834</h3>
-                        <p>campaign</p>
-                    </span>
-                </li>
-                <li>
-                    <i class='bx bxs-dollar-circle'></i>
-                    <span class="text">
-                        <h3>$2543</h3>
-                        <p>Transections</p>
-                    </span>
-                </li>
-            </ul>
+            <iframe id="content-iframe" src="dashboardSummary.php" frameborder="0"></iframe>
         </main>
-        <!-- MAIN -->
     </section>
     <!-- CONTENT -->
 
+    <script>
+    function loadContent(url) {
+        // Update active state in sidebar
+        document.querySelectorAll('.side-menu li, .side-menu.top li').forEach(li => {
+            li.classList.remove('active');
+        });
+        event.target.closest('li').classList.add('active');
+
+        // Load content in iframe
+        document.getElementById('content-iframe').src = url;
+    }
+
+    // Optional: Resize iframe to content
+    document.getElementById('content-iframe').addEventListener('load', function() {
+        try {
+            this.style.height = this.contentWindow.document.body.scrollHeight + 'px';
+        } catch(e) {
+            console.log('Could not resize iframe');
+        }
+    });
+    </script>
 
     <script src="assets/js/adminDashboard.js"></script>
 </body>
-
 </html>

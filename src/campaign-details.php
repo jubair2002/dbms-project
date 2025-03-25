@@ -84,10 +84,7 @@ $days_remaining = $today <= $end_date ? $today->diff($end_date)->days : 0;
                             <div class="stat-value"><?php echo $campaign['donation_count']; ?></div>
                             <div class="stat-label">Donors</div>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-value"><?php echo $days_remaining; ?></div>
-                            <div class="stat-label">Days Left</div>
-                        </div>
+                        
                     </div>
                     
                     <div class="campaign-progress">
