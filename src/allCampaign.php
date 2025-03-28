@@ -47,7 +47,7 @@ function calculatePercentage($raised, $goal) {
 <body>
     <div class="container">
         <div class="header">
-            <h1>Latest Campaign</h1>
+            <h1>ALL Campaign</h1>
             <a href="allCampaign.php" class="all-causes-btn">All Campaign</a>
         </div>
         

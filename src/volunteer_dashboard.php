@@ -46,7 +46,7 @@ $unread_count = $unread_count_result->fetch_assoc()['unread_count'];
             <div class="sidebar-content">
                 <ul class="sidebar-list">
                     <li><a href="javascript:void(0)" onclick="return loadPage('dashboard.php')">Dashboard Summary</a></li>
-                    <li><a href="javascript:void(0)" onclick="return loadPage('assignment.php')">Assignment</a></li>
+                    <li><a href="javascript:void(0)" onclick="return loadPage('assignments.php')">Assignment</a></li>
                     <li><a href="javascript:void(0)" onclick="return loadPage('report.php')">Reports</a></li>
                     <li><a href="javascript:void(0)" onclick="return loadPage('campaign.php')">Campaign</a></li>
                     <li><a href="javascript:void(0)" onclick="return loadPage('chat.php')">Chat</a></li>

@@ -20,11 +20,6 @@ CREATE TABLE users (
 );
 
 
-CREATE TABLE notifications (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    message TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
 
 CREATE TABLE campaigns (
     id INT AUTO_INCREMENT PRIMARY KEY,   
@@ -42,4 +37,32 @@ CREATE TABLE campaigns (
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending'
     progress ENUM('ongoing', 'end') DEFAULT 'ongoing'
+);
+
+CREATE TABLE assignments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    campaign_id INT NOT NULL,           -- The campaign this task is part of
+    volunteer_id INT NOT NULL,          -- The volunteer assigned to this task
+    task_name VARCHAR(255) NOT NULL,    -- Task name
+    description TEXT NOT NULL,         -- Task description
+    priority ENUM('low', 'medium', 'high') NOT NULL,  -- Task priority
+    deadline DATETIME NOT NULL,        -- Task deadline
+    status ENUM('assigned', 'in-progress', 'completed', 'rejected', 'not-started') DEFAULT 'assigned',  -- Task status
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (campaign_id) REFERENCES campaigns(id),
+    FOREIGN KEY (volunteer_id) REFERENCES users(id)
+);
+
+
+
+CREATE TABLE tasks (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    assignment_id INT NOT NULL,        -- The assignment this task is part of
+    task_name VARCHAR(255) NOT NULL,    -- Subtask name
+    description TEXT NOT NULL,         -- Subtask description
+    priority ENUM('low', 'medium', 'high') NOT NULL,  -- Task priority
+    deadline DATETIME NOT NULL,        -- Task deadline
+    status ENUM('assigned', 'in-progress', 'completed', 'rejected', 'not-started') DEFAULT 'assigned',  -- Task status
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (assignment_id) REFERENCES assignments(id)
 );

@@ -1,16 +1,15 @@
 <?php
-// Include the database configuration file
 require_once 'config.php';
 
 // Check if the user is logged in and fetch user role
 session_start();
 if (!isset($_SESSION['user_id'])) {
-    header('Location: auth.php'); // Redirect to login page if the user is not logged in
+    header('Location: auth.php');
     exit;
 }
 
-$user_id = $_SESSION['user_id']; // Assuming the user ID is stored in session
-$user_role = $_SESSION['user_type']; // Assuming the user role (admin/user) is stored in session
+$user_id = $_SESSION['user_id'];
+$user_role = $_SESSION['user_type'];
 
 // Check if the form is submitted
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -27,41 +26,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $image_size = $_FILES['image_url']['size'];
         $image_ext = pathinfo($image_name, PATHINFO_EXTENSION);
 
-        // Check the file type (for example, allow only jpg, png, jpeg)
         $allowed_ext = ['jpg', 'jpeg', 'png'];
         if (!in_array(strtolower($image_ext), $allowed_ext)) {
             echo "Invalid image format. Please upload JPG, JPEG, or PNG files.";
             exit;
         }
 
-        // Sanitize the campaign name to use it as the filename
-        $sanitized_name = preg_replace('/[^a-zA-Z0-9_-]/', '_', strtolower($name)); // Sanitize campaign name
-
-        // Generate a unique filename based on the campaign name
+        $sanitized_name = preg_replace('/[^a-zA-Z0-9_-]/', '_', strtolower($name));
         $image_new_name = $sanitized_name . '.' . $image_ext;
-
-        // Define the directory to store images
         $upload_dir = 'uploads/';
 
-        // Ensure the uploads directory exists
         if (!is_dir($upload_dir)) {
-            mkdir($upload_dir, 0777, true);  // Create the uploads directory if it doesn't exist
+            mkdir($upload_dir, 0777, true);
         }
 
-        // Move the uploaded image to the upload directory
         $image_path = $upload_dir . $image_new_name;
         move_uploaded_file($image_tmp_name, $image_path);
     }
 
-    // Set the campaign approval status based on user role
-    $status = ($user_role == 'admin') ? 'approved' : 'pending'; // If admin, auto-approve, else pending approval
+    $status = ($user_role == 'admin') ? 'approved' : 'pending';
     
-    // Insert campaign data into the database (include image URL)
     $stmt = $conn->prepare("INSERT INTO campaigns (name, description, goal, category, image_url, status) VALUES (?, ?, ?, ?, ?, ?)");
     $stmt->bind_param("ssisss", $name, $description, $goal, $category, $image_path, $status);
     
     if ($stmt->execute()) {
-        // Redirect to the campaigns page after successful creation
         header("Location: campaign.php");
         exit();
     } else {
@@ -76,8 +64,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Campaign</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* General styles and resets */
+        :root {
+            --primary-color: #000000;
+            --secondary-color: #333333;
+            --accent-color: #ff0000;
+            --light-color: #ffffff;
+            --gray-color: #cccccc;
+            --border-radius: 4px;
+            --box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            --transition: all 0.2s ease;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -85,20 +84,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         body {
-            font-family: Arial, Helvetica, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            color: var(--primary-color);
             line-height: 1.6;
-            color: #333;
-            background-color: #f8f9fa;
         }
 
         .container {
-            width: 100%;
-            max-width: 1200px;
+            max-width: 1000px;
             margin: 0 auto;
             padding: 20px;
         }
 
-        /* Header styles */
         .header {
             display: flex;
             justify-content: space-between;
@@ -106,39 +103,41 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             margin-bottom: 30px;
             flex-wrap: wrap;
             gap: 15px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--accent-color);
         }
 
         .header h1 {
-            font-size: 1.8rem;
-            color: #2c3e50;
+            font-size: 24px;
+            color: var(--primary-color);
         }
 
         .back-btn {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
             padding: 8px 16px;
-            background-color: #3498db;
-            color: white;
+            background-color: var(--primary-color);
+            color: var(--light-color);
             text-decoration: none;
-            border-radius: 4px;
-            font-size: 0.9rem;
-            transition: background-color 0.3s;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
         }
 
         .back-btn:hover {
-            background-color: #2980b9;
+            background-color: var(--secondary-color);
         }
 
-        /* Form styles */
         .create-campaign-form {
-            background-color: white;
-            border-radius: 8px;
+            background-color: var(--light-color);
+            border-radius: var(--border-radius);
             padding: 25px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--box-shadow);
         }
 
         form {
             display: grid;
-            grid-gap: 20px;
+            gap: 20px;
         }
 
         .form-group {
@@ -147,19 +146,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         label {
             display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #2c3e50;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--primary-color);
         }
 
         input[type="text"],
         input[type="number"],
-        textarea {
+        textarea,
+        select {
             width: 100%;
             padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 1rem;
+            border: 1px solid var(--gray-color);
+            border-radius: var(--border-radius);
+            font-family: inherit;
+            transition: var(--transition);
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.1);
         }
 
         textarea {
@@ -169,74 +178,81 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         input[type="file"] {
             padding: 10px 0;
+            width: 100%;
         }
 
         .file-help {
             display: block;
             margin-top: 5px;
-            font-size: 0.8rem;
-            color: #666;
+            font-size: 13px;
+            color: var(--secondary-color);
         }
 
         button[type="submit"] {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
             padding: 12px 24px;
-            background-color: #27ae60;
-            color: white;
+            background-color: var(--accent-color);
+            color: var(--light-color);
             border: none;
-            border-radius: 4px;
-            font-size: 1rem;
+            border-radius: var(--border-radius);
+            font-weight: 600;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: var(--transition);
             justify-self: start;
         }
 
         button[type="submit"]:hover {
-            background-color: #219653;
+            background-color: #cc0000;
         }
 
-        /* Responsive adjustments */
+        .status-notice {
+            padding: 12px;
+            background-color: #ffeeee;
+            border-left: 3px solid var(--accent-color);
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
         @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
             .header {
                 flex-direction: column;
                 align-items: flex-start;
             }
 
-            .header h1 {
-                font-size: 1.5rem;
-            }
-
             .create-campaign-form {
-                padding: 20px 15px;
-            }
-
-            input[type="text"],
-            input[type="number"],
-            textarea {
-                padding: 10px;
+                padding: 20px;
             }
 
             button[type="submit"] {
                 width: 100%;
-                padding: 12px;
+                justify-content: center;
             }
         }
 
         @media (max-width: 480px) {
             .container {
-                padding: 15px 10px;
+                padding: 10px;
             }
 
             .header h1 {
-                font-size: 1.3rem;
-            }
-
-            .back-btn {
-                width: 100%;
-                text-align: center;
+                font-size: 20px;
             }
 
             form {
-                grid-gap: 15px;
+                gap: 15px;
+            }
+
+            input[type="text"],
+            input[type="number"],
+            textarea,
+            select {
+                padding: 10px;
             }
         }
     </style>
@@ -244,9 +260,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <body>
     <div class="container">
         <div class="header">
-            <h1>Create New Campaign</h1>
-            <a href="campaign.php" class="back-btn">Back to Campaigns</a>
+            <h1><i class="fas fa-plus-circle"></i> Create New Campaign</h1>
+            <a href="campaign.php" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Back to Campaigns
+            </a>
         </div>
+
+        <?php if($user_role != 'admin'): ?>
+            <div class="status-notice">
+                <i class="fas fa-info-circle"></i> Your campaign will be reviewed by an admin before approval.
+            </div>
+        <?php endif; ?>
 
         <div class="create-campaign-form">
             <form method="POST" action="createCampaign.php" enctype="multipart/form-data">
@@ -271,12 +295,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </div>
 
                 <div class="form-group">
-                    <label for="image_url">Image Upload</label>
+                    <label for="image_url">Campaign Image</label>
                     <input type="file" id="image_url" name="image_url" accept="image/jpeg,image/png,image/jpg" required>
-                    <small class="file-help">Please upload JPG, JPEG, or PNG files only</small>
+                    <small class="file-help">Upload JPG, JPEG, or PNG files (Max 5MB)</small>
                 </div>
 
-                <button type="submit">Create Campaign</button>
+                <button type="submit">
+                    <i class="fas fa-rocket"></i> Create Campaign
+                </button>
             </form>
         </div>
     </div>

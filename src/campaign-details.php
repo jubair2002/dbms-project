@@ -1,40 +1,29 @@
 <?php
-// Include the database configuration file
 require_once 'config.php';
 
-// Check if campaign ID is provided
 if (!isset($_GET['id']) || empty($_GET['id'])) {
-    // Redirect to campaigns page if no ID is provided
     header('Location: campaign.php');
     exit;
 }
 
-// Get the campaign ID and sanitize it
 $campaign_id = intval($_GET['id']);
-
-// Prepare and execute the query to fetch campaign details
 $stmt = $conn->prepare("SELECT * FROM campaigns WHERE id = ?");
 $stmt->bind_param("i", $campaign_id);
 $stmt->execute();
 $result = $stmt->get_result();
 
-// Check if campaign exists
 if ($result->num_rows === 0) {
-    // Redirect to campaigns page if campaign doesn't exist
     header('Location: campaign.php');
     exit;
 }
 
-// Fetch the campaign data
 $campaign = $result->fetch_assoc();
 
-// Calculate progress percentage
 function calculatePercentage($raised, $goal) {
     return min(100, round(($raised / $goal) * 100));
 }
 $percentage = calculatePercentage($campaign['raised'], $campaign['goal']);
 
-// Calculate days remaining
 $end_date = new DateTime($campaign['end_date']);
 $today = new DateTime();
 $days_remaining = $today <= $end_date ? $today->diff($end_date)->days : 0;
@@ -46,12 +35,16 @@ $days_remaining = $today <= $end_date ? $today->diff($end_date)->days : 0;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($campaign['name']); ?> - Campaign Details</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="assets/css/campaign-details.css">
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>Campaign Details</h1>
+            <h1><i class="fas fa-hands-helping"></i> Campaign Details</h1>
+            <a href="campaign.php" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Back to Campaigns
+            </a>
         </div>
         
         <div class="campaign-details">
@@ -83,12 +76,11 @@ $days_remaining = $today <= $end_date ? $today->diff($end_date)->days : 0;
                             <div class="stat-value"><?php echo $campaign['donation_count']; ?></div>
                             <div class="stat-label">Donors</div>
                         </div>
-                        
                     </div>
                     
                     <div class="campaign-progress">
                         <div class="progress-bar-large">
-                            <div class="progress-large" style="width: <?php echo $percentage; ?>%; background-color: <?php echo $campaign['progress_color']; ?>"></div>
+                            <div class="progress-large" style="width: <?php echo $percentage; ?>%"></div>
                         </div>
                     </div>
                     
@@ -101,7 +93,9 @@ $days_remaining = $today <= $end_date ? $today->diff($end_date)->days : 0;
                             <button class="amount-btn">$250</button>
                             <button class="amount-btn">Custom</button>
                         </div>
-                        <button class="donate-btn">DONATE NOW</button>
+                        <button class="donate-btn">
+                            <i class="fas fa-heart"></i> DONATE NOW
+                        </button>
                     </div>
                 </div>
             </div>
@@ -111,8 +105,7 @@ $days_remaining = $today <= $end_date ? $today->diff($end_date)->days : 0;
                     <button class="tab-btn active" data-tab="story">Campaign Story</button>
                     <button class="tab-btn" data-tab="updates">Updates</button>
                     <button class="tab-btn" data-tab="donors">Donors</button>
-                    <button class="tab-btn" data-tab="Volunteer">Volunteers</button>
-
+                    <button class="tab-btn" data-tab="volunteer">Volunteers</button>
                 </div>
                 
                 <div class="tab-content">
@@ -121,11 +114,6 @@ $days_remaining = $today <= $end_date ? $today->diff($end_date)->days : 0;
                             <h3>About This Campaign</h3>
                             <p><?php echo htmlspecialchars($campaign['description']); ?></p>
                             
-                            <!-- Extended description - in a real app, this would come from the database -->
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum vestibulum. Cras porttitor metus non dolor vehicula, id dapibus ex facilisis. Proin scelerisque diam nec consequat tempor. Nullam eu nulla ut elit efficitur facilisis. Sed nec nibh vel orci rutrum interdum. Nam non felis sapien.</p>
-                            
-                            <p>Etiam eget hendrerit elit. Ut luctus, est vel tincidunt porttitor, mi tellus molestie arcu, et faucibus arcu elit id velit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Cras vel dictum elit. Etiam luctus nunc ut erat sagittis, vel molestie ante elementum.</p>
-                            
                             <h4>Our Goals</h4>
                             <ul>
                                 <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
@@ -133,9 +121,6 @@ $days_remaining = $today <= $end_date ? $today->diff($end_date)->days : 0;
                                 <li>Cras porttitor metus non dolor vehicula, id dapibus ex facilisis.</li>
                                 <li>Proin scelerisque diam nec consequat tempor.</li>
                             </ul>
-                            
-                            <h4>How Your Donation Helps</h4>
-                            <p>Nullam eu nulla ut elit efficitur facilisis. Sed nec nibh vel orci rutrum interdum. Nam non felis sapien. Etiam eget hendrerit elit. Ut luctus, est vel tincidunt porttitor, mi tellus molestie arcu, et faucibus arcu elit id velit.</p>
                         </div>
                     </div>
                     
@@ -144,13 +129,7 @@ $days_remaining = $today <= $end_date ? $today->diff($end_date)->days : 0;
                             <div class="update">
                                 <div class="update-date">March 15, 2025</div>
                                 <h4>Major Milestone Reached</h4>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum vestibulum. Cras porttitor metus non dolor vehicula, id dapibus ex facilisis.</p>
-                            </div>
-                            
-                            <div class="update">
-                                <div class="update-date">February 28, 2025</div>
-                                <h4>Campaign Launched</h4>
-                                <p>Etiam eget hendrerit elit. Ut luctus, est vel tincidunt porttitor, mi tellus molestie arcu, et faucibus arcu elit id velit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae.</p>
+                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
                             </div>
                         </div>
                     </div>
@@ -162,29 +141,14 @@ $days_remaining = $today <= $end_date ? $today->diff($end_date)->days : 0;
                                 <div class="donor-amount">$500</div>
                                 <div class="donor-date">March 20, 2025</div>
                             </div>
-                            
-                            <div class="donor">
-                                <div class="donor-name">John Doe</div>
-                                <div class="donor-amount">$250</div>
-                                <div class="donor-date">March 18, 2025</div>
-                            </div>
-                            
-                            <div class="donor">
-                                <div class="donor-name">Jane Smith</div>
-                                <div class="donor-amount">$100</div>
-                                <div class="donor-date">March 15, 2025</div>
-                            </div>
-                            
-                            <div class="donor">
-                                <div class="donor-name">Robert Johnson</div>
-                                <div class="donor-amount">$75</div>
-                                <div class="donor-date">March 10, 2025</div>
-                            </div>
-                            
-                            <div class="donor">
-                                <div class="donor-name">Lisa Williams</div>
-                                <div class="donor-amount">$50</div>
-                                <div class="donor-date">March 5, 2025</div>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-pane" id="volunteer">
+                        <div class="volunteer-list">
+                            <div class="volunteer">
+                                <div class="volunteer-name">John Doe</div>
+                                <div class="volunteer-role">Coordinator</div>
                             </div>
                         </div>
                     </div>
@@ -193,43 +157,11 @@ $days_remaining = $today <= $end_date ? $today->diff($end_date)->days : 0;
         </div>
     </div>
 
-    <script>
-        // Simple tab functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const tabButtons = document.querySelectorAll('.tab-btn');
-            const tabPanes = document.querySelectorAll('.tab-pane');
-            
-            tabButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    // Remove active class from all buttons and panes
-                    tabButtons.forEach(btn => btn.classList.remove('active'));
-                    tabPanes.forEach(pane => pane.classList.remove('active'));
-                    
-                    // Add active class to clicked button
-                    this.classList.add('active');
-                    
-                    // Show corresponding tab content
-                    const tabId = this.getAttribute('data-tab');
-                    document.getElementById(tabId).classList.add('active');
-                });
-            });
-            
-            // Donation amount buttons
-            const amountButtons = document.querySelectorAll('.amount-btn');
-            amountButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    amountButtons.forEach(btn => btn.classList.remove('selected'));
-                    this.classList.add('selected');
-                });
-            });
-        });
-    </script>
-    
+    <script src="assets/js/campaign-details.js"></script>
 </body>
 </html>
 
 <?php
-// Close the database connection
 $stmt->close();
 $conn->close();
 ?>
