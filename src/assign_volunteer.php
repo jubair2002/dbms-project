@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['assign_tasks'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Campaign Volunteer Assignment</title>
-    <link rel="stylesheet" href="assets/css/additional.css">
+    <link rel="stylesheet" href="assets/css/assign_volunteer.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -145,7 +145,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['assign_tasks'])) {
         </div>
     </div>
     
-    <script src="assets/js/additional.js"></script>
+    <script src="assets/js/assign_volunteer.js"></script>
 </body>
 </html>
 

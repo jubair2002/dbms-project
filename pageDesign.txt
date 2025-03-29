@@ -5,8 +5,15 @@ admin dashboard ---> campaign.php ---> all campaign list  ----> campaign-details
 		     	----> donation.php (handle money transection and store in database) 
 
 		        campaignRequest.php --->assign-volunteer.php (admin assign task and set priority to volunteer) 
+				track_task_progress.php(admin can track given task progress)
+				
 
 
  admin messaging -----> chat with volunteer ,(php page)  -----> global chats
  volunteer messaging -----> chat with admin () , group chats (campaign wise) autometic 
+
+Emergency help -----> this page contain nearby hospital filtering by user location 
+                      also contain blood donor list by filtering location users
+					  contain what to do and not to do in disaster time 
+
 

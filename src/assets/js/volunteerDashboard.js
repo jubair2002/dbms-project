@@ -1,102 +1,76 @@
-// adminDashboard.js
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize the dashboard by loading the dashboard content
-    loadPage('dashboard.php');
-    
-    // Set up event listeners for window resize
-    window.addEventListener('resize', function() {
-        adjustContentHeight();
-    });
-    
-    // Initial height adjustment
-    adjustContentHeight();
+const allSideMenu = document.querySelectorAll('#sidebar .side-menu.top li a');
+
+allSideMenu.forEach(item=> {
+	const li = item.parentElement;
+
+	item.addEventListener('click', function () {
+		allSideMenu.forEach(i=> {
+			i.parentElement.classList.remove('active');
+		})
+		li.classList.add('active');
+	})
 });
 
-// Function to load content via AJAX
-function loadContent(url) {
-    const contentArea = document.getElementById('contentArea');
-    
-    // Show loading spinner
-    contentArea.innerHTML = '<div class="text-center p-5"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div></div>';
-    
-    // Make AJAX request
-    fetch(url)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.text();
-        })
-        .then(html => {
-            // Insert the HTML into the content area
-            contentArea.innerHTML = html;
-        })
-        .catch(error => {
-            contentArea.innerHTML = `<div class="alert alert-danger">Error loading content: ${error.message}</div>`;
-            console.error('Error loading content:', error);
-        });
+
+
+
+// TOGGLE SIDEBAR
+const menuBar = document.querySelector('#content nav .bx.bx-menu');
+const sidebar = document.getElementById('sidebar');
+
+menuBar.addEventListener('click', function () {
+	sidebar.classList.toggle('hide');
+})
+
+
+
+
+
+
+
+const searchButton = document.querySelector('#content nav form .form-input button');
+const searchButtonIcon = document.querySelector('#content nav form .form-input button .bx');
+const searchForm = document.querySelector('#content nav form');
+
+searchButton.addEventListener('click', function (e) {
+	if(window.innerWidth < 576) {
+		e.preventDefault();
+		searchForm.classList.toggle('show');
+		if(searchForm.classList.contains('show')) {
+			searchButtonIcon.classList.replace('bx-search', 'bx-x');
+		} else {
+			searchButtonIcon.classList.replace('bx-x', 'bx-search');
+		}
+	}
+})
+
+
+
+
+
+if(window.innerWidth < 768) {
+	sidebar.classList.add('hide');
+} else if(window.innerWidth > 576) {
+	searchButtonIcon.classList.replace('bx-x', 'bx-search');
+	searchForm.classList.remove('show');
 }
 
-// Function to load pages and update sidebar active state
-function loadPage(page) {
-    // Load the content
-    loadContent(page);
-    
-    // Update active state in sidebar
-    updateActiveSidebarItem(page);
-    
-    return false; // Prevent default link behavior
-}
 
-// Update active state in sidebar
-function updateActiveSidebarItem(page) {
-    // Remove active class from all sidebar links
-    const sidebarLinks = document.querySelectorAll('.sidebar-list li a');
-    sidebarLinks.forEach(link => {
-        link.classList.remove('active');
-    });
-    
-    // Add active class to the clicked link
-    const activeLink = document.querySelector(`.sidebar-list li a[onclick*="${page}"]`);
-    if (activeLink) {
-        activeLink.classList.add('active');
-    }
-}
+window.addEventListener('resize', function () {
+	if(this.innerWidth > 576) {
+		searchButtonIcon.classList.replace('bx-x', 'bx-search');
+		searchForm.classList.remove('show');
+	}
+})
 
-// Function to adjust content area height based on viewport size
-function adjustContentHeight() {
-    const contentArea = document.getElementById('contentArea');
-    
-    if (window.innerWidth > 991) {
-        // Desktop view
-        contentArea.style.height = 'calc(100vh - 140px)';
-    } else if (window.innerWidth > 767) {
-        // Tablet view
-        contentArea.style.height = 'calc(100vh - 300px)';
-        contentArea.style.minHeight = '500px';
-    } else {
-        // Mobile view
-        contentArea.style.height = 'calc(100vh - 270px)';
-        contentArea.style.minHeight = '400px';
-    }
-}
 
-// Function to mark notifications as read (if you need this functionality)
-function markNotificationsAsRead() {
-    fetch('mark_notifications_read.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Update notification count badge
-            document.getElementById('notification-count').textContent = '0';
-        }
-    })
-    .catch(error => {
-        console.error('Error marking notifications as read:', error);
-    });
-}
+
+const switchMode = document.getElementById('switch-mode');
+
+switchMode.addEventListener('change', function () {
+	if(this.checked) {
+		document.body.classList.add('dark');
+	} else {
+		document.body.classList.remove('dark');
+	}
+})
