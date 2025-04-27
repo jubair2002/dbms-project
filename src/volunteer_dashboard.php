@@ -76,7 +76,7 @@ $user = getUserDetails($conn, $_SESSION['user_id']);
             </li>
             <li>
                 <a onclick="loadContent('emergency.php')">
-                    <i class='bx bxs-file'></i>
+                    <i class='bx bxs-first-aid'></i>
                     <span class="text">Emergency Help</span>
                 </a>
             </li>

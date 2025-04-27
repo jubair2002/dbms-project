@@ -59,7 +59,6 @@
         <div class="hero-content">
             <div class="container">
                 <h1 class="display-3 mb-4" data-aos="fade-up">Bridge the Gap, Build a Future with CrisisLink</h1>
-                <!--                <a href="#volunteer" class="btn btn-primary btn-lg" data-aos="fade-up" data-aos-delay="200">Join Us Today</a>-->
             </div>
         </div>
     </section>
