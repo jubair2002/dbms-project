@@ -66,3 +66,14 @@ CREATE TABLE tasks (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (assignment_id) REFERENCES assignments(id)
 );
+
+CREATE TABLE donations (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,  -- FK to users table
+    campaign_id INT NOT NULL,  -- FK to campaigns table
+    amount DECIMAL(10, 2) NOT NULL,
+    donation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    donation_type ENUM('mobile_banking', 'credit_card', 'debit_card', 'bank_transfer') NOT NULL,  -- New column to store donation type
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (campaign_id) REFERENCES campaigns(id)
+);

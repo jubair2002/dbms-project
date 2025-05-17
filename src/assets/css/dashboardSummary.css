@@ -1,109 +1,369 @@
-/* Reset and box-sizing for consistency */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+/* Enhanced Campaign Card Styling - Updated color scheme */
+
+/* Dashboard container - ensure it's set correctly */
+.dashboard-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
-body, html {
-    height: 100%;
-    width: 100%;
-    background-color: #f4f7fc;
-    font-family: 'Arial', sans-serif;
+/* Base card styling */
+.card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  padding: 20px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Center the content on the page */
-main {
-    height: 100vh;
-    width: 100vw;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0,0,0,0.15);
 }
 
-/* Box Container */
-.box-container {
-    width: 100%;
-    max-width: 1200px;
-    padding: 20px;
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 20px;
+/* Card header styling */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 12px;
 }
 
-/* Box Info: Flex for responsive layout */
-.box-info {
-    display: flex;
-    justify-content: space-between;
-    gap: 20px;
-    flex-wrap: wrap;
-    width: 100%;
+.card-header h3 {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #000;
+  display: flex;
+  align-items: center;
 }
 
-/* Individual Box Styles */
-.box {
-    flex: 1;
-    min-width: 250px; /* To ensure responsiveness */
-    background-color: #ffffff;
-    border: 1px solid #e0e0e0;
-    border-radius: 12px;
-    padding: 25px;
-    display: flex;
-    align-items: center;
-    text-align: center;
+.card-header h3 i {
+  margin-right: 10px;
+  color: #d50000; /* Red color for icons */
+  font-size: 1.2rem;
+}
+
+/* Ongoing campaigns styling */
+.ongoing-campaigns {
+  border-left: 5px solid #d50000; /* Red accent border */
+}
+
+.campaign-container {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow-y: visible; /* Changed from auto to remove scroll */
+  max-height: none; /* Removed max-height to prevent scrolling */
+}
+
+.ongoing-campaigns .campaign-item {
+  background-color: white;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  transition: all 0.2s ease;
+}
+
+.ongoing-campaigns .campaign-item:last-child {
+  margin-bottom: 0;
+}
+
+.ongoing-campaigns .campaign-item:hover {
+  background-color: #fff5f5; /* Light red hover */
+  transform: translateX(5px);
+  border-color: #d50000;
+}
+
+/* Campaign title and description */
+.ongoing-campaigns .campaign-item h4 {
+  margin: 0 0 8px 0;
+  color: #000;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.ongoing-campaigns .campaign-item p {
+  color: #333;
+  margin-bottom: 12px;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+/* Campaign stats styling */
+.campaign-stats {
+  display: flex;
+  justify-content: space-between;
+  margin: 12px 0;
+  font-size: 0.9rem;
+}
+
+.campaign-stats span {
+  display: flex;
+  align-items: center;
+  color: #333;
+  font-weight: 500;
+}
+
+.campaign-stats i {
+  margin-right: 6px;
+  color: #d50000; /* Red color for stats icons */
+}
+
+/* Progress bar styling */
+.campaign-progress {
+  margin-top: 12px;
+}
+
+.campaign-progress .progress-container {
+  height: 8px;
+  background-color: #e0e0e0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.campaign-progress .progress-bar {
+  height: 100%;
+  border-radius: 10px;
+  transition: width 0.8s ease-in-out;
+  background-color: #d50000 !important; /* Force red progress bar */
+}
+
+.campaign-progress .sub-text {
+  font-size: 0.8rem;
+  color: #333;
+  margin-top: 5px;
+  text-align: right;
+  font-weight: 500;
+}
+
+/* General card list styling */
+.card-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.card-list li {
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+  font-size: 0.95rem;
+  color: #000;
+}
+
+/* Status indicators */
+.status-indicator {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.status-active {
+  background-color: #d50000; /* Red for active */
+}
+
+.status-warning {
+  background-color: #000; /* Black for warning */
+}
+
+.status-critical {
+  background-color: #d50000; /* Red for critical */
+}
+
+/* Card styles for the stats card */
+.card-stats {
+  border-left: 5px solid #000; /* Black accent border */
+}
+
+.stats-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.stat-item {
+  background-color: white;
+  border-radius: 8px;
+  padding: 15px;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  transition: all 0.2s ease;
+  border: 1px solid #e0e0e0;
+}
+
+.stat-item:hover {
+  background-color: #f5f5f5;
+  transform: translateY(-3px);
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #000;
+  margin-bottom: 5px;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: #333;
+}
+
+/* Empty campaigns state */
+.empty-campaigns {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 30px 15px;
+}
+
+.empty-campaigns i {
+  font-size: 2rem;
+  color: #d50000;
+  margin-bottom: 15px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .dashboard-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .card-stats {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .card-stats {
+    grid-column: span 1;
+  }
+  
+  .campaign-stats {
     flex-direction: column;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    gap: 8px;
+  }
+}
+/* Compact card styling */
+.card {
+  background: white;
+  border-radius: 10px; /* Reduced from 12px */
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1); /* Lighter shadow */
+  padding: 15px; /* Reduced from 20px */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: auto; /* Changed from 100% to auto */
+  min-height: 200px; /* Minimum height to ensure consistency */
+  display: flex;
+  flex-direction: column;
 }
 
-/* Add a shadow effect and scale on hover */
-.box:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+/* Compact card header */
+.card-header {
+  margin-bottom: 12px; /* Reduced from 20px */
+  padding-bottom: 8px; /* Reduced from 12px */
 }
 
-/* Icon Styles inside the Box */
-.box i {
-    font-size: 4rem;
-    margin-bottom: 15px;
-    color: #f7000c;
-    transition: color 0.3s ease;
+.card-header h3 {
+  font-size: 1.1rem; /* Reduced from 1.3rem */
 }
 
-/* Header Styling in Boxes */
-.box h3 {
-    font-size: 1.5rem;
-    color: #333;
-    margin-bottom: 10px;
-    font-weight: 600;
+/* More compact campaign items */
+.ongoing-campaigns .campaign-item {
+  padding: 10px; /* Reduced from 15px */
+  margin-bottom: 10px; /* Reduced from 15px */
 }
 
-/* Paragraph Text inside the Box */
-.box p {
-    font-size: 1rem;
-    color: #666;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+.ongoing-campaigns .campaign-item h4 {
+  font-size: 1rem; /* Reduced from 1.1rem */
+  margin-bottom: 6px; /* Reduced from 8px */
 }
 
-/* Box hover icon color change */
-.box:hover i {
-    color: #0056b3;
+.campaign-stats {
+  margin: 8px 0; /* Reduced from 12px 0 */
+  font-size: 0.85rem; /* Reduced from 0.9rem */
 }
 
-/* Responsive Layout for Mobile Devices */
-@media screen and (max-width: 768px) {
-    .box-info {
-        flex-direction: column;
-        align-items: center;
-    }
+.campaign-progress {
+  margin-top: 8px; /* Reduced from 12px */
 }
 
-/* Responsive Design for Very Small Devices */
-@media screen and (max-width: 600px) {
-    .box-container {
-        flex-direction: column;
-        align-items: center;
-    }
+/* More compact stats items */
+.stat-item {
+  padding: 10px; /* Reduced from 15px */
+}
+
+.stat-value {
+  font-size: 1.2rem; /* Reduced from 1.5rem */
+}
+
+.stat-label {
+  font-size: 0.8rem; /* Reduced from 0.9rem */
+}
+
+/* Adjust dashboard container for more cards */
+.dashboard-container {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 15px; /* Reduced from 20px */
+  padding: 15px; /* Reduced from 20px */
+}
+
+/* Chart Card Styling */
+.card-chart {
+  grid-column: span 3; /* Make it span all 3 columns */
+  border-left: 5px solid #000; /* Black accent to match theme */
+}
+
+.chart-container {
+  position: relative;
+  height: 250px; /* Fixed height for consistency */
+  width: 100%;
+}
+
+/* Adjust dashboard container for the chart */
+.dashboard-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  padding: 15px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .dashboard-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .card-stats, .card-chart {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .card-stats, .card-chart {
+    grid-column: span 1;
+  }
 }
