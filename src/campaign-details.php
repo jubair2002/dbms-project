@@ -110,7 +110,7 @@ $days_remaining = $today <= $end_date ? $today->diff($end_date)->days : 0;
                 <div class="tabs-header">
                     <button class="tab-btn active" data-tab="story">Campaign Story</button>
                     <button class="tab-btn" data-tab="updates">Updates</button>
-                    <button class="tab-btn" data-tab="donors">Donors</button>
+                    
                     <button class="tab-btn" data-tab="volunteer">Volunteers</button>
                 </div>
 
@@ -140,15 +140,7 @@ $days_remaining = $today <= $end_date ? $today->diff($end_date)->days : 0;
                         </div>
                     </div>
 
-                    <div class="tab-pane" id="donors">
-                        <div class="donor-list">
-                            <div class="donor">
-                                <div class="donor-name">Anonymous</div>
-                                <div class="donor-amount">$500</div>
-                                <div class="donor-date">March 20, 2025</div>
-                            </div>
-                        </div>
-                    </div>
+                   
 
                     <div class="tab-pane" id="volunteer">
                         <div class="volunteer-list">

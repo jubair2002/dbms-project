@@ -279,15 +279,47 @@ $campaign = $result->fetch_assoc();
                 <p>Date: <?php echo date('F j, Y'); ?></p>
             </div>
 
-            <div class="share-section">
-                <h3 class="share-title">Spread the Word</h3>
-                <div class="social-buttons">
-                    <a href="#" class="social-btn facebook"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="social-btn twitter"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="social-btn whatsapp"><i class="fab fa-whatsapp"></i></a>
-                    <a href="#" class="social-btn email"><i class="fas fa-envelope"></i></a>
-                </div>
-            </div>
+           <div id="donation-card" class="donation-card">
+    <div class="card-header">
+        <div class="logo-area">
+            <i class="fas fa-heart"></i> Donation Certificate
+        </div>
+    </div>
+    <div class="card-content">
+        <div class="donation-icon">
+            <i class="fas fa-hand-holding-heart"></i>
+        </div>
+        <h2 class="card-title">Thank You for Your Donation!</h2>
+        <div class="card-amount">$<?php echo number_format($amount, 2); ?></div>
+        <p class="card-campaign">to <?php echo htmlspecialchars($campaign['name']); ?></p>
+        <p class="card-date">Date: <?php echo date('F j, Y'); ?></p>
+        <div class="card-message">Your generosity makes a difference!</div>
+    </div>
+    <div class="card-footer">
+        <p class="website">crisislink.org</p>
+    </div>
+</div>
+
+<!-- Updated share-section with buttons to share the visual card -->
+<div class="share-section">
+    <h3 class="share-title">Spread the Word</h3>
+    <div class="social-buttons">
+        <!-- Facebook Share -->
+        <a href="javascript:void(0);" onclick="shareOnFacebook()" class="social-btn facebook"><i class="fab fa-facebook-f"></i></a>
+        
+        <!-- Twitter Share -->
+        <a href="javascript:void(0);" onclick="shareOnTwitter()" class="social-btn twitter"><i class="fab fa-twitter"></i></a>
+        
+        <!-- WhatsApp Share -->
+        <a href="javascript:void(0);" onclick="shareOnWhatsApp()" class="social-btn whatsapp"><i class="fab fa-whatsapp"></i></a>
+        
+        <!-- Email Share -->
+        <a href="javascript:void(0);" onclick="shareViaEmail()" class="social-btn email"><i class="fas fa-envelope"></i></a>
+        
+        <!-- Download PDF -->
+        <a href="javascript:void(0);" onclick="downloadPDF()" class="social-btn pdf-download"><i class="fas fa-file-pdf"></i></a>
+    </div>
+</div>
 
             <div class="action-buttons">
                 <a href="campaign-details.php?id=<?php echo $campaign_id; ?>" class="btn primary-btn">Return to Campaign</a>
@@ -295,6 +327,225 @@ $campaign = $result->fetch_assoc();
             </div>
         </div>
     </div>
+
+    <style>
+    .donation-card {
+        width: 500px;
+        max-width: 100%;
+        margin: 40px auto;
+        background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%);
+        border-radius: 15px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        border: 1px solid #e0e0e0;
+        display: none; /* Initially hidden, will be shown for sharing */
+    }
+    
+    .card-header {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        color: white;
+        padding: 20px;
+        text-align: center;
+    }
+    
+    .logo-area {
+        font-size: 24px;
+        font-weight: bold;
+    }
+    
+    .card-content {
+        padding: 30px;
+        text-align: center;
+    }
+    
+    .donation-icon {
+        font-size: 50px;
+        color: var(--primary-color);
+        margin-bottom: 20px;
+    }
+    
+    .card-title {
+        font-size: 24px;
+        margin-bottom: 20px;
+        color: #333;
+    }
+    
+    .card-amount {
+        font-size: 42px;
+        font-weight: bold;
+        color: var(--primary-color);
+        margin-bottom: 5px;
+    }
+    
+    .card-campaign {
+        font-size: 18px;
+        margin-top: 0;
+        margin-bottom: 15px;
+    }
+    
+    .card-date {
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 20px;
+    }
+    
+    .card-message {
+        font-size: 16px;
+        font-style: italic;
+        color: #444;
+        padding: 10px 0;
+    }
+    
+    .card-footer {
+        background-color: #f5f5f5;
+        padding: 15px;
+        text-align: center;
+        border-top: 1px solid #e0e0e0;
+    }
+    
+    .website {
+        font-size: 14px;
+        color: #666;
+        margin: 0;
+    }
+    
+    .pdf-download {
+        background-color: #ff5722;
+    }
+    
+    #share-canvas {
+        display: none;
+    }
+    
+    /* Make room for the new PDF button */
+    .social-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+    }
+</style>
+
+<!-- Add HTML2Canvas and jsPDF libraries -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<!-- Add this script at the bottom of your body tag -->
+<script>
+    // Get campaign and donation information
+    const campaignName = "<?php echo htmlspecialchars($campaign['name']); ?>";
+    const donationAmount = "<?php echo number_format($amount, 2); ?>";
+    const currentUrl = window.location.href;
+    
+    // Create share message
+    const shareTitle = "I just donated to " + campaignName + "!";
+    const shareMessage = "I just donated $" + donationAmount + " to " + campaignName + ". Join me in making a difference!";
+    
+    // Function to create image from donation card
+    async function createCardImage() {
+        // Make the donation card visible
+        const donationCard = document.getElementById('donation-card');
+        donationCard.style.display = 'block';
+        
+        // Create the image
+        const canvas = await html2canvas(donationCard, {
+            scale: 2, // Higher quality
+            backgroundColor: null,
+            logging: false
+        });
+        
+        // Hide the donation card again
+        donationCard.style.display = 'none';
+        
+        return canvas.toDataURL('image/png');
+    }
+    
+    // Facebook share function with image
+    async function shareOnFacebook() {
+        try {
+            const imageUrl = await createCardImage();
+            // Facebook doesn't allow direct image sharing via their API, we need to upload to a server first
+            // For now, we'll share with the available methods
+            const url = "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(currentUrl) + 
+                        "&quote=" + encodeURIComponent(shareMessage);
+            window.open(url, "_blank", "width=600,height=400");
+        } catch (err) {
+            console.error("Error sharing to Facebook:", err);
+            alert("There was an error preparing your share. Please try again.");
+        }
+    }
+    
+    // Twitter share function
+    async function shareOnTwitter() {
+        try {
+            // Twitter doesn't support direct image uploads via url params either
+            const url = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(shareMessage) + 
+                        "&url=" + encodeURIComponent(currentUrl);
+            window.open(url, "_blank", "width=600,height=400");
+        } catch (err) {
+            console.error("Error sharing to Twitter:", err);
+            alert("There was an error preparing your share. Please try again.");
+        }
+    }
+    
+    // WhatsApp share function
+    async function shareOnWhatsApp() {
+        try {
+            // WhatsApp can only share text via web API
+            const url = "https://api.whatsapp.com/send?text=" + encodeURIComponent(shareMessage + " " + currentUrl);
+            window.open(url, "_blank");
+        } catch (err) {
+            console.error("Error sharing to WhatsApp:", err);
+            alert("There was an error preparing your share. Please try again.");
+        }
+    }
+    
+    // Email share function with image attachment
+    async function shareViaEmail() {
+        try {
+            const subject = encodeURIComponent(shareTitle);
+            const body = encodeURIComponent(shareMessage + "\n\nYou can donate here: " + currentUrl);
+            window.location.href = "mailto:?subject=" + subject + "&body=" + body;
+        } catch (err) {
+            console.error("Error sharing via email:", err);
+            alert("There was an error preparing your email. Please try again.");
+        }
+    }
+    
+    // Download PDF function
+    async function downloadPDF() {
+        try {
+            // Create image first
+            const imageUrl = await createCardImage();
+            
+            // Create PDF using jsPDF
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            
+            // Calculate aspect ratio to fit on PDF
+            const imgProps = pdf.getImageProperties(imageUrl);
+            const pageWidth = pdf.internal.pageSize.getWidth();
+            const pageHeight = pdf.internal.pageSize.getHeight();
+            
+            // Adjust image size for the PDF page
+            const imgWidth = pageWidth - 40; // margins
+            const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
+            
+            // Add the image
+            pdf.addImage(imageUrl, 'PNG', 20, 20, imgWidth, imgHeight);
+            
+            // Add some text
+            pdf.setFontSize(10);
+            pdf.text('Thank you for your donation! This certificate confirms your contribution.', 20, imgHeight + 30);
+            
+            // Download the PDF
+            pdf.save('Donation_Certificate_' + campaignName.replace(/\s+/g, '_') + '.pdf');
+            
+        } catch (err) {
+            console.error("Error generating PDF:", err);
+            alert("There was an error generating your PDF. Please try again.");
+        }
+    }
+</script>
 </body>
 
 </html>
