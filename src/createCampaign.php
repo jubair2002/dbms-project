@@ -55,6 +55,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } else {
         echo "Error: " . $stmt->error;
     }
+    // After successfully creating a campaign
+$chatSystem = new ChatSystem($conn);
+$chatId = $chatSystem->createCampaignChat($newCampaignId, $_SESSION['user_id']);
+
+// Add all assigned volunteers to the chat
+foreach ($assignedVolunteers as $volunteerId) {
+    $chatSystem->addParticipant($chatId, $volunteerId);
+}
 }
 ?>
 

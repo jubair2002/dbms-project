@@ -11,11 +11,12 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_type'] != 'admin') {
 
 // Fetch tasks with their associated assignments and volunteers
 $sql = "SELECT tasks.id AS task_id, tasks.task_name, tasks.status AS task_status, tasks.deadline, 
-               assignments.status AS assignment_status, users.fname, users.lname
+               assignments.status AS assignment_status, users.fname, users.lname, users.id AS volunteer_id
         FROM tasks
         INNER JOIN assignments ON tasks.assignment_id = assignments.id
         INNER JOIN users ON assignments.volunteer_id = users.id
-        WHERE assignments.status != 'completed'";  // Fetch tasks that are not completed
+        WHERE assignments.status != 'completed'
+        ORDER BY tasks.deadline ASC";  
 
 $result = $conn->query($sql);
 
@@ -42,6 +43,7 @@ if ($result === false) {
             --border-radius: 4px;
             --box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             --transition: all 0.2s ease;
+            --notify-color: #17a2b8;
         }
 
         * {
@@ -125,6 +127,13 @@ if ($result === false) {
             background-color: #d1ecf1;
             color: #0c5460;
             border: 1px solid #bee5eb;
+            animation: pulse-blue 2s infinite;
+        }
+
+        @keyframes pulse-blue {
+            0% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0.4); }
+            70% { box-shadow: 0 0 0 8px rgba(52, 152, 219, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0); }
         }
 
         .status-completed {
@@ -139,19 +148,32 @@ if ($result === false) {
             border: 1px solid #f5c6cb;
         }
 
-        .action-link {
-            color: var(--accent-color);
-            text-decoration: none;
-            font-weight: 500;
-            transition: var(--transition);
+        .btn-notify {
             display: inline-flex;
             align-items: center;
             gap: 5px;
+            padding: 6px 12px;
+            border-radius: var(--border-radius);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            background-color: var(--notify-color);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
         }
 
-        .action-link:hover {
-            text-decoration: underline;
-            color: #cc0000;
+        .btn-notify:hover {
+            background-color: #138496;
+            text-decoration: none;
+            color: white;
+        }
+
+        .btn-notify:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+            opacity: 0.65;
         }
 
         .no-tasks {
@@ -159,6 +181,16 @@ if ($result === false) {
             padding: 30px;
             color: var(--secondary-color);
             font-style: italic;
+        }
+
+        .overdue {
+            background-color: #fff5f5 !important;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .deadline-overdue {
+            color: var(--accent-color);
+            font-weight: bold;
         }
 
         @media (max-width: 768px) {
@@ -202,8 +234,9 @@ if ($result === false) {
                 font-size: 11px;
             }
 
-            .action-link {
-                font-size: 13px;
+            .btn-notify {
+                font-size: 12px;
+                padding: 5px 8px;
             }
         }
     </style>
@@ -211,7 +244,7 @@ if ($result === false) {
 <body>
     <div class="container">
         <div class="header">
-            <h1><i class="fas fa-tasks"></i> Track Task Progress</h1>
+            <h1><i class="fas fa-chart-line"></i> Track Task Progress</h1>
         </div>
         
         <table class="task-table">
@@ -230,8 +263,13 @@ if ($result === false) {
                     while ($task = $result->fetch_assoc()) { 
                         // Determine status class
                         $statusClass = 'status-' . str_replace(' ', '-', strtolower($task['task_status']));
+                        
+                        // Check if task is overdue
+                        $isOverdue = date('Y-m-d') > date('Y-m-d', strtotime($task['deadline'])) && $task['task_status'] != 'completed';
+                        $rowClass = $isOverdue ? 'overdue' : '';
+                        $deadlineClass = $isOverdue ? 'deadline-overdue' : '';
                 ?>
-                    <tr>
+                    <tr class="<?php echo $rowClass; ?>">
                         <td><?php echo htmlspecialchars($task['task_name']); ?></td>
                         <td><?php echo htmlspecialchars($task['fname'] . " " . $task['lname']); ?></td>
                         <td>
@@ -239,11 +277,23 @@ if ($result === false) {
                                 <?php echo htmlspecialchars($task['task_status']); ?>
                             </span>
                         </td>
-                        <td><?php echo htmlspecialchars($task['deadline']); ?></td>
+                        <td class="<?php echo $deadlineClass; ?>">
+                            <?php echo htmlspecialchars($task['deadline']); ?>
+                            <?php if ($isOverdue): ?>
+                                <br><small><strong>OVERDUE</strong></small>
+                            <?php endif; ?>
+                        </td>
                         <td>
-                            <a href="mark_task_completed.php?task_id=<?php echo $task['task_id']; ?>" class="action-link">
-                                <i class="fas fa-check"></i> Complete
-                            </a>
+                            <?php if ($task['task_status'] != 'completed'): ?>
+                                <button class="btn-notify" 
+                                        onclick="notifyVolunteer(<?php echo $task['volunteer_id']; ?>, <?php echo $task['task_id']; ?>, '<?php echo htmlspecialchars($task['fname'] . ' ' . $task['lname'], ENT_QUOTES); ?>')">
+                                    <i class="fas fa-bell"></i> Notify
+                                </button>
+                            <?php else: ?>
+                                <span style="color: #28a745; font-weight: 500;">
+                                    <i class="fas fa-check-circle"></i> Task Completed
+                                </span>
+                            <?php endif; ?>
                         </td>
                     </tr>
                 <?php 
@@ -255,6 +305,34 @@ if ($result === false) {
             </tbody>
         </table>
     </div>
+
+    <script>
+        function notifyVolunteer(volunteerId, taskId, volunteerName) {
+            // Show confirmation dialog
+            if (confirm(`Send notification to ${volunteerName} about their pending task?`)) {
+                // For now, just show an alert. Later you can implement actual notification
+                alert(`Notification sent to ${volunteerName}!\n\n(Notification functionality will be implemented later)`);
+                
+                // Disable the button temporarily to prevent spam clicking
+                event.target.disabled = true;
+                event.target.innerHTML = '<i class="fas fa-check"></i> Sent';
+                
+                // Re-enable after 3 seconds
+                setTimeout(() => {
+                    event.target.disabled = false;
+                    event.target.innerHTML = '<i class="fas fa-bell"></i> Notify';
+                }, 3000);
+                
+                // Here you would normally make an AJAX call to send the notification
+                // Example:
+                // fetch('send_notification.php', {
+                //     method: 'POST',
+                //     headers: {'Content-Type': 'application/json'},
+                //     body: JSON.stringify({volunteer_id: volunteerId, task_id: taskId})
+                // });
+            }
+        }
+    </script>
 </body>
 </html>
 

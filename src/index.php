@@ -55,12 +55,44 @@
 
 
     <!-- Hero Section -->
-    <section id="home" class="hero">
-        <div class="hero-content">
+    <section id="home" class="hero" style="height: 100vh; min-height: 600px; position: relative; overflow: hidden; color: white;">
+        <!-- Image Slides -->
+        <div class="hero-slides">
+            <div class="hero-slide active" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('assets/images/hero-bg.jpg'); background-size: cover; background-position: center; transition: opacity 1s ease-in-out; opacity: 1;"></div>
+            <div class="hero-slide" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('assets/images/hero-bg1.jpg'); background-size: cover; background-position: center; transition: opacity 1s ease-in-out; opacity: 0;"></div>
+            <div class="hero-slide" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('assets/images/hero-bg2.jpg'); background-size: cover; background-position: center; transition: opacity 1s ease-in-out; opacity: 0;"></div>
+            <div class="hero-slide" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('assets/images/hero-bg4.jpg'); background-size: cover; background-position: center; transition: opacity 1s ease-in-out; opacity: 0;"></div>
+        </div>
+
+        <div class="hero-content" style="position: relative; z-index: 2;">
             <div class="container">
                 <h1 class="display-3 mb-4" data-aos="fade-up">Bridge the Gap, Build a Future with CrisisLink</h1>
             </div>
         </div>
+
+        <script>
+            // Image slider functionality
+            document.addEventListener('DOMContentLoaded', function() {
+                const slides = document.querySelectorAll('.hero-slide');
+                let currentSlide = 0;
+
+                function nextSlide() {
+                    // Hide current slide
+                    slides[currentSlide].style.opacity = 0;
+                    slides[currentSlide].classList.remove('active');
+
+                    // Move to next slide
+                    currentSlide = (currentSlide + 1) % slides.length;
+
+                    // Show new slide
+                    slides[currentSlide].style.opacity = 1;
+                    slides[currentSlide].classList.add('active');
+                }
+
+                // Change slides every 3 seconds
+                setInterval(nextSlide, 3000);
+            });
+        </script>
     </section>
     <!-- About Section -->
     <section id="about" class="about">
@@ -219,7 +251,7 @@
             <div class="row g-0 align-items-center">
                 <!-- Left Side: Image -->
                 <div class="col-lg-6 col-md-12 left-side">
-                    <img src="https://images.unsplash.com/photo-1607227063002-677dc5fdf96f" alt="Volunteer Image"
+                    <img src="assets/images/volunteer.jpg" alt="Volunteer Image"
                         class="img-fluid">
                 </div>
 
@@ -437,8 +469,11 @@
     </section>
 
     <!-- Footer -->
-    <footer class="bg-dark text-light py-5">
-        <div class="container">
+    <footer class="bg-dark text-light py-5" style="position: relative; background: url('assets/images/footer-bg.jpg') center/cover no-repeat; z-index: 1;">
+        <!-- Semi-transparent overlay -->
+        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(33, 37, 41, 0.85); z-index: -1;"></div>
+
+        <div class="container" style="position: relative; z-index: 2;">
             <div class="row">
                 <!-- Column 1: Logo & Description -->
                 <div class="col-md-4">
@@ -465,7 +500,7 @@
                     <h5 class="text-white mb-3">Contact Information</h5>
                     <ul class="list-unstyled">
                         <li><i class="fas fa-map-marker-alt"></i> Satarkul, Uttarbadda, Dhaka Bangladesh</li>
-                        <li><i class="fas fa-phone"></i> +1 234 567 890</li>
+                        <li><i class="fas fa-phone"></i> +880 1744-353696</li>
                         <li><i class="fas fa-envelope"></i> info@crisislink.org</li>
                         <li>
                             <a href="https://www.facebook.com/YourPage" class="text-light me-3"><i

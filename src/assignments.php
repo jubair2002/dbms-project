@@ -3,7 +3,12 @@
 require_once 'config.php';   
 session_start();  
 
-// Assuming the volunteer is logged in
+// Security check - ensure volunteer is logged in
+if (!isset($_SESSION['user_id']) || $_SESSION['user_type'] != 'volunteer') {
+    header('Location: auth.php');
+    exit();
+}
+
 $volunteer_id = $_SESSION['user_id'];  
 
 // Fetch the tasks assigned to this volunteer
@@ -11,7 +16,8 @@ $sql = "SELECT tasks.id AS task_id, tasks.task_name, tasks.description, tasks.pr
                tasks.status AS task_status, assignments.status AS assignment_status 
         FROM tasks
         INNER JOIN assignments ON tasks.assignment_id = assignments.id
-        WHERE assignments.volunteer_id = ? AND assignments.status != 'completed'";
+        WHERE assignments.volunteer_id = ? AND assignments.status != 'completed'
+        ORDER BY tasks.deadline ASC";
 
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $volunteer_id);
@@ -161,6 +167,8 @@ $result = $stmt->get_result();
             font-size: 13px;
             font-weight: 500;
             transition: var(--transition);
+            border: none;
+            cursor: pointer;
         }
 
         .btn-complete {
@@ -179,6 +187,12 @@ $result = $stmt->get_result();
 
         .btn-update:hover {
             background-color: #cc0000;
+        }
+
+        .btn:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+            opacity: 0.65;
         }
 
         .no-tasks {
@@ -277,6 +291,7 @@ $result = $stmt->get_result();
                     while ($task = $result->fetch_assoc()) { 
                         $priorityClass = 'priority-' . strtolower($task['priority']);
                         $statusClass = 'status-' . str_replace(' ', '-', strtolower($task['task_status']));
+                        $isCompleted = $task['task_status'] == 'completed';
                 ?>
                     <tr>
                         <td data-label="Task Name"><?php echo htmlspecialchars($task['task_name']); ?></td>
@@ -292,14 +307,27 @@ $result = $stmt->get_result();
                         </td>
                         <td data-label="Actions">
                             <div class="action-buttons">
-                                <a href="update_task.php?task_id=<?php echo $task['task_id']; ?>&status=in-progress" 
-                                   class="btn btn-update">
-                                    <i class="fas fa-sync-alt"></i> Update
-                                </a>
-                                <a href="update_task.php?task_id=<?php echo $task['task_id']; ?>&status=completed" 
-                                   class="btn btn-complete">
-                                    <i class="fas fa-check"></i> Complete
-                                </a>
+                                <?php if (!$isCompleted): ?>
+                                    <?php if ($task['task_status'] == 'assigned'): ?>
+                                        <button class="btn btn-update" 
+                                                onclick="startTask(<?php echo $task['task_id']; ?>, this)">
+                                            <i class="fas fa-play"></i> Start Task
+                                        </button>
+                                    <?php elseif ($task['task_status'] == 'in-progress'): ?>
+                                        <span class="btn btn-update" style="background-color: #17a2b8; cursor: default;">
+                                            <i class="fas fa-sync-alt fa-spin"></i> In Progress
+                                        </span>
+                                    <?php endif; ?>
+                                    
+                                    <button class="btn btn-complete" 
+                                            onclick="completeTask(<?php echo $task['task_id']; ?>, this)">
+                                        <i class="fas fa-check"></i> Complete
+                                    </button>
+                                <?php else: ?>
+                                    <button class="btn" disabled>
+                                        <i class="fas fa-check-circle"></i> Completed
+                                    </button>
+                                <?php endif; ?>
                             </div>
                         </td>
                     </tr>
@@ -312,6 +340,141 @@ $result = $stmt->get_result();
             </tbody>
         </table>
     </div>
+
+    <script>
+        function startTask(taskId, buttonElement) {
+            if (confirm('Are you sure you want to start this task?')) {
+                // Show loading state
+                buttonElement.disabled = true;
+                buttonElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Starting...';
+                
+                // Send AJAX request
+                fetch('update_task.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `task_id=${taskId}&status=in-progress`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update button to show "In Progress"
+                        buttonElement.style.backgroundColor = '#17a2b8';
+                        buttonElement.style.cursor = 'default';
+                        buttonElement.innerHTML = '<i class="fas fa-sync-alt fa-spin"></i> In Progress';
+                        
+                        // Update status in the table
+                        const statusCell = buttonElement.closest('tr').querySelector('.status');
+                        statusCell.className = 'status status-in-progress';
+                        statusCell.textContent = 'in-progress';
+                        
+                        // Show success message
+                        showMessage('Task started successfully!', 'success');
+                    } else {
+                        // Reset button on error
+                        buttonElement.disabled = false;
+                        buttonElement.innerHTML = '<i class="fas fa-play"></i> Start Task';
+                        showMessage('Error starting task: ' + data.message, 'error');
+                    }
+                })
+                .catch(error => {
+                    // Reset button on error
+                    buttonElement.disabled = false;
+                    buttonElement.innerHTML = '<i class="fas fa-play"></i> Start Task';
+                    showMessage('Network error. Please try again.', 'error');
+                });
+            }
+        }
+
+        function completeTask(taskId, buttonElement) {
+            if (confirm('Are you sure you want to mark this task as completed?')) {
+                // Show loading state
+                buttonElement.disabled = true;
+                buttonElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Completing...';
+                
+                // Send AJAX request
+                fetch('update_task.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `task_id=${taskId}&status=completed`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update button to show completed
+                        buttonElement.style.backgroundColor = '#6c757d';
+                        buttonElement.style.cursor = 'not-allowed';
+                        buttonElement.innerHTML = '<i class="fas fa-check-circle"></i> Completed';
+                        
+                        // Update status in the table
+                        const statusCell = buttonElement.closest('tr').querySelector('.status');
+                        statusCell.className = 'status status-completed';
+                        statusCell.textContent = 'completed';
+                        
+                        // Hide start button if it exists
+                        const startButton = buttonElement.closest('.action-buttons').querySelector('.btn-update');
+                        if (startButton) {
+                            startButton.style.display = 'none';
+                        }
+                        
+                        // Show success message
+                        showMessage('Task completed successfully!', 'success');
+                    } else {
+                        // Reset button on error
+                        buttonElement.disabled = false;
+                        buttonElement.innerHTML = '<i class="fas fa-check"></i> Complete';
+                        showMessage('Error completing task: ' + data.message, 'error');
+                    }
+                })
+                .catch(error => {
+                    // Reset button on error
+                    buttonElement.disabled = false;
+                    buttonElement.innerHTML = '<i class="fas fa-check"></i> Complete';
+                    showMessage('Network error. Please try again.', 'error');
+                });
+            }
+        }
+
+        function showMessage(message, type) {
+            // Create message element
+            const messageDiv = document.createElement('div');
+            messageDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                border-radius: 4px;
+                color: white;
+                font-weight: 500;
+                z-index: 1000;
+                animation: slideIn 0.3s ease;
+                background-color: ${type === 'success' ? '#28a745' : '#dc3545'};
+            `;
+            messageDiv.textContent = message;
+            
+            // Add animation style
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // Add to page
+            document.body.appendChild(messageDiv);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                messageDiv.remove();
+                style.remove();
+            }, 3000);
+        }
+    </script>
 </body>
 </html>
 
