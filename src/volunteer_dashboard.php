@@ -1,5 +1,5 @@
 <?php
-// admin_dashboard.php
+// volunteer_dashboard.php
 require_once 'config.php';
 require_once 'dashboard_base.php';
 
@@ -9,6 +9,17 @@ checkAccess('volunteer');
 // Get user details
 $user = getUserDetails($conn, $_SESSION['user_id']);
 
+// Get current page from URL parameter or use dashboard as default
+$current_page = isset($_GET['page']) ? $_GET['page'] : 'dashboardSummary';
+$valid_pages = ['dashboardSummary', 'assignments', 'message', 'campaign', 'report', 'emergency', 'settings', 'profile'];
+
+// Validate the page parameter
+if (!in_array($current_page, $valid_pages)) {
+    $current_page = 'dashboardSummary';
+}
+
+// Set the page file to load
+$page_file = $current_page . '.php';
 ?>
 
 <!DOCTYPE html>
@@ -32,6 +43,46 @@ $user = getUserDetails($conn, $_SESSION['user_id']);
         .side-menu a {
             cursor: pointer;
         }
+        /* Override colors to match design */
+        :root {
+            --light: #F9F9F9;
+            --green: #4CAF50;
+            --light-green: #e8f5e9;
+            --grey: #eee;
+            --dark-grey: #AAAAAA;
+            --dark: #342E37;
+            --red: #DB504A;
+        }
+        
+        /* Override blue with green */
+        #sidebar .brand {
+            color: var(--green);
+        }
+        #sidebar .side-menu.top li.active a {
+            color: var(--green);
+        }
+        #sidebar .side-menu.top li a:hover {
+            color: var(--green);
+        }
+        #content nav .nav-link:hover {
+            color: var(--green);
+        }
+        #content main .head-title .left .breadcrumb li a.active {
+            color: var(--green);
+        }
+        #content main .head-title .btn-download {
+            background: var(--green);
+        }
+        #content main .box-info li:nth-child(1) .bx {
+            background: var(--light-green);
+            color: var(--green);
+        }
+        #content main .table-data .order table tr td .status.completed {
+            background: var(--green);
+        }
+        #content main .table-data .todo .todo-list li.completed {
+            border-left: 10px solid var(--green);
+        }
     </style>
 
     <title>CrisisLink Volunteer</title>
@@ -44,52 +95,52 @@ $user = getUserDetails($conn, $_SESSION['user_id']);
             <span class="text">CrisisLink Network</span>
         </a>
         <ul class="side-menu top">
-            <li class="active">
-                <a onclick="loadContent('dashboardSummary.php')">
+            <li <?php echo ($current_page == 'dashboardSummary') ? 'class="active"' : ''; ?>>
+                <a href="?page=dashboardSummary">
                     <i class='bx bxs-home'></i>
                     <span class="text">Dashboard Summary</span>
                 </a>
             </li>
-            <li>
-                <a onclick="loadContent('assignments.php')">
+            <li <?php echo ($current_page == 'assignments') ? 'class="active"' : ''; ?>>
+                <a href="?page=assignments">
                     <i class='bx bxs-stopwatch'></i>
                     <span class="text">Assignment</span>
                 </a>
             </li>
-            <li>
-                <a onclick="loadContent('message.php')">
+            <li <?php echo ($current_page == 'message') ? 'class="active"' : ''; ?>>
+                <a href="?page=message">
                     <i class='bx bxs-message-dots'></i>
                     <span class="text">Message</span>
                 </a>
             </li>
-            <li>
-                <a onclick="loadContent('campaign.php')">
+            <li <?php echo ($current_page == 'campaign') ? 'class="active"' : ''; ?>>
+                <a href="?page=campaign">
                     <i class='bx bxs-megaphone'></i>
                     <span class="text">Campaign</span>
                 </a>
             </li>
-            <li>
-                <a onclick="loadContent('report.php')">
+            <li <?php echo ($current_page == 'report') ? 'class="active"' : ''; ?>>
+                <a href="?page=report">
                     <i class='bx bxs-file'></i>
                     <span class="text">Report</span>
                 </a>
             </li>
-            <li>
-                <a onclick="loadContent('emergency.php')">
+            <li <?php echo ($current_page == 'emergency') ? 'class="active"' : ''; ?>>
+                <a href="?page=emergency">
                     <i class='bx bxs-first-aid'></i>
                     <span class="text">Emergency Help</span>
                 </a>
             </li>
         </ul>
         <ul class="side-menu">
-            <li>
-                <a onclick="loadContent('settings.php')">
+            <li <?php echo ($current_page == 'settings') ? 'class="active"' : ''; ?>>
+                <a href="?page=settings">
                     <i class='bx bxs-cog'></i>
                     <span class="text">Settings</span>
                 </a>
             </li>
-            <li>
-                <a onclick="loadContent('profile.php')">
+            <li <?php echo ($current_page == 'profile') ? 'class="active"' : ''; ?>>
+                <a href="?page=profile">
                     <i class='bx bxs-user'></i>
                     <span class="text">Profile</span>
                 </a>
@@ -109,41 +160,42 @@ $user = getUserDetails($conn, $_SESSION['user_id']);
         <!-- NAVBAR -->
         <nav>
             <i class='bx bx-menu'></i>
-            <form action="#">
-                <div class="form-input">
-                    <input type="search" placeholder="Search...">
-                    <button type="submit" class="search-btn"><i class='bx bx-search'></i></button>
-                </div>
-            </form>
-            <input type="checkbox" id="switch-mode" hidden>
-            <label for="switch-mode" class="switch-mode"></label>
+            <div style="flex-grow: 1;"></div>
             <a href="#" class="notification">
                 <i class='bx bxs-bell'></i>
             </a>
             <a class="profile">
-                <span><?php echo htmlspecialchars($user['fname']); ?>(volunteer)</span>
+                <span><?php echo htmlspecialchars($user['fname']); ?> (volunteer)</span>
             </a>
         </nav>
         <!-- NAVBAR -->
 
         <!-- MAIN - Replace with iframe -->
         <main>
-            <iframe id="content-iframe" src="dashboardSummary.php" frameborder="0"></iframe>
+            <iframe id="content-iframe" src="<?php echo htmlspecialchars($page_file); ?>" frameborder="0"></iframe>
         </main>
     </section>
     <!-- CONTENT -->
 
     <script>
-    function loadContent(url) {
-        // Update active state in sidebar
-        document.querySelectorAll('.side-menu li, .side-menu.top li').forEach(li => {
-            li.classList.remove('active');
-        });
-        event.target.closest('li').classList.add('active');
+    // TOGGLE SIDEBAR
+    const menuBar = document.querySelector('#content nav .bx.bx-menu');
+    const sidebar = document.getElementById('sidebar');
 
-        // Load content in iframe
-        document.getElementById('content-iframe').src = url;
+    menuBar.addEventListener('click', function () {
+        sidebar.classList.toggle('hide');
+    });
+
+    // RESPONSIVE BEHAVIOR
+    if(window.innerWidth < 768) {
+        sidebar.classList.add('hide');
     }
+
+    window.addEventListener('resize', function () {
+        if(this.innerWidth < 768) {
+            sidebar.classList.add('hide');
+        }
+    });
 
     // Optional: Resize iframe to content
     document.getElementById('content-iframe').addEventListener('load', function() {
@@ -154,7 +206,5 @@ $user = getUserDetails($conn, $_SESSION['user_id']);
         }
     });
     </script>
-
-    <script src="assets/js/volunteerDashboard.js"></script>
 </body>
 </html>

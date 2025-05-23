@@ -2,22 +2,6 @@
 let searchTimeout = null;
 const searchDelay = 500; // milliseconds
 
-// Function to load the respective page in the iframe (Dashboard, User Management, etc.)
-function loadPage(page) {
-    var pageIframe = document.getElementById('pageIframe');
-    var profileIframe = document.getElementById('profileIframe');
-    var notificationsIframe = document.getElementById('notificationsIframe');
-
-    // Hide all iframes initially
-    profileIframe.style.display = 'none';
-    notificationsIframe.style.display = 'none';
-    pageIframe.style.display = 'none';
-
-    // Set the source of the iframe to the selected page
-    pageIframe.src = page;
-    pageIframe.style.display = 'block'; // Show the page iframe
-}
-
 // Function to perform AJAX search
 function performSearch() {
     const searchTerm = document.getElementById('searchInput').value;
@@ -43,6 +27,13 @@ function performSearch() {
         });
 }
 
+// Function to get user initials from name
+function getUserInitials(fname, lname) {
+    const firstInitial = fname && fname.length > 0 ? fname.charAt(0).toUpperCase() : '';
+    const lastInitial = lname && lname.length > 0 ? lname.charAt(0).toUpperCase() : '';
+    return firstInitial + lastInitial || 'U'; // Default to 'U' if no name
+}
+
 // Function to update the user table with search results
 function updateUserTable(users) {
     const tableBody = document.querySelector('table tbody');
@@ -50,13 +41,26 @@ function updateUserTable(users) {
     
     if (users.length === 0) {
         document.getElementById('noResultsMessage').style.display = 'block';
-        tableBody.innerHTML = '<tr><td colspan="8" class="text-center">No users found.</td></tr>';
+        tableBody.innerHTML = '<tr><td colspan="9" class="text-center">No users found.</td></tr>';
     } else {
         document.getElementById('noResultsMessage').style.display = 'none';
         
         users.forEach(user => {
             const row = document.createElement('tr');
+            
+            // Create profile picture HTML
+            let profilePicHTML = '';
+            if (user.profile_pic && user.profile_pic !== '') {
+                // If user has a profile picture, show it
+                profilePicHTML = `<img src="${escapeHtml(user.profile_pic)}" alt="Profile" class="user-avatar" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                  <div class="user-avatar-placeholder" style="display:none;">${getUserInitials(user.fname, user.lname)}</div>`;
+            } else {
+                // If no profile picture, show initials
+                profilePicHTML = `<div class="user-avatar-placeholder">${getUserInitials(user.fname, user.lname)}</div>`;
+            }
+            
             row.innerHTML = `
+                <td>${profilePicHTML}</td>
                 <td>${escapeHtml(user.fname)}</td>
                 <td>${escapeHtml(user.lname)}</td>
                 <td>${escapeHtml(user.email)}</td>
@@ -114,7 +118,9 @@ function attachStatusButtonListeners() {
 
 // Helper function to escape HTML
 function escapeHtml(unsafe) {
+    if (!unsafe) return '';
     return unsafe
+        .toString()
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")

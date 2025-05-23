@@ -30,273 +30,32 @@ $user_id = $user_logged_in ? $_SESSION['user_id'] : 0;
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0">
     <title>Donate to <?php echo htmlspecialchars($campaign['name']); ?></title>
+    
+    <!-- External CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/donation.css">
+    
     <style>
-        :root {
-            --primary-color: #D10000;
-            /* Red */
-            --secondary-color: #990000;
-            /* Darker red */
-            --dark-color: #222;
-            /* Dark gray/black */
-            --light-color: #fff;
-            /* White */
-            --border-color: #e0e0e0;
-        }
-
-        * {
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #f9f9f9;
-            color: #333;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .header h1 {
-            margin: 0;
-            color: var(--primary-color);
-            font-weight: 600;
-        }
-
-        .back-btn {
-            display: inline-block;
-            padding: 8px 15px;
-            background-color: var(--dark-color);
-            border: none;
-            border-radius: 4px;
-            color: var(--light-color);
-            text-decoration: none;
-            font-size: 14px;
-            transition: background-color 0.3s;
-        }
-
-        .back-btn:hover {
-            background-color: #111;
-        }
-
-        .donation-container {
-            background-color: var(--light-color);
-            border-radius: 8px;
-            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
-            padding: 30px;
-            max-width: 800px;
-            margin: 0 auto;
-            border: 1px solid var(--border-color);
-        }
-
-        .campaign-info {
-            display: flex;
-            margin-bottom: 25px;
-            padding-bottom: 25px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .campaign-image {
-            width: 100px;
-            height: 100px;
-            border-radius: 8px;
-            overflow: hidden;
-            margin-right: 20px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .campaign-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .campaign-details h2 {
-            margin-top: 0;
-            margin-bottom: 10px;
-            color: var(--dark-color);
-        }
-
-        .donation-amount {
-            font-size: 18px;
-            font-weight: bold;
-            color: var(--primary-color);
-        }
-
-        .donation-form {
-            margin-top: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 25px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: var(--dark-color);
-        }
-
-        input[type="text"],
-        input[type="email"],
-        input[type="number"],
-        select {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            font-size: 16px;
-            transition: border-color 0.3s;
-        }
-
-        input[type="text"]:focus,
-        input[type="email"]:focus,
-        input[type="number"]:focus,
-        select:focus {
-            border-color: var(--primary-color);
-            outline: none;
-        }
-
-        .payment-methods {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .payment-method {
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            padding: 12px 15px;
-            cursor: pointer;
-            flex: 1 0 45%;
-            display: flex;
-            align-items: center;
-            transition: all 0.3s;
-        }
-
-        .payment-method input[type="radio"] {
-            margin-right: 10px;
-        }
-
-        .payment-method.selected {
-            border-color: var(--primary-color);
-            background-color: rgba(209, 0, 0, 0.05);
-            box-shadow: 0 0 0 1px var(--primary-color);
-        }
-
-        .row {
-            display: flex;
-            gap: 20px;
-        }
-
-        .col {
-            flex: 1;
-        }
-
-        .submit-btn {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            padding: 15px 25px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            transition: background-color 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .submit-btn:hover {
-            background-color: var(--secondary-color);
-        }
-
-        .payment-fields {
-            margin-top: 20px;
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .payment-fields.active {
-            display: block;
-        }
-
-        .login-message {
-            background-color: #FFF3F3;
-            padding: 15px;
-            border-radius: 4px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            border-left: 4px solid var(--primary-color);
-        }
-
-        .login-message i {
-            margin-right: 10px;
-            color: var(--primary-color);
-        }
-
-        .login-message a {
-            color: var(--primary-color);
-            text-decoration: none;
-            font-weight: bold;
-            margin-left: 5px;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
+        /* Additional responsive optimizations */
         @media (max-width: 768px) {
-            .row {
+            .header {
                 flex-direction: column;
+                gap: 15px;
+                text-align: center;
             }
-
-            .payment-method {
-                flex: 1 0 100%;
-            }
-
-            .campaign-info {
-                flex-direction: column;
-            }
-
-            .campaign-image {
-                margin-bottom: 15px;
-                margin-right: 0;
+            
+            .back-btn {
+                position: static;
+                transform: none;
+                align-self: center;
             }
         }
     </style>
 </head>
-
 <body>
     <div class="container">
         <div class="header">
@@ -314,6 +73,7 @@ $user_id = $user_logged_in ? $_SESSION['user_id'] : 0;
                         <strong>Note:</strong> For a better donation experience, consider
                         <a href="login.php?redirect=donate.php?campaign_id=<?php echo $campaign_id; ?>&amount=<?php echo $amount; ?>">logging in</a> or
                         <a href="register.php?redirect=donate.php?campaign_id=<?php echo $campaign_id; ?>&amount=<?php echo $amount; ?>">creating an account</a>.
+                        <br><small>This helps us track your donations and send you updates about the campaign.</small>
                     </div>
                 </div>
             <?php endif; ?>
@@ -325,29 +85,39 @@ $user_id = $user_logged_in ? $_SESSION['user_id'] : 0;
                 <div class="campaign-details">
                     <h2><?php echo htmlspecialchars($campaign['name']); ?></h2>
                     <p>You are donating: <span class="donation-amount">$<span id="display-amount"><?php echo number_format($amount, 2); ?></span></span></p>
+                    <p style="margin-top: 10px; color: #666; font-size: 14px;">
+                        <i class="fas fa-shield-alt" style="color: var(--donation-primary);"></i> 
+                        Your donation is secure and goes directly to this campaign.
+                    </p>
                 </div>
             </div>
 
-            <form action="process-donation.php" method="post" id="donation-form">
+            <form action="process-donation.php" method="post" id="donation-form" novalidate>
                 <input type="hidden" name="campaign_id" value="<?php echo $campaign_id; ?>">
 
                 <div class="form-group">
-                    <label for="amount">Donation Amount ($)</label>
-                    <input type="number" id="amount" name="amount" min="1" step="0.01" value="<?php echo $amount; ?>" required>
+                    <label for="amount">
+                        <i class="fas fa-dollar-sign"></i> Donation Amount ($)
+                    </label>
+                    <input type="number" id="amount" name="amount" min="1" step="0.01" value="<?php echo $amount; ?>" required placeholder="Enter amount (minimum $1.00)">
                 </div>
 
                 <?php if (!$user_logged_in): ?>
                     <div class="row">
                         <div class="col">
                             <div class="form-group">
-                                <label for="name">Full Name</label>
-                                <input type="text" id="name" name="name" required>
+                                <label for="name">
+                                    <i class="fas fa-user"></i> Full Name
+                                </label>
+                                <input type="text" id="name" name="name" required placeholder="Enter your full name">
                             </div>
                         </div>
                         <div class="col">
                             <div class="form-group">
-                                <label for="email">Email Address</label>
-                                <input type="email" id="email" name="email" required>
+                                <label for="email">
+                                    <i class="fas fa-envelope"></i> Email Address
+                                </label>
+                                <input type="email" id="email" name="email" required placeholder="Enter your email address">
                             </div>
                         </div>
                     </div>
@@ -356,44 +126,58 @@ $user_id = $user_logged_in ? $_SESSION['user_id'] : 0;
                 <?php endif; ?>
 
                 <div class="form-group">
-                    <label>Payment Method</label>
+                    <label>
+                        <i class="fas fa-credit-card"></i> Payment Method
+                    </label>
                     <div class="payment-methods">
                         <div class="payment-method" data-method="credit_card">
                             <input type="radio" name="payment_method" value="credit_card" id="credit_card" required>
-                            <label for="credit_card">Credit Card</label>
+                            <label for="credit_card">
+                                <i class="fab fa-cc-visa"></i> Credit Card
+                            </label>
                         </div>
                         <div class="payment-method" data-method="debit_card">
                             <input type="radio" name="payment_method" value="debit_card" id="debit_card">
-                            <label for="debit_card">Debit Card</label>
+                            <label for="debit_card">
+                                <i class="fas fa-credit-card"></i> Debit Card
+                            </label>
                         </div>
                         <div class="payment-method" data-method="mobile_banking">
                             <input type="radio" name="payment_method" value="mobile_banking" id="mobile_banking">
-                            <label for="mobile_banking">Mobile Banking</label>
+                            <label for="mobile_banking">
+                                <i class="fas fa-mobile-alt"></i> Mobile Banking
+                            </label>
                         </div>
                         <div class="payment-method" data-method="bank_transfer">
                             <input type="radio" name="payment_method" value="bank_transfer" id="bank_transfer">
-                            <label for="bank_transfer">Bank Transfer</label>
+                            <label for="bank_transfer">
+                                <i class="fas fa-university"></i> Bank Transfer
+                            </label>
                         </div>
                     </div>
                 </div>
 
                 <!-- Credit/Debit Card Fields -->
                 <div class="payment-fields" id="card-fields">
+                    <h4 style="margin-bottom: 20px; color: var(--donation-dark);">
+                        <i class="fas fa-lock" style="color: var(--donation-primary);"></i> 
+                        Card Information
+                    </h4>
                     <div class="form-group">
                         <label for="card_number">Card Number</label>
-                        <input type="text" id="card_number" name="card_number" placeholder="ex: 1234 5678 9012 3456">
+                        <input type="text" id="card_number" name="card_number" placeholder="1234 5678 9012 3456" maxlength="19">
                     </div>
                     <div class="row">
                         <div class="col">
                             <div class="form-group">
-                                <label for="expiry">Expiry Date (MM/YY)</label>
-                                <input type="text" id="expiry" name="expiry" placeholder="MM/YY">
+                                <label for="expiry">Expiry Date</label>
+                                <input type="text" id="expiry" name="expiry" placeholder="MM/YY" maxlength="5">
                             </div>
                         </div>
                         <div class="col">
                             <div class="form-group">
                                 <label for="cvv">CVV</label>
-                                <input type="text" id="cvv" name="cvv" placeholder="123">
+                                <input type="text" id="cvv" name="cvv" placeholder="123" maxlength="4">
                             </div>
                         </div>
                     </div>
@@ -401,32 +185,42 @@ $user_id = $user_logged_in ? $_SESSION['user_id'] : 0;
 
                 <!-- Mobile Banking Fields -->
                 <div class="payment-fields" id="mobile-fields">
+                    <h4 style="margin-bottom: 20px; color: var(--donation-dark);">
+                        <i class="fas fa-mobile-alt" style="color: var(--donation-primary);"></i> 
+                        Mobile Banking Details
+                    </h4>
                     <div class="form-group">
                         <label for="mobile_provider">Mobile Banking Provider</label>
                         <select id="mobile_provider" name="mobile_provider">
-                            <option value="">Select Provider</option>
-                            <option value="Bkash">Bkash</option>
+                            <option value="">Select your mobile banking provider</option>
+                            <option value="Bkash">bKash</option>
                             <option value="Nagad">Nagad</option>
                             <option value="Rocket">Rocket</option>
                             <option value="Upay">Upay</option>
                             <option value="SureCash">SureCash</option>
-                            <option value="DBBL">DBBL</option>
+                            <option value="DBBL">DBBL Mobile Banking</option>
                             <option value="MyCash">MyCash</option>
-
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="mobile_number">Mobile Number</label>
-                        <input type="text" id="mobile_number" name="mobile_number" placeholder="Your registered mobile number">
+                        <input type="text" id="mobile_number" name="mobile_number" placeholder="01XXXXXXXXX">
+                        <small style="color: #666; font-size: 12px; margin-top: 5px; display: block;">
+                            Enter the mobile number registered with your mobile banking service
+                        </small>
                     </div>
                 </div>
 
                 <!-- Bank Transfer Fields -->
                 <div class="payment-fields" id="bank-fields">
+                    <h4 style="margin-bottom: 20px; color: var(--donation-dark);">
+                        <i class="fas fa-university" style="color: var(--donation-primary);"></i> 
+                        Bank Transfer Details
+                    </h4>
                     <div class="form-group">
                         <label for="bank_name">Bank Name</label>
                         <select id="bank_name" name="bank_name">
-                            <option value="">Select Bank</option>
+                            <option value="">Select your bank</option>
                             <option value="aibl">Al-Arafah Islami Bank PLC</option>
                             <option value="dutch_bangla">Dutch-Bangla Bank</option>
                             <option value="brac">BRAC Bank</option>
@@ -437,98 +231,54 @@ $user_id = $user_logged_in ? $_SESSION['user_id'] : 0;
                             <option value="hsbc">HSBC Bangladesh</option>
                             <option value="sonali">Sonali Bank</option>
                             <option value="janata">Janata Bank</option>
+                            <option value="agrani">Agrani Bank</option>
+                            <option value="pubali">Pubali Bank</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="account_number">Account Number</label>
-                        <input type="text" id="account_number" name="account_number" placeholder="Your account number">
+                        <input type="text" id="account_number" name="account_number" placeholder="Enter your account number">
                     </div>
                 </div>
 
-                <button type="submit" class="submit-btn">Complete Donation</button>
+                <div style="margin: 30px 0; padding: 20px; background: rgba(76, 175, 80, 0.05); border-radius: 8px; border-left: 4px solid var(--donation-primary);">
+                    <h4 style="margin-bottom: 15px; color: var(--donation-dark);">
+                        <i class="fas fa-heart" style="color: var(--donation-primary);"></i> 
+                        Your Impact
+                    </h4>
+                    <p style="margin: 0; color: #666; line-height: 1.6;">
+                        Your generous donation will help <?php echo htmlspecialchars($campaign['name']); ?> reach its goal and make a real difference in the lives of those we serve. Every contribution, no matter the size, brings us closer to creating positive change.
+                    </p>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-heart"></i> Complete Donation
+                </button>
+                
+                <p style="text-align: center; margin-top: 20px; font-size: 12px; color: #666; line-height: 1.5;">
+                    <i class="fas fa-lock" style="color: var(--donation-primary);"></i> 
+                    Your payment information is encrypted and secure. We never store your financial details.
+                    <br>
+                    By donating, you agree to our <a href="#" style="color: var(--donation-primary);">Terms of Service</a> and <a href="#" style="color: var(--donation-primary);">Privacy Policy</a>.
+                </p>
             </form>
         </div>
     </div>
 
+    <!-- Pass PHP variables to JavaScript -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Update the display amount when the input changes
-            const amountInput = document.getElementById('amount');
-            const displayAmount = document.getElementById('display-amount');
-
-            amountInput.addEventListener('input', function() {
-                displayAmount.textContent = parseFloat(this.value).toFixed(2);
-            });
-
-            // Payment method selection
-            const paymentMethods = document.querySelectorAll('.payment-method');
-            const paymentFields = {
-                'credit_card': document.getElementById('card-fields'),
-                'debit_card': document.getElementById('card-fields'),
-                'mobile_banking': document.getElementById('mobile-fields'),
-                'bank_transfer': document.getElementById('bank-fields')
-            };
-
-            paymentMethods.forEach(method => {
-                method.addEventListener('click', function() {
-                    // Select the radio button
-                    const radio = this.querySelector('input[type="radio"]');
-                    radio.checked = true;
-
-                    // Highlight the selected method
-                    paymentMethods.forEach(m => m.classList.remove('selected'));
-                    this.classList.add('selected');
-
-                    // Show the appropriate fields
-                    const methodName = this.dataset.method;
-                    Object.values(paymentFields).forEach(field => field.classList.remove('active'));
-
-                    if (paymentFields[methodName]) {
-                        paymentFields[methodName].classList.add('active');
-                    }
-
-                    // Enable/disable required fields based on payment method
-                    toggleRequiredFields(methodName);
-                });
-            });
-
-            // Form validation
-            document.getElementById('donation-form').addEventListener('submit', function(e) {
-                const selectedMethod = document.querySelector('input[name="payment_method"]:checked');
-
-                if (!selectedMethod) {
-                    alert('Please select a payment method');
-                    e.preventDefault();
-                    return;
-                }
-
-                // Additional validation could be added here
-            });
-
-            // Toggle required fields based on payment method
-            function toggleRequiredFields(method) {
-                // Card fields
-                const cardFields = ['card_number', 'expiry', 'cvv'];
-                cardFields.forEach(field => {
-                    document.getElementById(field).required = (method === 'credit_card' || method === 'debit_card');
-                });
-
-                // Mobile banking fields
-                const mobileFields = ['mobile_provider', 'mobile_number'];
-                mobileFields.forEach(field => {
-                    document.getElementById(field).required = (method === 'mobile_banking');
-                });
-
-                // Bank transfer fields
-                const bankFields = ['bank_name', 'account_number'];
-                bankFields.forEach(field => {
-                    document.getElementById(field).required = (method === 'bank_transfer');
-                });
-            }
-        });
+        // Global campaign data
+        const campaignData = {
+            id: <?php echo $campaign_id; ?>,
+            name: '<?php echo addslashes($campaign['name']); ?>',
+            imageUrl: '<?php echo addslashes($campaign['image_url']); ?>',
+            userLoggedIn: <?php echo $user_logged_in ? 'true' : 'false'; ?>
+        };
     </script>
+    
+    <!-- External JavaScript -->
+    <script src="assets/js/donation.js"></script>
 </body>
-
 </html>
 
 <?php

@@ -103,10 +103,37 @@ $participants = $chatSystem->getChatParticipants($currentChatId);
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0">
     <title>CrisisLink Chat System</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="assets/css/message.css">
+    <style>
+        /* Additional inline styles to ensure full screen */
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+        
+        .chat-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100vw;
+            height: 100vh;
+            max-width: none;
+            margin: 0;
+        }
+    </style>
 </head>
 
 <body>
@@ -152,7 +179,7 @@ $participants = $chatSystem->getChatParticipants($currentChatId);
                         onclick="selectChat(<?php echo $globalChat['id']; ?>, 'global')">
                         <div class="chat-item-header">
                             <div class="chat-name">
-                                <i class="fas fa-globe"></i> Global Emergency Chat
+                                <i class="fas fa-globe"></i> Global Community Chat
                                 <span class="emergency-badge">LIVE</span>
                             </div>
                             <div class="chat-time">Now</div>

@@ -108,7 +108,52 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('offline', function() {
         showNotification('Connection lost', 'warning');
     });
+
+    // Full screen handling - moved from PHP to JS
+    setupFullScreenHandling();
 });
+
+// Full screen setup function
+function setupFullScreenHandling() {
+    // Prevent zoom and ensure full screen
+    document.addEventListener('touchstart', function(event) {
+        if (event.touches.length > 1) {
+            event.preventDefault();
+        }
+    });
+
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', function(event) {
+        const now = (new Date()).getTime();
+        if (now - lastTouchEnd <= 300) {
+            event.preventDefault();
+        }
+        lastTouchEnd = now;
+    }, false);
+
+    // Ensure the interface fits perfectly on load
+    window.addEventListener('load', function() {
+        adjustViewportHeight();
+    });
+
+    // Handle orientation change
+    window.addEventListener('orientationchange', function() {
+        setTimeout(adjustViewportHeight, 100);
+    });
+
+    // Handle resize
+    window.addEventListener('resize', adjustViewportHeight);
+}
+
+// Adjust viewport height for full screen
+function adjustViewportHeight() {
+    const vh = window.innerHeight;
+    document.body.style.height = vh + 'px';
+    const chatContainer = document.querySelector('.chat-container');
+    if (chatContainer) {
+        chatContainer.style.height = vh + 'px';
+    }
+}
 
 function setupEventListeners() {
     const messageInput = document.getElementById('messageInput');
@@ -121,6 +166,12 @@ function setupEventListeners() {
     });
 
     messageInput.addEventListener('input', autoResizeTextarea);
+
+    // Setup file upload handler
+    const fileUpload = document.getElementById('fileUpload');
+    if (fileUpload) {
+        fileUpload.addEventListener('change', handleFileUpload);
+    }
 }
 
 function autoResizeTextarea() {
@@ -451,14 +502,14 @@ function showNotification(message, type = 'success') {
 }
 
 // File upload handler
-document.getElementById('fileUpload').addEventListener('change', function(e) {
+function handleFileUpload(e) {
     const file = e.target.files[0];
     if (file) {
         // Check file size (5MB limit)
         const maxSize = 5 * 1024 * 1024; // 5MB in bytes
         if (file.size > maxSize) {
             showNotification(`File "${file.name}" exceeds the 5MB size limit`, 'warning');
-            this.value = ''; // Reset the input
+            e.target.value = ''; // Reset the input
             return;
         }
 
@@ -495,6 +546,7 @@ document.getElementById('fileUpload').addEventListener('change', function(e) {
                     showNotification(`File "${file.name}" uploaded successfully!`, 'success');
 
                     // Create a new message object to immediately display the uploaded file
+                    const currentUserAvatarImg = document.querySelector('#currentUserAvatar img');
                     const newMessage = {
                         id: data.message_id,
                         user_id: currentUser.id,
@@ -504,7 +556,7 @@ document.getElementById('fileUpload').addEventListener('change', function(e) {
                         fname: currentUser.name.split(' ')[0],
                         lname: currentUser.name.split(' ').slice(1).join(' '),
                         user_type: currentUser.role,
-                        picture: document.getElementById('currentUserAvatar').querySelector('img').src,
+                        picture: currentUserAvatarImg ? currentUserAvatarImg.src : '',
                         is_emergency: false
                     };
 
@@ -524,7 +576,7 @@ document.getElementById('fileUpload').addEventListener('change', function(e) {
             })
             .finally(() => {
                 // Reset file input
-                this.value = '';
+                e.target.value = '';
             });
     }
-});
+}

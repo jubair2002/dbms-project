@@ -18,13 +18,22 @@ function getUserDetails($conn, $user_id) {
 
 // Function to check if user has access to current dashboard
 function checkAccess($required_type) {
-    if ($_SESSION['user_type'] !== $required_type) {
-        if ($_SESSION['user_type'] == 'volunteer') {
-            header("Location: volunteer_dashboard.php");
-        } else {
-            header("Location: user_dashboard.php");
+    if ($_SESSION['user_type'] == 'admin') {
+        if ($required_type != 'admin') {
+            header("Location: admin_dashboard.php");
+            exit();
         }
-        exit();
+    } else if ($_SESSION['user_type'] == 'volunteer') {
+        if ($required_type != 'volunteer') {
+            header("Location: volunteer_dashboard.php");
+            exit();
+        }
+    } else {
+        // Regular user
+        if ($required_type != 'regular') {
+            header("Location: user_dashboard.php");
+            exit();
+        }
     }
 }
 ?>

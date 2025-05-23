@@ -12,8 +12,7 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == 'get_users') {
     $userTypeFilter = isset($_GET['user_type']) ? $_GET['user_type'] : '';
     $locationFilter = isset($_GET['location']) ? $_GET['location'] : '';
 
-    // Build the query
-    $query = "SELECT * FROM users WHERE 1=1";
+    $query = "SELECT id, fname, lname, email, phone, location, user_type, status, picture FROM users WHERE 1=1";
     $params = [];
     $types = "";
 
@@ -98,7 +97,7 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == 'update_status') {
 
 // For the initial page load, we'll still fetch users to have data before any search
 $users = [];
-$stmt = $conn->prepare("SELECT * FROM users LIMIT 50"); // Limit to 50 users for initial load
+$stmt = $conn->prepare("SELECT id, fname, lname, email, phone, location, user_type, status, picture FROM users LIMIT 50"); // Limit to 50 users for initial load
 $stmt->execute();
 $result = $stmt->get_result();
 
@@ -106,6 +105,13 @@ if ($result) {
     while ($row = $result->fetch_assoc()) {
         $users[] = $row;
     }
+}
+
+// Helper function to get user initials
+function getUserInitials($fname, $lname) {
+    $firstInitial = !empty($fname) ? strtoupper($fname[0]) : '';
+    $lastInitial = !empty($lname) ? strtoupper($lname[0]) : '';
+    return $firstInitial . $lastInitial ?: 'U'; // Default to 'U' if no name
 }
 ?>
 
@@ -116,17 +122,16 @@ if ($result) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Management</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/userManagement.css"> <!-- Custom CSS -->
+    <link rel="stylesheet" href="assets/css/userManagement.css"> <!-- Your external CSS file -->
 </head>
 
 <body>
-    <div class="container mt-4">
-        <h2 class="mb-4">User Management</h2>
+    <div class="container">
+        <h2>User Management</h2>
 
         <!-- Search and Filter Form -->
         <div class="search-container">
-            <form id="searchForm" class="mb-3">
+            <form id="searchForm">
                 <div class="row">
                     <div class="col-md-3">
                         <input type="text" name="search" class="form-control" id="searchInput" placeholder="Search by name, email, phone">
@@ -150,7 +155,7 @@ if ($result) {
 
         <!-- Loading indicator -->
         <div id="loadingIndicator" class="text-center my-3" style="display: none;">
-            <div class="spinner-border text-primary" role="status">
+            <div class="spinner-border" role="status">
                 <span class="visually-hidden">Loading...</span>
             </div>
         </div>
@@ -159,57 +164,63 @@ if ($result) {
         <div id="noResultsMessage" class="alert alert-warning" style="display: none;">No results found</div>
 
         <div class="table-container">
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Location</th>
-                            <th>User Type</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (count($users) > 0): ?>
-                            <?php foreach ($users as $user): ?>
-                                <tr>
-                                    <td><?php echo htmlspecialchars($user['fname']); ?></td>
-                                    <td><?php echo htmlspecialchars($user['lname']); ?></td>
-                                    <td><?php echo htmlspecialchars($user['email']); ?></td>
-                                    <td><?php echo htmlspecialchars($user['phone']); ?></td>
-                                    <td><?php echo htmlspecialchars($user['location']); ?></td>
-                                    <td><?php echo ucfirst(htmlspecialchars($user['user_type'])); ?></td>
-                                    <td>
-                                        <span class="badge <?php echo $user['status'] == 'active' ? 'bg-success' : 'bg-danger'; ?>">
-                                            <?php echo ucfirst($user['status']); ?>
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <button class="btn <?php echo $user['status'] == 'active' ? 'btn-danger' : 'btn-success'; ?> status-btn" 
-                                                data-user-id="<?php echo $user['id']; ?>" 
-                                                data-action="<?php echo $user['status'] == 'active' ? 'deactivate' : 'activate'; ?>">
-                                            <?php echo $user['status'] == 'active' ? 'Deactivate' : 'Activate'; ?>
-                                        </button>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        <?php else: ?>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Picture</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Location</th>
+                        <th>User Type</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (count($users) > 0): ?>
+                        <?php foreach ($users as $user): ?>
                             <tr>
-                                <td colspan="8" class="text-center">No users found.</td>
+                                <td>
+                                    <?php if (!empty($user['picture'])): ?>
+                                        <img src="<?php echo htmlspecialchars($user['picture']); ?>" alt="Profile" class="user-avatar" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                        <div class="user-avatar-placeholder" style="display:none;"><?php echo getUserInitials($user['fname'], $user['lname']); ?></div>
+                                    <?php else: ?>
+                                        <div class="user-avatar-placeholder"><?php echo getUserInitials($user['fname'], $user['lname']); ?></div>
+                                    <?php endif; ?>
+                                </td>
+                                <td><?php echo htmlspecialchars($user['fname']); ?></td>
+                                <td><?php echo htmlspecialchars($user['lname']); ?></td>
+                                <td><?php echo htmlspecialchars($user['email']); ?></td>
+                                <td><?php echo htmlspecialchars($user['phone']); ?></td>
+                                <td><?php echo htmlspecialchars($user['location']); ?></td>
+                                <td><?php echo ucfirst(htmlspecialchars($user['user_type'])); ?></td>
+                                <td>
+                                    <span class="badge <?php echo $user['status'] == 'active' ? 'bg-success' : 'bg-danger'; ?>">
+                                        <?php echo ucfirst($user['status']); ?>
+                                    </span>
+                                </td>
+                                <td>
+                                    <button class="btn <?php echo $user['status'] == 'active' ? 'btn-danger' : 'btn-success'; ?> status-btn" 
+                                            data-user-id="<?php echo $user['id']; ?>" 
+                                            data-action="<?php echo $user['status'] == 'active' ? 'deactivate' : 'activate'; ?>">
+                                        <?php echo $user['status'] == 'active' ? 'Deactivate' : 'Activate'; ?>
+                                    </button>
+                                </td>
                             </tr>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
-            </div>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="9" class="text-center">No users found.</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/js/userManagement.js"></script> <!-- Custom JS -->
+    <script src="assets/js/userManagement.js"></script>
 </body>
 
 </html>

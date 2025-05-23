@@ -16,5 +16,5 @@ Emergency help -----> this page contain nearby hospital filtering by user locati
                       also contain blood donor list by filtering location users
 					  contain what to do and not to do in disaster time 
 
-chatting ----------->message.php, chatapi.php, chatfunction.php, fileupload.php, usersearch.php
+chatting ----------->message.php, chat_api.php, chat_function.php, file_upload.php, user_search.php
 

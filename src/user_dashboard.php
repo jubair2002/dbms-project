@@ -1,4 +1,5 @@
 <?php
+// user_dashboard.php
 require_once 'config.php';
 require_once 'dashboard_base.php';
 
@@ -7,6 +8,18 @@ checkAccess('regular');
 
 // Get user details
 $user = getUserDetails($conn, $_SESSION['user_id']);
+
+// Get current page from URL parameter or use dashboard as default
+$current_page = isset($_GET['page']) ? $_GET['page'] : 'dashboardSummary';
+$valid_pages = ['dashboardSummary', 'requests', 'messages', 'profile', 'settings'];
+
+// Validate the page parameter
+if (!in_array($current_page, $valid_pages)) {
+    $current_page = 'dashboardSummary';
+}
+
+// Set the page file to load
+$page_file = $current_page . '.php';
 ?>
 
 <!DOCTYPE html>
@@ -14,84 +27,166 @@ $user = getUserDetails($conn, $_SESSION['user_id']);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Dashboard - CrisisLink</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="assets/css/style.css">
+
+    <!-- Boxicons -->
+    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+    <!-- My CSS -->
+    <link rel="stylesheet" href="assets/css/userDashboard.css">
+
+    <style>
+        /* Iframe Specific Styles */
+        #content-iframe {
+            width: 100%;
+            border: none;
+            min-height: calc(100vh - 100px); /* Adjust based on your navbar height */
+        }
+        .side-menu a {
+            cursor: pointer;
+        }
+        /* Override colors to match design */
+        :root {
+            --light: #F9F9F9;
+            --green: #4CAF50;
+            --light-green: #e8f5e9;
+            --grey: #eee;
+            --dark-grey: #AAAAAA;
+            --dark: #342E37;
+            --red: #DB504A;
+        }
+        
+        /* Override blue with green */
+        #sidebar .brand {
+            color: var(--green);
+        }
+        #sidebar .side-menu.top li.active a {
+            color: var(--green);
+        }
+        #sidebar .side-menu.top li a:hover {
+            color: var(--green);
+        }
+        #content nav .nav-link:hover {
+            color: var(--green);
+        }
+        #content main .head-title .left .breadcrumb li a.active {
+            color: var(--green);
+        }
+        #content main .head-title .btn-download {
+            background: var(--green);
+        }
+        #content main .box-info li:nth-child(1) .bx {
+            background: var(--light-green);
+            color: var(--green);
+        }
+        #content main .table-data .order table tr td .status.completed {
+            background: var(--green);
+        }
+        #content main .table-data .todo .todo-list li.completed {
+            border-left: 10px solid var(--green);
+        }
+    </style>
+
+    <title>CrisisLink User</title>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand" href="#">CrisisLink User</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.php">Home</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown">
-                            <?php echo htmlspecialchars($user['fname']); ?>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="profile.php">Profile</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="logout.php">Logout</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    <!-- SIDEBAR -->
+    <section id="sidebar">
+        <a href="#" class="brand">
+            <i class='bx bxs-happy'></i>
+            <span class="text">CrisisLink Network</span>
+        </a>
+        <ul class="side-menu top">
+            <li <?php echo ($current_page == 'dashboardSummary') ? 'class="active"' : ''; ?>>
+                <a href="?page=dashboardSummary">
+                    <i class='bx bxs-home'></i>
+                    <span class="text">Dashboard Summary</span>
+                </a>
+            </li>
+            <li <?php echo ($current_page == 'requests') ? 'class="active"' : ''; ?>>
+                <a href="?page=requests">
+                    <i class='bx bxs-notepad'></i>
+                    <span class="text">My Requests</span>
+                </a>
+            </li>
+            <li <?php echo ($current_page == 'messages') ? 'class="active"' : ''; ?>>
+                <a href="?page=messages">
+                    <i class='bx bxs-message-dots'></i>
+                    <span class="text">Messages</span>
+                </a>
+            </li>
+            <li <?php echo ($current_page == 'profile') ? 'class="active"' : ''; ?>>
+                <a href="?page=profile">
+                    <i class='bx bxs-user'></i>
+                    <span class="text">Profile</span>
+                </a>
+            </li>
+        </ul>
+        <ul class="side-menu">
+            <li <?php echo ($current_page == 'settings') ? 'class="active"' : ''; ?>>
+                <a href="?page=settings">
+                    <i class='bx bxs-cog'></i>
+                    <span class="text">Settings</span>
+                </a>
+            </li>
+            <li>
+                <a href="logout.php" class="logout">
+                    <i class='bx bxs-exit'></i>
+                    <span class="text">Logout</span>
+                </a>
+            </li>
+        </ul>
+    </section>
+    <!-- SIDEBAR -->
 
-    <!-- Dashboard Content -->
-    <div class="container mt-4">
-        <div class="row">
-            
+    <!-- CONTENT -->
+    <section id="content">
+        <!-- NAVBAR -->
+        <nav>
+            <i class='bx bx-menu'></i>
+            <div style="flex-grow: 1;"></div>
+            <a href="#" class="notification">
+                <i class='bx bxs-bell'></i>
+            </a>
+            <a class="profile">
+                <span><?php echo htmlspecialchars($user['fname']); ?> (user)</span>
+            </a>
+        </nav>
+        <!-- NAVBAR -->
 
-            <!-- Main Content -->
-            <div class="col-lg-9">
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="card-title">Welcome, <?php echo htmlspecialchars($user['fname']); ?>!</h4>
-                        <p class="card-text">Here's your activity summary:</p>
-                        
-                        <!-- Stats Row -->
-                        <div class="row mt-4">
-                            <div class="col-md-4">
-                                <div class="card bg-primary text-white">
-                                    <div class="card-body">
-                                        <h5>Open Requests</h5>
-                                        <h2>0</h2>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="card bg-success text-white">
-                                    <div class="card-body">
-                                        <h5>Completed Requests</h5>
-                                        <h2>0</h2>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="card bg-info text-white">
-                                    <div class="card-body">
-                                        <h5>New Messages</h5>
-                                        <h2>0</h2>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+        <!-- MAIN - Replace with iframe -->
+        <main>
+            <iframe id="content-iframe" src="<?php echo htmlspecialchars($page_file); ?>" frameborder="0"></iframe>
+        </main>
+    </section>
+    <!-- CONTENT -->
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    // TOGGLE SIDEBAR
+    const menuBar = document.querySelector('#content nav .bx.bx-menu');
+    const sidebar = document.getElementById('sidebar');
+
+    menuBar.addEventListener('click', function () {
+        sidebar.classList.toggle('hide');
+    });
+
+    // RESPONSIVE BEHAVIOR
+    if(window.innerWidth < 768) {
+        sidebar.classList.add('hide');
+    }
+
+    window.addEventListener('resize', function () {
+        if(this.innerWidth < 768) {
+            sidebar.classList.add('hide');
+        }
+    });
+
+    // Optional: Resize iframe to content
+    document.getElementById('content-iframe').addEventListener('load', function() {
+        try {
+            this.style.height = this.contentWindow.document.body.scrollHeight + 'px';
+        } catch(e) {
+            console.log('Could not resize iframe');
+        }
+    });
+    </script>
 </body>
 </html>
