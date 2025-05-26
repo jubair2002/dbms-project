@@ -186,7 +186,7 @@ html {
 
 .content-header {
     background: var(--light-color);
-    padding: 25px 40px;
+    padding: 8px 40px;
     border-bottom: 2px solid var(--gray-border);
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
@@ -252,7 +252,7 @@ html {
 
 .form-section-header {
     background: linear-gradient(135deg, var(--gray-light) 0%, #e9ecef 100%);
-    padding: 20px 25px;
+    padding: 10px 25px;
     border-bottom: 1px solid var(--gray-border);
     display: flex;
     align-items: center;

@@ -22,20 +22,21 @@ CREATE TABLE users (
 
 
 CREATE TABLE campaigns (
-    id INT AUTO_INCREMENT PRIMARY KEY,   
-    name VARCHAR(255) NOT NULL,           
-    description TEXT NOT NULL,            
-    image_url VARCHAR(255) NOT NULL,     
-    category VARCHAR(100) NOT NULL,       
-    goal DECIMAL(10, 2) NOT NULL,         
-    raised DECIMAL(10, 2) DEFAULT 0,      
-    donation_count INT DEFAULT 0,         
-    start_date DATETIME NOT NULL,         
-    end_date DATETIME NOT NULL,          
-    progress_color VARCHAR(7) DEFAULT '#4CAF50', 
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP, 
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
+    image_url VARCHAR(255) NOT NULL,
+    category VARCHAR(100) NOT NULL,
+    goal DECIMAL(10, 2) NOT NULL,
+    raised DECIMAL(10, 2) DEFAULT 0,
+    allocated DECIMAL(10, 2) DEFAULT 0,
+    donation_count INT DEFAULT 0,
+    start_date DATETIME NOT NULL,
+    end_date DATETIME NOT NULL,
+    progress_color VARCHAR(7) DEFAULT '#4CAF50',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending'
+    status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
     progress ENUM('ongoing', 'end') DEFAULT 'ongoing'
 );
 
@@ -120,4 +121,42 @@ CREATE TABLE messages (
     INDEX idx_emergency (is_emergency),
     FOREIGN KEY (chat_room_id) REFERENCES chat_rooms(id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+
+CREATE TABLE relief_categories (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    category_name VARCHAR(100) NOT NULL,
+    description TEXT,
+    status ENUM('active', 'inactive') DEFAULT 'active',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+-- Insert some sample relief categories
+INSERT INTO relief_categories (category_name, description) VALUES
+('Food & Water', 'Emergency food supplies and clean drinking water'),
+('Medical Supplies', 'Medicine, first aid kits, and medical equipment'),
+('Shelter', 'Temporary housing, tents, and building materials'),
+('Clothing', 'Clothes, blankets, and personal hygiene items'),
+('Education', 'School supplies, books, and educational materials'),
+('Transportation', 'Fuel, vehicle maintenance, and transport services'),
+('Emergency Response', 'Immediate disaster response and rescue operations'),
+('Infrastructure', 'Rebuilding roads, bridges, and essential facilities');
+
+
+-- Table for campaign allocations
+CREATE TABLE campaign_allocations (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    campaign_id INT NOT NULL,
+    category_id INT NOT NULL,
+    allocated_amount DECIMAL(10, 2) NOT NULL,
+    notes TEXT,
+    allocated_by INT NOT NULL,
+    date_allocated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (campaign_id) REFERENCES campaigns(id) ON DELETE CASCADE,
+    FOREIGN KEY (category_id) REFERENCES relief_categories(id),
+    FOREIGN KEY (allocated_by) REFERENCES users(id),
+    INDEX idx_campaign (campaign_id),
+    INDEX idx_date (date_allocated)
 );
