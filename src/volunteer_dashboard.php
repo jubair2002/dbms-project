@@ -11,7 +11,7 @@ $user = getUserDetails($conn, $_SESSION['user_id']);
 
 // Get current page from URL parameter or use dashboard as default
 $current_page = isset($_GET['page']) ? $_GET['page'] : 'dashboardSummary';
-$valid_pages = ['dashboardSummary', 'assignments', 'message', 'campaign', 'report', 'emergency', 'settings', 'profile'];
+$valid_pages = ['dashboardSummary', 'assignments', 'message', 'campaign', 'reports', 'emergency', 'settings', 'profile'];
 
 // Validate the page parameter
 if (!in_array($current_page, $valid_pages)) {
@@ -119,8 +119,8 @@ $page_file = $current_page . '.php';
                     <span class="text">Campaign</span>
                 </a>
             </li>
-            <li <?php echo ($current_page == 'report') ? 'class="active"' : ''; ?>>
-                <a href="?page=report">
+            <li <?php echo ($current_page == 'reports') ? 'class="active"' : ''; ?>>
+                <a href="?page=reports">
                     <i class='bx bxs-file'></i>
                     <span class="text">Report</span>
                 </a>

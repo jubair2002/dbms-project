@@ -120,7 +120,11 @@ function setupFormValidation() {
     
     forms.forEach(form => {
         form.addEventListener('submit', function(e) {
-            if (!validateForm(this)) {
+            // Allow the form to submit by default - this is the key fix
+            let isValid = validateForm(this);
+            
+            // If validation fails, prevent submission
+            if (!isValid) {
                 e.preventDefault();
                 return false;
             }
@@ -130,14 +134,12 @@ function setupFormValidation() {
             if (submitBtn) {
                 const originalText = submitBtn.innerHTML;
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-                submitBtn.disabled = true;
-                
-                // Re-enable after 3 seconds (in case of errors)
-                setTimeout(() => {
-                    submitBtn.innerHTML = originalText;
-                    submitBtn.disabled = false;
-                }, 3000);
+                // Don't disable the button to ensure form submission
+                // submitBtn.disabled = true;
             }
+            
+            // Form is valid, allow it to submit normally
+            return true;
         });
     });
     
@@ -152,6 +154,12 @@ function setupFormValidation() {
             // Clear validation styling on input
             this.style.borderColor = '';
             this.style.boxShadow = '';
+            
+            // Remove error message if exists
+            const errorMsg = this.parentNode.querySelector('.error-message');
+            if (errorMsg) {
+                errorMsg.remove();
+            }
         });
     });
 }
@@ -161,12 +169,17 @@ function validateForm(form) {
     let isValid = true;
     
     requiredFields.forEach(field => {
+        // Skip file inputs if they're not required for this submission
+        if (field.type === 'file' && !form.querySelector('[name="upload_picture"]')) {
+            return;
+        }
+        
         if (!validateField(field)) {
             isValid = false;
         }
     });
     
-    // Additional validation for specific forms
+    // Additional validation for password change form
     if (form.querySelector('[name="change_password"]')) {
         const newPassword = form.querySelector('[name="new_password"]');
         if (newPassword && newPassword.value.length < 6) {
@@ -175,9 +188,10 @@ function validateForm(form) {
         }
     }
     
+    // Email validation
     if (form.querySelector('[name="email"]')) {
         const email = form.querySelector('[name="email"]');
-        if (email && !isValidEmail(email.value)) {
+        if (email && email.value.trim() !== '' && !isValidEmail(email.value)) {
             showFieldError(email, 'Please enter a valid email address');
             isValid = false;
         }
@@ -187,12 +201,19 @@ function validateForm(form) {
 }
 
 function validateField(field) {
+    // Skip validation for hidden fields
+    if (field.type === 'hidden') {
+        return true;
+    }
+    
+    // Required field validation
     if (field.hasAttribute('required') && !field.value.trim()) {
         showFieldError(field, 'This field is required');
         return false;
     }
     
-    if (field.type === 'email' && field.value && !isValidEmail(field.value)) {
+    // Email validation
+    if (field.type === 'email' && field.value.trim() !== '' && !isValidEmail(field.value)) {
         showFieldError(field, 'Please enter a valid email address');
         return false;
     }
@@ -225,8 +246,8 @@ function showFieldError(field, message) {
 }
 
 function clearFieldError(field) {
-    field.style.borderColor = 'var(--success-color)';
-    field.style.boxShadow = '0 0 0 3px rgba(40, 167, 69, 0.1)';
+    field.style.borderColor = '';
+    field.style.boxShadow = '';
     
     const errorMsg = field.parentNode.querySelector('.error-message');
     if (errorMsg) {

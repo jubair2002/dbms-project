@@ -9,6 +9,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Setup smooth scrolling for better UX
     setupSmoothScrolling();
+    
+    // Initialize allocations section if present
+    initializeAllocations();
 });
 
 // Full screen setup function
@@ -204,6 +207,46 @@ function setupSmoothScrolling() {
             }, 150);
         });
     }
+}
+
+// Initialize allocations section
+function initializeAllocations() {
+    // Animate allocation cards
+    const allocationCards = document.querySelectorAll('.allocation-card');
+    allocationCards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        card.style.transition = 'all 0.5s ease';
+        
+        setTimeout(() => {
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, 100 + (index * 100)); // Staggered animation
+    });
+    
+    // Animate progress bars
+    const progressBars = document.querySelectorAll('.allocation-progress-fill, .progress-large');
+    progressBars.forEach(bar => {
+        const width = bar.style.width;
+        bar.style.width = '0%';
+        
+        setTimeout(() => {
+            bar.style.width = width;
+        }, 500);
+    });
+    
+    // Animate summary cards
+    const summaryCards = document.querySelectorAll('.allocation-summary-card');
+    summaryCards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'scale(0.95)';
+        card.style.transition = 'all 0.5s ease';
+        
+        setTimeout(() => {
+            card.style.opacity = '1';
+            card.style.transform = 'scale(1)';
+        }, 300 + (index * 150)); // Staggered animation
+    });
 }
 
 // Add progressive loading for images

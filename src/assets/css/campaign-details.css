@@ -5,6 +5,8 @@
     --light-gray: #f4f4f4;
     --dark-gray: #333;
     --border-color: #ddd;
+    --orange-color: #FFA500;
+    --blue-color: #2196F3;
 }
 
 * {
@@ -432,6 +434,197 @@ body {
     font-weight: 500;
 }
 
+/* Compact allocation styles */
+.compact-allocations {
+    margin-top: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 15px;
+}
+
+.allocation-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #333;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.allocation-title span {
+    font-weight: normal;
+    font-size: 14px;
+    color: #666;
+}
+
+.allocation-progress {
+    height: 8px;
+    background-color: #eee;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 15px;
+}
+
+.allocation-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4CAF50, #3E8E41);
+    transition: width 0.6s ease;
+}
+
+.allocation-category {
+    margin-bottom: 10px;
+}
+
+.allocation-category-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.allocation-category-bar {
+    height: 6px;
+    background-color: #eee;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.allocation-category-fill {
+    height: 100%;
+    background-color: #4CAF50;
+    transition: width 0.6s ease;
+}
+
+.compact-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.compact-stat {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 10px;
+    text-align: center;
+}
+
+.compact-stat-value {
+    font-weight: bold;
+    font-size: 18px;
+    color: #4CAF50;
+}
+
+.compact-stat-label {
+    font-size: 12px;
+    color: #666;
+    margin-top: 5px;
+}
+
+.admin-action {
+    margin-top: 15px;
+}
+
+.admin-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 10px;
+    background-color: #2196F3;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.admin-btn:hover {
+    background-color: #1976D2;
+    transform: translateY(-2px);
+}
+
+.no-allocations-message {
+    text-align: center;
+    color: #666;
+    padding: 10px;
+}
+
+.volunteer-cta {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+.volunteer-cta h4 {
+    margin-bottom: 15px;
+    color: var(--dark-gray);
+}
+
+.volunteer-cta p {
+    margin-bottom: 15px;
+    line-height: 1.6;
+    color: #555;
+}
+
+/* Allocation Tab Styles */
+.allocation-card {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    border-left: 4px solid var(--primary-color);
+    transition: all 0.3s ease;
+}
+
+.allocation-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.allocation-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    align-items: center;
+}
+
+.allocation-category {
+    font-weight: bold;
+    font-size: 18px;
+    color: var(--dark-gray);
+}
+
+.allocation-amount {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: bold;
+}
+
+.allocation-meta {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+    font-size: 14px;
+    color: #666;
+}
+
+.allocation-notes {
+    margin-top: 10px;
+    color: #555;
+    line-height: 1.5;
+}
+
 /* Mobile Responsive */
 @media (max-width: 768px) {
     .header {
@@ -505,6 +698,25 @@ body {
     .campaign-details-tabs {
         padding: 15px;
     }
+    
+    .allocation-meta {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .compact-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .allocation-table th, .allocation-table td {
+        padding: 8px;
+        font-size: 14px;
+    }
+    
+    .allocation-table {
+        display: block;
+        overflow-x: auto;
+    }
 }
 
 @media (max-width: 480px) {
@@ -523,6 +735,20 @@ body {
     .tab-btn {
         padding: 10px 15px;
         font-size: 13px;
+    }
+    
+    .category-header {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .compact-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .allocation-category-header {
+        flex-direction: column;
+        gap: 3px;
     }
 }
 

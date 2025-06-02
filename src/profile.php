@@ -16,6 +16,11 @@ $query->execute(); // Execute the query
 $result = $query->get_result(); // Get the result set
 $user = $result->fetch_assoc(); // Fetch the user data
 
+// Debug Profile Update
+if (isset($_POST['debug_info'])) {
+    error_log("POST data: " . print_r($_POST, true));
+}
+
 // Handle profile update
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Update Name, Email & Location
@@ -26,11 +31,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $location = htmlspecialchars($_POST['location']);
         $phone = htmlspecialchars($_POST['phone']);
 
+        // Debug - log data before update
+        error_log("Updating profile for user ID: $user_id");
+        error_log("Data: fname=$fname, lname=$lname, email=$email, location=$location, phone=$phone");
+
         $updateQuery = $conn->prepare("UPDATE users SET fname = ?, lname = ?, email = ?, location = ?, phone = ? WHERE id = ?");
         $updateQuery->bind_param("sssssi", $fname, $lname, $email, $location, $phone, $user_id); // Bind parameters
-        $updateQuery->execute(); // Execute the query
-
-        $_SESSION['success'] = "Profile updated successfully!";
+        
+        if ($updateQuery->execute()) { // Execute the query and check result
+            $_SESSION['success'] = "Profile updated successfully!";
+            error_log("Profile update successful");
+        } else {
+            $_SESSION['error'] = "Failed to update profile: " . $conn->error;
+            error_log("Profile update failed: " . $conn->error);
+        }
+        
+        // Redirect to refresh page with updated data
         header("Location: profile.php");
         exit();
     }
@@ -200,7 +216,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <span class="edit-badge">Editable</span>
                         </div>
                         <div class="form-section-body">
-                            <form method="POST">
+                            <form method="POST" id="profile-form" novalidate>
                                 <div class="form-grid">
                                     <div class="form-group">
                                         <label class="form-label">First Name</label>
@@ -228,6 +244,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     </div>
                                 </div>
                                 
+                                <input type="hidden" name="debug_info" value="1">
                                 <button type="submit" name="update_profile" class="btn btn-primary">
                                     <i class="fas fa-save"></i> Save Changes
                                 </button>
@@ -245,7 +262,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <span class="edit-badge">Upload</span>
                         </div>
                         <div class="form-section-body">
-                            <form method="POST" enctype="multipart/form-data">
+                            <form method="POST" enctype="multipart/form-data" id="picture-form" novalidate>
                                 <div class="file-upload-area">
                                     <i class="fas fa-cloud-upload-alt upload-icon"></i>
                                     <div class="upload-text">Click to upload or drag and drop</div>
@@ -272,7 +289,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <span class="edit-badge">Security</span>
                         </div>
                         <div class="form-section-body">
-                            <form method="POST">
+                            <form method="POST" id="password-form" novalidate>
                                 <div class="form-group">
                                     <label class="form-label">Current Password</label>
                                     <input type="password" name="current_password" class="form-control" required>
