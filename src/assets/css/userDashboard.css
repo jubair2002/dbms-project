@@ -575,3 +575,29 @@ body {
     color: var(--green);
 }
 
+/* Add these styles to your existing CSS */
+#content nav .profile {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+#content nav .profile .profile-pic {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 8px;
+    border: 2px solid var(--green);
+}
+
+#content nav .profile i.bxs-user-circle {
+    font-size: 32px;
+    margin-right: 8px;
+    color: var(--green);
+}
+
+#content nav .profile span {
+    font-size: 14px;
+    color: var(--dark);
+}

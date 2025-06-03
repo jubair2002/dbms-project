@@ -189,3 +189,84 @@ CREATE TABLE notifications (
     INDEX idx_unread (recipient_id, is_read),
     INDEX idx_entity (entity_type, entity_id)
 );
+
+-- Blood Donor Profiles Table
+CREATE TABLE blood_donors (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    blood_type ENUM('A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-') NOT NULL,
+    age INT NOT NULL,
+    weight DECIMAL(5,2) NOT NULL, -- in kg
+    last_donation_date DATE DEFAULT NULL,
+    medical_conditions TEXT DEFAULT NULL,
+    emergency_contact VARCHAR(20) NOT NULL,
+    availability_status ENUM('available', 'unavailable', 'recently_donated') DEFAULT 'available',
+    donor_status ENUM('active', 'inactive', 'suspended') DEFAULT 'active',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_donor (user_id)
+);
+
+-- Blood Donation Requests Table
+CREATE TABLE blood_requests (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    requester_id INT NOT NULL,
+    blood_type ENUM('A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-') NOT NULL,
+    units_needed INT NOT NULL DEFAULT 1,
+    urgency ENUM('low', 'medium', 'high', 'critical') NOT NULL DEFAULT 'medium',
+    patient_name VARCHAR(100) NOT NULL,
+    hospital_name VARCHAR(200) NOT NULL,
+    hospital_address TEXT NOT NULL,
+    contact_number VARCHAR(20) NOT NULL,
+    needed_by_date DATE NOT NULL,
+    additional_notes TEXT DEFAULT NULL,
+    request_status ENUM('open', 'partially_fulfilled', 'fulfilled', 'expired', 'cancelled') DEFAULT 'open',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (requester_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Donation Responses Table (when donors respond to requests)
+CREATE TABLE donation_responses (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    request_id INT NOT NULL,
+    donor_id INT NOT NULL,
+    response_status ENUM('interested', 'accepted', 'rejected', 'completed') DEFAULT 'interested',
+    response_message TEXT DEFAULT NULL,
+    donation_date DATE DEFAULT NULL,
+    donation_location VARCHAR(200) DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (request_id) REFERENCES blood_requests(id) ON DELETE CASCADE,
+    FOREIGN KEY (donor_id) REFERENCES blood_donors(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_response (request_id, donor_id)
+);
+
+-- Donation History Table
+CREATE TABLE donation_history (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    donor_id INT NOT NULL,
+    request_id INT DEFAULT NULL,
+    donation_date DATE NOT NULL,
+    blood_type ENUM('A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-') NOT NULL,
+    units_donated INT DEFAULT 1,
+    donation_location VARCHAR(200) NOT NULL,
+    hospital_name VARCHAR(200) DEFAULT NULL,
+    recipient_info VARCHAR(200) DEFAULT NULL,
+    notes TEXT DEFAULT NULL,
+    verified BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (donor_id) REFERENCES blood_donors(id) ON DELETE CASCADE,
+    FOREIGN KEY (request_id) REFERENCES blood_requests(id) ON DELETE SET NULL
+);
+
+-- Create indexes for better performance
+CREATE INDEX idx_blood_donors_blood_type ON blood_donors(blood_type);
+CREATE INDEX idx_blood_donors_availability ON blood_donors(availability_status);
+CREATE INDEX idx_blood_donors_location ON blood_donors(user_id);
+CREATE INDEX idx_blood_requests_blood_type ON blood_requests(blood_type);
+CREATE INDEX idx_blood_requests_status ON blood_requests(request_status);
+CREATE INDEX idx_blood_requests_urgency ON blood_requests(urgency);
+CREATE INDEX idx_donation_responses_status ON donation_responses(response_status);
+CREATE INDEX idx_donation_history_date ON donation_history(donation_date);

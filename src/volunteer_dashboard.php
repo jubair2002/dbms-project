@@ -171,7 +171,7 @@ $page_file = $current_page . '.php';
     <!-- CONTENT -->
     <section id="content">
         <!-- NAVBAR -->
-        <nav>
+         <nav>
             <i class='bx bx-menu'></i>
             <div style="flex-grow: 1;"></div>
             <a href="#" class="notification" id="notification-bell">
@@ -187,10 +187,13 @@ $page_file = $current_page . '.php';
                     </div>
                 </div>
             </a>
-
-
             <a class="profile">
-                <span><?php echo htmlspecialchars($user['fname']); ?> (volunteer)</span>
+                <?php if (!empty($user['picture'])): ?>
+                    <img src="<?php echo htmlspecialchars($user['picture']); ?>" alt="Profile" class="profile-pic">
+                <?php else: ?>
+                    <i class='bx bxs-user-circle'></i>
+                <?php endif; ?>
+                <span><?php echo htmlspecialchars($user['fname']); ?> (Volunteer)</span>
             </a>
         </nav>
         <!-- NAVBAR -->

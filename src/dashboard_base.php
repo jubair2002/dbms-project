@@ -10,7 +10,8 @@ if (!isset($_SESSION['user_id'])) {
 
 // Function to get user details from database
 function getUserDetails($conn, $user_id) {
-    $stmt = $conn->prepare("SELECT fname, lname, email, picture, location, user_type FROM users WHERE id = ?");
+    $sql = "SELECT id, fname, lname, email, picture FROM users WHERE id = ?";
+    $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $user_id);
     $stmt->execute();
     return $stmt->get_result()->fetch_assoc();

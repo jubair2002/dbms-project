@@ -183,8 +183,14 @@ $page_file = $current_page . '.php';
                 </div>
             </a>
             <a class="profile">
-                <span><?php echo htmlspecialchars($user['fname']); ?> (user)</span>
+                <?php if (!empty($user['picture'])): ?>
+                    <img src="<?php echo htmlspecialchars($user['picture']); ?>" alt="Profile" class="profile-pic">
+                <?php else: ?>
+                    <i class='bx bxs-user-circle'></i>
+                <?php endif; ?>
+                <span><?php echo htmlspecialchars($user['fname']); ?> (User)</span>
             </a>
+
         </nav>
         <!-- NAVBAR -->
 

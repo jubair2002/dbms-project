@@ -24,6 +24,7 @@ $page_file = $current_page . '.php';
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -38,11 +39,14 @@ $page_file = $current_page . '.php';
         #content-iframe {
             width: 100%;
             border: none;
-            min-height: calc(100vh - 100px); /* Adjust based on your navbar height */
+            min-height: calc(100vh - 100px);
+            /* Adjust based on your navbar height */
         }
+
         .side-menu a {
             cursor: pointer;
         }
+
         /* Override colors to match design */
         :root {
             --light: #F9F9F9;
@@ -53,33 +57,41 @@ $page_file = $current_page . '.php';
             --dark: #342E37;
             --red: #DB504A;
         }
-        
+
         /* Override blue with green */
         #sidebar .brand {
             color: var(--green);
         }
+
         #sidebar .side-menu.top li.active a {
             color: var(--green);
         }
+
         #sidebar .side-menu.top li a:hover {
             color: var(--green);
         }
+
         #content nav .nav-link:hover {
             color: var(--green);
         }
+
         #content main .head-title .left .breadcrumb li a.active {
             color: var(--green);
         }
+
         #content main .head-title .btn-download {
             background: var(--green);
         }
+
         #content main .box-info li:nth-child(1) .bx {
             background: var(--light-green);
             color: var(--green);
         }
+
         #content main .table-data .order table tr td .status.completed {
             background: var(--green);
         }
+
         #content main .table-data .todo .todo-list li.completed {
             border-left: 10px solid var(--green);
         }
@@ -87,6 +99,7 @@ $page_file = $current_page . '.php';
 
     <title>CrisisLink Admin</title>
 </head>
+
 <body>
     <!-- SIDEBAR -->
     <section id="sidebar">
@@ -155,7 +168,7 @@ $page_file = $current_page . '.php';
         <nav>
             <i class='bx bx-menu'></i>
             <div style="flex-grow: 1;"></div>
-             <a href="#" class="notification" id="notification-bell">
+            <a href="#" class="notification" id="notification-bell">
                 <i class='bx bxs-bell'></i>
                 <span class="notification-badge" id="notification-badge" style="display: none;">0</span>
                 <!-- Add notification popup -->
@@ -169,7 +182,12 @@ $page_file = $current_page . '.php';
                 </div>
             </a>
             <a class="profile">
-                <span><?php echo htmlspecialchars($user['fname']); ?> (admin)</span>
+                <?php if (!empty($user['picture'])): ?>
+                    <img src="<?php echo htmlspecialchars($user['picture']); ?>" alt="Profile" class="profile-pic">
+                <?php else: ?>
+                    <i class='bx bxs-user-circle'></i>
+                <?php endif; ?>
+                <span><?php echo htmlspecialchars($user['fname']); ?> (Admin)</span>
             </a>
         </nav>
         <!-- NAVBAR -->
@@ -182,131 +200,132 @@ $page_file = $current_page . '.php';
     <!-- CONTENT -->
 
     <script>
-    // TOGGLE SIDEBAR
-    const menuBar = document.querySelector('#content nav .bx.bx-menu');
-    const sidebar = document.getElementById('sidebar');
+        // TOGGLE SIDEBAR
+        const menuBar = document.querySelector('#content nav .bx.bx-menu');
+        const sidebar = document.getElementById('sidebar');
 
-    menuBar.addEventListener('click', function () {
-        sidebar.classList.toggle('hide');
-    });
+        menuBar.addEventListener('click', function() {
+            sidebar.classList.toggle('hide');
+        });
 
-    // RESPONSIVE BEHAVIOR
-    if(window.innerWidth < 768) {
-        sidebar.classList.add('hide');
-    }
-
-    window.addEventListener('resize', function () {
-        if(this.innerWidth < 768) {
+        // RESPONSIVE BEHAVIOR
+        if (window.innerWidth < 768) {
             sidebar.classList.add('hide');
         }
-    });
 
-    // Optional: Resize iframe to content
-    document.getElementById('content-iframe').addEventListener('load', function() {
-        try {
-            this.style.height = this.contentWindow.document.body.scrollHeight + 'px';
-        } catch(e) {
-            console.log('Could not resize iframe');
-        }
-    });
+        window.addEventListener('resize', function() {
+            if (this.innerWidth < 768) {
+                sidebar.classList.add('hide');
+            }
+        });
 
-    
+        // Optional: Resize iframe to content
+        document.getElementById('content-iframe').addEventListener('load', function() {
+            try {
+                this.style.height = this.contentWindow.document.body.scrollHeight + 'px';
+            } catch (e) {
+                console.log('Could not resize iframe');
+            }
+        });
+
+
         document.addEventListener('DOMContentLoaded', function() {
-    const notificationBell = document.getElementById('notification-bell');
-    const notificationPopup = document.getElementById('notification-popup');
-    const notificationContent = document.getElementById('notification-content');
-    const notificationBadge = document.getElementById('notification-badge');
-    
-    // Load initial notification count
-    loadNotificationCount();
-    
-    // Toggle notification popup
-    notificationBell.addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        
-        if (notificationPopup.classList.contains('show')) {
-            notificationPopup.classList.remove('show');
-        } else {
-            loadNotifications();
-            notificationPopup.classList.add('show');
-        }
-    });
-    
-    // Close popup when clicking outside
-    document.addEventListener('click', function(e) {
-        if (!notificationBell.contains(e.target)) {
-            notificationPopup.classList.remove('show');
-        }
-    });
-    
-    // Load notifications via AJAX
-    function loadNotifications() {
-        fetch('get_notifications.php')
-            .then(response => response.text())
-            .then(data => {
-                notificationContent.innerHTML = data;
-                // Update count after loading notifications
-                loadNotificationCount();
-            })
-            .catch(error => {
-                notificationContent.innerHTML = '<div style="padding: 20px; text-align: center; color: #777;">Error loading notifications</div>';
-            });
-    }
-    
-    // Load notification count
-    function loadNotificationCount() {
-        fetch('get_notification_count.php')
-            .then(response => response.json())
-            .then(data => {
-                updateNotificationBadge(data.unread_count);
-            })
-            .catch(error => {
-                console.error('Error loading notification count:', error);
-            });
-    }
-    
-    // Update notification badge
-    function updateNotificationBadge(count) {
-        if (count > 0) {
-            notificationBadge.textContent = count > 99 ? '99+' : count;
-            notificationBadge.style.display = 'flex';
-        } else {
-            notificationBadge.style.display = 'none';
-        }
-    }
-    
-    // Mark notification as read via AJAX
-    function markAsRead(notificationId, element) {
-        fetch('mark_notifications_read.php?id=' + notificationId)
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Remove the unread styling
-                    const notificationItem = element.closest('.notification-item');
-                    notificationItem.classList.remove('unread');
-                    
-                    // Hide the "Mark as read" link
-                    element.style.display = 'none';
-                    
-                    // Update the notification count badge
-                    loadNotificationCount();
+            const notificationBell = document.getElementById('notification-bell');
+            const notificationPopup = document.getElementById('notification-popup');
+            const notificationContent = document.getElementById('notification-content');
+            const notificationBadge = document.getElementById('notification-badge');
+
+            // Load initial notification count
+            loadNotificationCount();
+
+            // Toggle notification popup
+            notificationBell.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                if (notificationPopup.classList.contains('show')) {
+                    notificationPopup.classList.remove('show');
                 } else {
-                    alert('Error marking notification as read');
+                    loadNotifications();
+                    notificationPopup.classList.add('show');
                 }
-            })
-            .catch(error => {
-                console.error('Error marking notification as read:', error);
-                alert('Error marking notification as read');
             });
-    }
-    
-    // Make markAsRead function global so onclick can access it
-    window.markAsRead = markAsRead;
-    
-    // Refresh notification count every 30 seconds
-    setInterval(loadNotificationCount, 30000);
-});
+
+            // Close popup when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!notificationBell.contains(e.target)) {
+                    notificationPopup.classList.remove('show');
+                }
+            });
+
+            // Load notifications via AJAX
+            function loadNotifications() {
+                fetch('get_notifications.php')
+                    .then(response => response.text())
+                    .then(data => {
+                        notificationContent.innerHTML = data;
+                        // Update count after loading notifications
+                        loadNotificationCount();
+                    })
+                    .catch(error => {
+                        notificationContent.innerHTML = '<div style="padding: 20px; text-align: center; color: #777;">Error loading notifications</div>';
+                    });
+            }
+
+            // Load notification count
+            function loadNotificationCount() {
+                fetch('get_notification_count.php')
+                    .then(response => response.json())
+                    .then(data => {
+                        updateNotificationBadge(data.unread_count);
+                    })
+                    .catch(error => {
+                        console.error('Error loading notification count:', error);
+                    });
+            }
+
+            // Update notification badge
+            function updateNotificationBadge(count) {
+                if (count > 0) {
+                    notificationBadge.textContent = count > 99 ? '99+' : count;
+                    notificationBadge.style.display = 'flex';
+                } else {
+                    notificationBadge.style.display = 'none';
+                }
+            }
+
+            // Mark notification as read via AJAX
+            function markAsRead(notificationId, element) {
+                fetch('mark_notifications_read.php?id=' + notificationId)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Remove the unread styling
+                            const notificationItem = element.closest('.notification-item');
+                            notificationItem.classList.remove('unread');
+
+                            // Hide the "Mark as read" link
+                            element.style.display = 'none';
+
+                            // Update the notification count badge
+                            loadNotificationCount();
+                        } else {
+                            alert('Error marking notification as read');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error marking notification as read:', error);
+                        alert('Error marking notification as read');
+                    });
+            }
+
+            // Make markAsRead function global so onclick can access it
+            window.markAsRead = markAsRead;
+
+            // Refresh notification count every 30 seconds
+            setInterval(loadNotificationCount, 30000);
+        });
     </script>
 </body>
+
 </html>
