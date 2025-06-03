@@ -11,7 +11,7 @@ $user = getUserDetails($conn, $_SESSION['user_id']);
 
 // Get current page from URL parameter or use dashboard as default
 $current_page = isset($_GET['page']) ? $_GET['page'] : 'dashboardSummary';
-$valid_pages = ['dashboardSummary', 'requests', 'message', 'reports','campaign','profile', 'settings', 'emergency'];
+$valid_pages = ['dashboardSummary', 'message', 'reports', 'campaign', 'profile', 'settings', 'emergency'];
 
 // Validate the page parameter
 if (!in_array($current_page, $valid_pages)) {
@@ -114,12 +114,6 @@ $page_file = $current_page . '.php';
                     <span class="text">Dashboard Summary</span>
                 </a>
             </li>
-            <li <?php echo ($current_page == 'requests') ? 'class="active"' : ''; ?>>
-                <a href="?page=requests">
-                    <i class='bx bxs-notepad'></i>
-                    <span class="text">My Requests</span>
-                </a>
-            </li>
             <li <?php echo ($current_page == 'reports') ? 'class="active"' : ''; ?>>
                 <a href="?page=reports">
                     <i class='bx bxs-notepad'></i>
@@ -129,7 +123,7 @@ $page_file = $current_page . '.php';
             <li <?php echo ($current_page == 'emergency') ? 'class="active"' : ''; ?>>
                 <a href="?page=emergency">
                     <i class='bx bxs-notepad'></i>
-                    <span class="text">Emergency</span>
+                    <span class="text">Emergency Help</span>
                 </a>
             </li>
             <li <?php echo ($current_page == 'message') ? 'class="active"' : ''; ?>>
@@ -175,8 +169,18 @@ $page_file = $current_page . '.php';
         <nav>
             <i class='bx bx-menu'></i>
             <div style="flex-grow: 1;"></div>
-            <a href="#" class="notification">
+            <a href="#" class="notification" id="notification-bell">
                 <i class='bx bxs-bell'></i>
+                <span class="notification-badge" id="notification-badge" style="display: none;">0</span>
+                <!-- Add notification popup -->
+                <div class="notification-popup" id="notification-popup">
+                    <div class="notification-header">
+                        Notifications
+                    </div>
+                    <div class="notification-list" id="notification-content">
+                        <!-- Notifications will be loaded here -->
+                    </div>
+                </div>
             </a>
             <a class="profile">
                 <span><?php echo htmlspecialchars($user['fname']); ?> (user)</span>
@@ -218,6 +222,102 @@ $page_file = $current_page . '.php';
             } catch (e) {
                 console.log('Could not resize iframe');
             }
+        });
+        document.addEventListener('DOMContentLoaded', function() {
+            const notificationBell = document.getElementById('notification-bell');
+            const notificationPopup = document.getElementById('notification-popup');
+            const notificationContent = document.getElementById('notification-content');
+            const notificationBadge = document.getElementById('notification-badge');
+
+            // Load initial notification count
+            loadNotificationCount();
+
+            // Toggle notification popup
+            notificationBell.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                if (notificationPopup.classList.contains('show')) {
+                    notificationPopup.classList.remove('show');
+                } else {
+                    loadNotifications();
+                    notificationPopup.classList.add('show');
+                }
+            });
+
+            // Close popup when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!notificationBell.contains(e.target)) {
+                    notificationPopup.classList.remove('show');
+                }
+            });
+
+            // Load notifications via AJAX
+            function loadNotifications() {
+                fetch('get_notifications.php')
+                    .then(response => response.text())
+                    .then(data => {
+                        notificationContent.innerHTML = data;
+                        // Update count after loading notifications
+                        loadNotificationCount();
+                    })
+                    .catch(error => {
+                        notificationContent.innerHTML = '<div style="padding: 20px; text-align: center; color: #777;">Error loading notifications</div>';
+                    });
+            }
+
+            // Load notification count
+            function loadNotificationCount() {
+                fetch('get_notification_count.php')
+                    .then(response => response.json())
+                    .then(data => {
+                        updateNotificationBadge(data.unread_count);
+                    })
+                    .catch(error => {
+                        console.error('Error loading notification count:', error);
+                    });
+            }
+
+            // Update notification badge
+            function updateNotificationBadge(count) {
+                if (count > 0) {
+                    notificationBadge.textContent = count > 99 ? '99+' : count;
+                    notificationBadge.style.display = 'flex';
+                } else {
+                    notificationBadge.style.display = 'none';
+                }
+            }
+
+            // Mark notification as read via AJAX
+            function markAsRead(notificationId, element) {
+                fetch('mark_notifications_read.php?id=' + notificationId)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Remove the unread styling
+                            const notificationItem = element.closest('.notification-item');
+                            notificationItem.classList.remove('unread');
+
+                            // Hide the "Mark as read" link
+                            element.style.display = 'none';
+
+                            // Update the notification count badge
+                            loadNotificationCount();
+                        } else {
+                            alert('Error marking notification as read');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error marking notification as read:', error);
+                        alert('Error marking notification as read');
+                    });
+            }
+
+            // Make markAsRead function global so onclick can access it
+            window.markAsRead = markAsRead;
+
+            // Refresh notification count every 30 seconds
+            setInterval(loadNotificationCount, 30000);
         });
     </script>
 </body>

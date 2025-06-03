@@ -442,3 +442,120 @@ body {
 		min-width: 420px;
 	}
 }
+
+
+.notification-popup {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 450px;
+    height: 500px;
+    background: var(--light);
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+    z-index: 1001;
+    display: none;
+    overflow: hidden;
+}
+
+.notification-popup.show {
+    display: block;
+}
+
+.notification-header {
+    padding: 20px 25px;
+    border-bottom: 1px solid var(--grey);
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--dark);
+    background: var(--light);
+}
+
+.notification-list {
+    height: 440px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+}
+
+.notification-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.notification-list::-webkit-scrollbar-track {
+    background: var(--grey);
+}
+
+.notification-list::-webkit-scrollbar-thumb {
+    background: var(--dark-grey);
+    border-radius: 2px;
+}
+
+.notification-item {
+    padding: 18px 25px;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.notification-item:hover {
+    background: var(--grey);
+}
+
+.notification-item.unread {
+    background: #f8f9ff;
+    border-left: 4px solid var(--green);
+}
+
+.notification-title {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--dark);
+    margin-bottom: 6px;
+}
+
+.notification-message {
+    font-size: 13px;
+    color: var(--dark-grey);
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+.notification-time {
+    font-size: 12px;
+    color: var(--dark-grey);
+}
+
+.mark-read {
+    color: var(--green);
+    font-size: 10px;
+    text-decoration: none;
+    margin-left: 8px;
+}
+
+.mark-read:hover {
+    text-decoration: underline;
+}
+
+/* Position relative for notification bell */
+#content nav .notification {
+    position: relative;
+}
+
+/* Notification Badge Styles */
+.notification-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: var(--red);
+    color: white;
+    border-radius: 12px;
+    padding: 2px 6px;
+    font-size: 11px;
+    font-weight: 600;
+    min-width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--light);
+}

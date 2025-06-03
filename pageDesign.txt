@@ -18,3 +18,5 @@ Emergency help -----> this page contain nearby hospital filtering by user locati
 
 chatting ----------->message.php, chat_api.php, chat_function.php, file_upload.php, user_search.php
 
+notification ------->get--notification.php , mark -notification -read .php , get-notification-count.php ,
+						notification pop up auto refresh in every 30 second

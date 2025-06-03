@@ -1,4 +1,4 @@
-<?php 
+<?php
 require_once 'config.php';
 require_once 'chat_functions.php';
 
@@ -35,49 +35,49 @@ $allVolunteers = $volunteersResult->fetch_all(MYSQLI_ASSOC);
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['assign_tasks'])) {
     $campaign_id = intval($_POST['campaign_id']);
     $volunteer_id = intval($_POST['volunteer_id']);
-    
+
     // Validate inputs
     if ($campaign_id <= 0 || $volunteer_id <= 0) {
         $error_message = "Invalid campaign or volunteer selection.";
     } else {
         // Check if tasks array exists and is not empty
         $tasks = isset($_POST['tasks']) ? $_POST['tasks'] : [];
-        
+
         if (empty($tasks)) {
             $error_message = "Please add at least one task to assign.";
         } else {
             $conn->begin_transaction();
-            
+
             try {
                 $successCount = 0;
-                
+
                 foreach ($tasks as $task) {
                     if (!empty($task['name']) && !empty($task['description'])) {
                         // Set default values if not provided
                         $priority = isset($task['priority']) && !empty($task['priority']) ? $task['priority'] : 'medium';
                         $deadline = isset($task['deadline']) && !empty($task['deadline']) ? $task['deadline'] : date('Y-m-d H:i:s', strtotime('+7 days'));
-                        
+
                         // Insert into assignments table
                         $assignmentStmt = $conn->prepare("INSERT INTO assignments (campaign_id, volunteer_id, task_name, description, priority, deadline, status, created_at) VALUES (?, ?, ?, ?, ?, ?, 'assigned', NOW())");
-                        
+
                         if (!$assignmentStmt) {
                             throw new Exception("Prepare failed for assignments: " . $conn->error);
                         }
-                        
+
                         $assignmentStmt->bind_param("iissss", $campaign_id, $volunteer_id, $task['name'], $task['description'], $priority, $deadline);
-                        
+
                         if ($assignmentStmt->execute()) {
                             $assignment_id = $conn->insert_id;
-                            
+
                             // Insert into tasks table
                             $taskStmt = $conn->prepare("INSERT INTO tasks (assignment_id, task_name, description, priority, deadline, status, created_at) VALUES (?, ?, ?, ?, ?, 'assigned', NOW())");
-                            
+
                             if (!$taskStmt) {
                                 throw new Exception("Prepare failed for tasks: " . $conn->error);
                             }
-                            
+
                             $taskStmt->bind_param("issss", $assignment_id, $task['name'], $task['description'], $priority, $deadline);
-                            
+
                             if ($taskStmt->execute()) {
                                 $successCount++;
                             } else {
@@ -90,25 +90,46 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['assign_tasks'])) {
                         $assignmentStmt->close();
                     }
                 }
-                
+
                 if ($successCount > 0) {
                     $conn->commit();
                     $success_message = "Successfully assigned $successCount task(s) to volunteer!";
-                    
+
+                    // Get campaign name for notification
+                    $campaignQuery = $conn->prepare("SELECT name FROM campaigns WHERE id = ?");
+                    $campaignQuery->bind_param("i", $campaign_id);
+                    $campaignQuery->execute();
+                    $campaignResult = $campaignQuery->get_result();
+                    $campaignData = $campaignResult->fetch_assoc();
+                    $campaignName = $campaignData['name'];
+                    $campaignQuery->close();
+
+                    // Send notification to volunteer
+                    $notificationStmt = $conn->prepare("INSERT INTO notifications (recipient_id, sender_id, title, message, entity_type, entity_id) VALUES (?, ?, ?, ?, 'assignment', ?)");
+                    $notificationTitle = "New Task Assignment";
+                    $notificationMessage = "You have been assigned to " . $successCount . " new task(s) in campaign: " . $campaignName;
+                    $notificationStmt->bind_param("iissi", $volunteer_id, $_SESSION['user_id'], $notificationTitle, $notificationMessage, $assignment_id);
+
+                    if (!$notificationStmt->execute()) {
+                        // Log error but don't fail the whole process
+                        error_log("Failed to send notification: " . $notificationStmt->error);
+                    }
+                    $notificationStmt->close();
+
                     // Handle chat system integration
                     try {
                         $chatSystem = new ChatSystem($conn);
                         $adminId = $_SESSION['user_id'];
-                        
+
                         // Check if campaign chat already exists
                         $chatQuery = "SELECT id FROM chat_rooms WHERE campaign_id = ? AND type = 'campaign' LIMIT 1";
                         $chatStmt = $conn->prepare($chatQuery);
-                        
+
                         if ($chatStmt) {
                             $chatStmt->bind_param("i", $campaign_id);
                             $chatStmt->execute();
                             $chatResult = $chatStmt->get_result();
-                            
+
                             if ($chatResult->num_rows > 0) {
                                 // Chat exists, get the chat ID
                                 $chatRow = $chatResult->fetch_assoc();
@@ -117,11 +138,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['assign_tasks'])) {
                                 // Create new campaign chat
                                 $campaignChatId = $chatSystem->createCampaignChat($campaign_id, $adminId);
                             }
-                            
+
                             if ($campaignChatId) {
                                 // Add volunteer to the chat
                                 $chatSystem->addParticipant($campaignChatId, $volunteer_id);
-                                
+
                                 // Get volunteer name for welcome message
                                 $volunteerQuery = "SELECT CONCAT(fname, ' ', lname) as full_name FROM users WHERE id = ?";
                                 $volStmt = $conn->prepare($volunteerQuery);
@@ -130,11 +151,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['assign_tasks'])) {
                                 $volResult = $volStmt->get_result();
                                 $volunteerName = $volResult->fetch_assoc()['full_name'];
                                 $volStmt->close();
-                                
+
                                 // Send welcome message
                                 $welcomeMessage = "Volunteer $volunteerName has been assigned to this campaign with $successCount task(s).";
                                 $chatSystem->sendMessage($campaignChatId, $adminId, $welcomeMessage, false);
-                                
+
                                 $success_message .= " Volunteer has been added to the campaign chat group.";
                             }
                             $chatStmt->close();
@@ -159,6 +180,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['assign_tasks'])) {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -511,7 +533,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['assign_tasks'])) {
             .campaigns-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .modal-content {
                 width: 95%;
                 margin: 5% auto;
@@ -525,35 +547,36 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['assign_tasks'])) {
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="header">
             <h1><i class="fas fa-tasks"></i> Campaign Volunteer Assignment</h1>
         </div>
-        
-        <?php if(isset($success_message)): ?>
+
+        <?php if (isset($success_message)): ?>
             <div class="alert alert-success">
                 <i class="fas fa-check-circle"></i> <?php echo htmlspecialchars($success_message); ?>
             </div>
         <?php endif; ?>
-        
-        <?php if(isset($error_message)): ?>
+
+        <?php if (isset($error_message)): ?>
             <div class="alert alert-error">
                 <i class="fas fa-exclamation-circle"></i> <?php echo htmlspecialchars($error_message); ?>
             </div>
         <?php endif; ?>
-        
-        <?php if($campaignsResult->num_rows > 0): ?>
+
+        <?php if ($campaignsResult->num_rows > 0): ?>
             <div class="campaigns-grid">
-                <?php while($campaign = $campaignsResult->fetch_assoc()): ?>
+                <?php while ($campaign = $campaignsResult->fetch_assoc()): ?>
                     <div class="campaign-card">
                         <h3 class="campaign-name"><?php echo htmlspecialchars($campaign['name']); ?></h3>
                         <p class="campaign-description">
                             <?php echo htmlspecialchars(substr($campaign['description'], 0, 120)) . '...'; ?>
                         </p>
-                        <button class="assign-btn open-assign-modal" 
-                                data-campaign-id="<?php echo $campaign['id']; ?>" 
-                                data-campaign-name="<?php echo htmlspecialchars($campaign['name']); ?>">
+                        <button class="assign-btn open-assign-modal"
+                            data-campaign-id="<?php echo $campaign['id']; ?>"
+                            data-campaign-name="<?php echo htmlspecialchars($campaign['name']); ?>">
                             <i class="fas fa-user-plus"></i> Assign Volunteer
                         </button>
                     </div>
@@ -567,21 +590,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['assign_tasks'])) {
             </div>
         <?php endif; ?>
     </div>
-    
+
     <!-- Assignment Modal -->
     <div class="modal" id="assignModal">
         <div class="modal-content">
             <span class="close-modal">&times;</span>
             <h2 id="modal-title">Assign Volunteer to Campaign</h2>
-            
+
             <form method="POST" id="taskAssignmentForm">
                 <input type="hidden" id="campaign_id" name="campaign_id">
-                
+
                 <div class="volunteer-selection">
                     <h3>Select Volunteer <span class="required">*</span></h3>
-                    <?php if(!empty($allVolunteers)): ?>
+                    <?php if (!empty($allVolunteers)): ?>
                         <div class="volunteer-list">
-                            <?php foreach($allVolunteers as $volunteer): ?>
+                            <?php foreach ($allVolunteers as $volunteer): ?>
                                 <div class="volunteer-card" data-volunteer-id="<?php echo $volunteer['id']; ?>">
                                     <div class="volunteer-avatar">
                                         <i class="fas fa-user"></i>
@@ -602,17 +625,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['assign_tasks'])) {
                     <?php endif; ?>
                     <input type="hidden" id="volunteer_id" name="volunteer_id">
                 </div>
-                
+
                 <div class="task-form">
                     <h3>Assign Tasks <span class="required">*</span></h3>
                     <div class="task-list" id="taskList">
                         <!-- Tasks will be added here by JavaScript -->
                     </div>
-                    
+
                     <button type="button" class="add-task-btn" id="addTaskBtn">
                         <i class="fas fa-plus"></i> Add Another Task
                     </button>
-                    
+
                     <button type="submit" class="submit-tasks" name="assign_tasks">
                         <i class="fas fa-paper-plane"></i> Assign Tasks to Volunteer
                     </button>
@@ -620,57 +643,57 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['assign_tasks'])) {
             </form>
         </div>
     </div>
-    
+
     <script>
         let taskCounter = 0;
         let selectedVolunteerId = null;
-        
+
         // Modal functionality
         const modal = document.getElementById('assignModal');
         const closeModal = document.querySelector('.close-modal');
-        
+
         // Open modal when assign button is clicked
         document.querySelectorAll('.open-assign-modal').forEach(btn => {
             btn.addEventListener('click', function() {
                 const campaignId = this.getAttribute('data-campaign-id');
                 const campaignName = this.getAttribute('data-campaign-name');
-                
+
                 document.getElementById('campaign_id').value = campaignId;
                 document.getElementById('modal-title').textContent = `Assign Volunteer to: ${campaignName}`;
-                
+
                 // Reset form
                 resetForm();
-                
+
                 // Add initial task
                 addTask();
-                
+
                 modal.style.display = 'block';
             });
         });
-        
+
         // Close modal
         closeModal.addEventListener('click', () => modal.style.display = 'none');
         window.addEventListener('click', (e) => {
             if (e.target === modal) modal.style.display = 'none';
         });
-        
+
         // Volunteer selection
         document.querySelectorAll('.volunteer-card').forEach(card => {
             card.addEventListener('click', function() {
                 // Remove selection from all cards
                 document.querySelectorAll('.volunteer-card').forEach(c => c.classList.remove('selected'));
-                
+
                 // Select current card
                 this.classList.add('selected');
-                
+
                 selectedVolunteerId = this.getAttribute('data-volunteer-id');
                 document.getElementById('volunteer_id').value = selectedVolunteerId;
             });
         });
-        
+
         // Add task functionality
         document.getElementById('addTaskBtn').addEventListener('click', addTask);
-        
+
         function addTask() {
             const taskList = document.getElementById('taskList');
             const taskItem = document.createElement('div');
@@ -705,11 +728,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['assign_tasks'])) {
                     </div>
                 </div>
             `;
-            
+
             taskList.appendChild(taskItem);
             taskCounter++;
         }
-        
+
         function removeTask(btn) {
             if (document.querySelectorAll('.task-item').length > 1) {
                 btn.closest('.task-item').remove();
@@ -717,25 +740,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['assign_tasks'])) {
                 alert('At least one task is required.');
             }
         }
-        
+
         function getDefaultDeadline() {
             const date = new Date();
             date.setDate(date.getDate() + 7); // 7 days from now
             return date.toISOString().slice(0, 16);
         }
-        
+
         function resetForm() {
             selectedVolunteerId = null;
             document.getElementById('volunteer_id').value = '';
             document.querySelectorAll('.volunteer-card').forEach(card => {
                 card.classList.remove('selected');
             });
-            
+
             // Clear tasks
             document.getElementById('taskList').innerHTML = '';
             taskCounter = 0;
         }
-        
+
         // Form validation
         document.getElementById('taskAssignmentForm').addEventListener('submit', function(e) {
             if (!selectedVolunteerId) {
@@ -743,52 +766,53 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['assign_tasks'])) {
                 alert('Please select a volunteer.');
                 return false;
             }
-            
+
             const tasks = document.querySelectorAll('.task-item');
             if (tasks.length === 0) {
                 e.preventDefault();
                 alert('Please add at least one task.');
                 return false;
             }
-            
+
             // Check if all required fields are filled
             let isValid = true;
             let emptyFields = [];
-            
+
             tasks.forEach((task, index) => {
                 const nameInput = task.querySelector('input[name*="[name]"]');
                 const descInput = task.querySelector('textarea[name*="[description]"]');
-                
+
                 if (!nameInput.value.trim()) {
                     isValid = false;
                     emptyFields.push(`Task ${index + 1} name`);
                 }
-                
+
                 if (!descInput.value.trim()) {
                     isValid = false;
                     emptyFields.push(`Task ${index + 1} description`);
                 }
             });
-            
+
             if (!isValid) {
                 e.preventDefault();
                 alert('Please fill in the following required fields:\n' + emptyFields.join('\n'));
                 return false;
             }
-            
+
             // Show confirmation
             const taskCount = tasks.length;
             const volunteerName = document.querySelector('.volunteer-card.selected .volunteer-name').textContent;
-            
+
             if (!confirm(`Are you sure you want to assign ${taskCount} task(s) to ${volunteerName}?`)) {
                 e.preventDefault();
                 return false;
             }
-            
+
             return true;
         });
     </script>
 </body>
+
 </html>
 
 <?php $conn->close(); ?>
