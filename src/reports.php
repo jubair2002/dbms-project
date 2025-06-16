@@ -17,10 +17,11 @@ if (isset($_POST['campaign_id']) && $_POST['campaign_id'] != '') {
 }
 
 // Function to generate PDF report
-function generateCampaignReport($conn, $campaign_id) {
+function generateCampaignReport($conn, $campaign_id)
+{
     // Include TCPDF library
     require_once('tcpdf/tcpdf.php');
-    
+
     // Get campaign details
     $sql = "SELECT * FROM campaigns WHERE id = $campaign_id";
     $result = $conn->query($sql);
@@ -48,7 +49,7 @@ function generateCampaignReport($conn, $campaign_id) {
     // Calculate total donations
     $total_donations = 0;
     if ($donations->num_rows > 0) {
-        while($don = $donations->fetch_assoc()) {
+        while ($don = $donations->fetch_assoc()) {
             $total_donations += $don['amount'];
         }
         $donations->data_seek(0); // Reset pointer to beginning
@@ -64,9 +65,9 @@ function generateCampaignReport($conn, $campaign_id) {
     $pdf->SetSubject('Campaign Report');
 
     // Set default header data with logo
-    $pdf->SetHeaderData('', 0, 'CrisisLink', 'Campaign Progress Report', array(0,0,0), array(0,0,0));
-    $pdf->setHeaderFont(Array('helvetica', '', 10));
-    $pdf->setFooterFont(Array('helvetica', '', 8));
+    $pdf->SetHeaderData('', 0, 'CrisisLink', 'Campaign Progress Report', array(0, 0, 0), array(0, 0, 0));
+    $pdf->setHeaderFont(array('helvetica', '', 10));
+    $pdf->setFooterFont(array('helvetica', '', 8));
 
     // Set margins
     $pdf->SetMargins(15, 25, 15);
@@ -89,7 +90,7 @@ function generateCampaignReport($conn, $campaign_id) {
     $pdf->SetFont('helvetica', 'B', 12);
     $pdf->Cell(0, 8, 'CAMPAIGN SUMMARY', 0, 1, 'L', true);
     $pdf->SetFont('helvetica', '', 10);
-    
+
     // Create summary table
     $summary = '<table cellspacing="0" cellpadding="5" border="0">
         <tr>
@@ -106,7 +107,7 @@ function generateCampaignReport($conn, $campaign_id) {
         </tr>
         <tr>
             <td><strong>Progress:</strong></td>
-            <td>' . number_format(($campaign['raised']/$campaign['goal'])*100, 2) . '%</td>
+            <td>' . number_format(($campaign['raised'] / $campaign['goal']) * 100, 2) . '%</td>
         </tr>
         <tr>
             <td><strong>Start Date:</strong></td>
@@ -117,14 +118,14 @@ function generateCampaignReport($conn, $campaign_id) {
             <td>' . date('F j, Y', strtotime($campaign['end_date'])) . '</td>
         </tr>
     </table>';
-    
+
     $pdf->writeHTML($summary, true, false, true, false, '');
     $pdf->Ln(10);
 
     // Progress bar visualization
-    $progress = ($campaign['raised']/$campaign['goal'])*100;
+    $progress = ($campaign['raised'] / $campaign['goal']) * 100;
     $progressBar = '<div style="background-color:#f1f1f1; width:100%; height:20px; border-radius:10px;">
-        <div style="background-color:#4CAF50; width:'.$progress.'%; height:20px; border-radius:10px;"></div>
+        <div style="background-color:#4CAF50; width:' . $progress . '%; height:20px; border-radius:10px;"></div>
     </div>';
     $pdf->writeHTML($progressBar, true, false, true, false, '');
     $pdf->Ln(15);
@@ -146,8 +147,8 @@ function generateCampaignReport($conn, $campaign_id) {
                 </tr>
             </thead>
             <tbody>';
-        
-        while($vol = $volunteers->fetch_assoc()) {
+
+        while ($vol = $volunteers->fetch_assoc()) {
             $volunteerTable .= '<tr>
                 <td>' . $vol['fname'] . ' ' . $vol['lname'] . '</td>
                 <td>' . $vol['email'] . '</td>
@@ -155,7 +156,7 @@ function generateCampaignReport($conn, $campaign_id) {
                 <td>' . ucfirst($vol['status']) . '</td>
             </tr>';
         }
-        
+
         $volunteerTable .= '</tbody></table>';
         $pdf->writeHTML($volunteerTable, true, false, true, false, '');
     } else {
@@ -185,8 +186,8 @@ function generateCampaignReport($conn, $campaign_id) {
                 </tr>
             </thead>
             <tbody>';
-        
-        while($don = $donations->fetch_assoc()) {
+
+        while ($don = $donations->fetch_assoc()) {
             $donationTable .= '<tr>
                 <td>' . date('M j, Y', strtotime($don['donation_date'])) . '</td>
                 <td>' . $don['fname'] . ' ' . $don['lname'] . '</td>
@@ -194,7 +195,7 @@ function generateCampaignReport($conn, $campaign_id) {
                 <td>' . ucwords(str_replace('_', ' ', $don['donation_type'])) . '</td>
             </tr>';
         }
-        
+
         $donationTable .= '</tbody></table>';
         $pdf->writeHTML($donationTable, true, false, true, false, '');
     } else {
@@ -219,13 +220,13 @@ function generateCampaignReport($conn, $campaign_id) {
         </tr>
         <tr>
             <td><strong>Average Donation:</strong></td>
-            <td>$' . ($donations->num_rows > 0 ? number_format($total_donations/$donations->num_rows, 2) : '0.00') . '</td>
+            <td>$' . ($donations->num_rows > 0 ? number_format($total_donations / $donations->num_rows, 2) : '0.00') . '</td>
         </tr>
         <tr>
             <td><strong>Days Remaining:</strong></td>
-            <td>' . max(0, floor((strtotime($campaign['end_date']) - time())/(60*60*24))) . ' days</td>
+            <td>' . max(0, floor((strtotime($campaign['end_date']) - time()) / (60 * 60 * 24))) . ' days</td>
         </tr>
-    </table>';  
+    </table>';
     $pdf->writeHTML($stats, true, false, true, false, '');
     $pdf->Ln(10);
 
@@ -244,242 +245,484 @@ $result = $conn->query($sql);
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Campaign Reports</title>
+    <title>Campaign Reports - CrisisLink</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        :root {
+            --primary-color: #1a1a1a;
+            --secondary-color: #f8f9fa;
+            --accent-color: #2563eb;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --border-color: #e5e7eb;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --surface-white: #ffffff;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
             margin: 0;
             padding: 0;
-            background-color: #ffffff;
-            color: #000000;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--secondary-color);
+            color: var(--text-primary);
             line-height: 1.6;
+            font-size: 14px;
         }
-        
-        .header {
-            background-color: #000000;
-            color: #ffffff;
-            padding: 15px 0;
-            text-align: center;
-            border-bottom: 3px solid #dc3545;
-        }
-        
-        .header h1 {
-            margin: 0;
-            font-size: 1.8rem;
-            font-weight: 400;
-            letter-spacing: 1px;
-        }
-        
+
+        /* Main Container */
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 40px 20px;
+            padding: 2rem;
         }
-        
+
+        /* Campaigns Table */
+        .campaigns-section {
+            background: var(--surface-white);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            background: linear-gradient(to right, #fafafa, #ffffff);
+        }
+
+        .section-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
         .campaigns-table {
             width: 100%;
             border-collapse: collapse;
-            background-color: #ffffff;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            margin-top: 20px;
         }
-        
+
+        .campaigns-table thead {
+            background-color: #fafafa;
+        }
+
         .campaigns-table th {
-            background-color: #dc3545;
-            color: #ffffff;
-            padding: 18px 15px;
+            padding: 1rem 1.5rem;
             text-align: left;
             font-weight: 600;
+            font-size: 12px;
+            color: var(--text-secondary);
             text-transform: uppercase;
-            letter-spacing: 1px;
-            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border-color);
         }
-        
+
         .campaigns-table td {
-            padding: 20px 15px;
-            border-bottom: 1px solid #e0e0e0;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
             vertical-align: top;
         }
-        
-        .campaigns-table tr:hover {
-            background-color: #fff5f5;
+
+        .campaigns-table tbody tr {
+            transition: background-color 0.15s ease;
         }
-        
+
+        .campaigns-table tbody tr:hover {
+            background-color: #fafbfc;
+        }
+
+        /* Campaign Details */
+        .campaign-info {
+            min-width: 320px;
+        }
+
         .campaign-name {
             font-weight: 600;
-            font-size: 1.1rem;
-            margin-bottom: 8px;
-            color: #000000;
-        }
-        
-        .campaign-description {
-            color: #666666;
-            font-size: 0.95rem;
+            font-size: 15px;
+            color: var(--text-primary);
+            margin-bottom: 6px;
             line-height: 1.4;
         }
-        
-        .progress-container {
-            width: 100%;
-            height: 8px;
-            background-color: #e0e0e0;
+
+        .campaign-description {
+            color: var(--text-secondary);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .campaign-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 8px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .meta-badge {
+            background: #f3f4f6;
+            padding: 2px 8px;
             border-radius: 4px;
-            overflow: hidden;
-            margin: 8px 0;
+            font-weight: 500;
         }
-        
-        .progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, #dc3545 0%, #c82333 100%);
-            transition: width 0.3s ease;
+
+        /* Financial Progress */
+        .financial-info {
+            min-width: 280px;
         }
-        
-        .stats-row {
+
+        .financial-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin: 5px 0;
-            font-size: 0.9rem;
+            margin-bottom: 8px;
         }
-        
-        .goal-amount {
+
+        .financial-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .financial-value {
             font-weight: 600;
-            color: #000000;
+            color: var(--text-primary);
+            font-size: 14px;
         }
-        
+
+        .goal-amount {
+            color: var(--text-secondary);
+        }
+
         .raised-amount {
-            color: #333333;
+            color: var(--success-color);
         }
-        
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background-color: #f3f4f6;
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 12px 0;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success-color), #34d399);
+            border-radius: 3px;
+            transition: width 0.6s ease;
+            position: relative;
+        }
+
         .progress-percentage {
             font-weight: 600;
-            color: #dc3545;
-        }
-        
-        .generate-btn {
-            background-color: #dc3545;
-            color: #ffffff;
-            padding: 12px 24px;
-            border: none;
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
-            border: 2px solid #dc3545;
-        }
-        
-        .generate-btn:hover {
-            background-color: #ffffff;
-            color: #dc3545;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(220, 53, 69, 0.2);
-        }
-        
-        .no-campaigns {
+            font-size: 13px;
+            color: var(--text-primary);
             text-align: center;
-            padding: 60px 20px;
-            color: #666666;
-            font-size: 1.2rem;
-            background-color: #f8f8f8;
-            border: 1px solid #e0e0e0;
         }
-        
-        .campaign-info {
-            min-width: 300px;
-        }
-        
-        .financial-info {
-            min-width: 200px;
-        }
-        
+
+        /* Action Button */
         .action-cell {
             text-align: center;
-            min-width: 150px;
+            min-width: 140px;
         }
-        
-        @media (max-width: 768px) {
-            .campaigns-table {
-                font-size: 0.85rem;
+
+        .generate-btn {
+            background: linear-gradient(135deg, var(--accent-color), #3b82f6);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-transform: none;
+            letter-spacing: 0;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+            filter: brightness(1.05);
+        }
+
+        .generate-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Empty State */
+        .no-campaigns {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-icon {
+            width: 64px;
+            height: 64px;
+            background: #f3f4f6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            color: var(--text-secondary);
+            font-size: 24px;
+        }
+
+        .empty-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-description {
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .container {
+                padding: 1.5rem;
             }
-            
+
             .campaigns-table th,
             .campaigns-table td {
-                padding: 15px 10px;
+                padding: 1rem;
             }
-            
-            .header h1 {
-                font-size: 1.5rem;
-            }
-            
+        }
+
+        @media (max-width: 768px) {
             .container {
-                padding: 20px 10px;
+                padding: 1rem;
             }
+
+            .campaigns-table {
+                font-size: 13px;
+            }
+
+            .campaigns-table th,
+            .campaigns-table td {
+                padding: 0.75rem;
+            }
+
+            .campaign-info {
+                min-width: auto;
+            }
+
+            .financial-info {
+                min-width: auto;
+            }
+        }
+
+        /* Loading State */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        /* Utility Classes */
+        .text-success {
+            color: var(--success-color);
+        }
+
+        .text-warning {
+            color: var(--warning-color);
+        }
+
+        .bg-success {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+
+        .bg-warning {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .bg-primary {
+            background-color: #dbeafe;
+            color: #1e40af;
         }
     </style>
 </head>
+
 <body>
-    <div class="header">
-        <h1>CAMPAIGN REPORTS</h1>
-    </div>
-    
     <div class="container">
-        <?php 
+        <?php
+        // Calculate overview stats
+        $total_campaigns = $result->num_rows;
+        $total_goal = 0;
+        $total_raised = 0;
+        $active_campaigns = 0;
+
         if ($result->num_rows > 0) {
+            $campaigns_data = [];
+            while ($row = $result->fetch_assoc()) {
+                $campaigns_data[] = $row;
+                $total_goal += $row['goal'];
+                $total_raised += $row['raised'];
+                $active_campaigns++;
+            }
+            $result->data_seek(0); // Reset pointer
         ?>
-        <table class="campaigns-table">
-            <thead>
-                <tr>
-                    <th>Campaign Details</th>
-                    <th>Financial Progress</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php while($campaign = $result->fetch_assoc()) {
-                    $progress = ($campaign['raised'] / $campaign['goal']) * 100;
-                ?>
-                <tr>
-                    <td class="campaign-info">
-                        <div class="campaign-name"><?php echo htmlspecialchars($campaign['name']); ?></div>
-                        <div class="campaign-description"><?php echo htmlspecialchars(substr($campaign['description'], 0, 120)); ?>...</div>
-                    </td>
-                    
-                    <td class="financial-info">
-                        <div class="stats-row">
-                            <span class="goal-amount">Goal: $<?php echo number_format($campaign['goal'], 2); ?></span>
-                        </div>
-                        <div class="stats-row">
-                            <span class="raised-amount">Raised: $<?php echo number_format($campaign['raised'], 2); ?></span>
-                        </div>
-                        <div class="progress-container">
-                            <div class="progress-bar" style="width: <?php echo min(100, $progress); ?>%"></div>
-                        </div>
-                        <div class="stats-row">
-                            <span class="progress-percentage"><?php echo number_format($progress, 1); ?>% Complete</span>
-                        </div>
-                    </td>
-                    
-                    <td class="action-cell">
-                        <form method="post" style="margin: 0;">
-                            <input type="hidden" name="campaign_id" value="<?php echo $campaign['id']; ?>">
-                            <button type="submit" class="generate-btn">Generate Report</button>
-                        </form>
-                    </td>
-                </tr>
-                <?php } ?>
-            </tbody>
-        </table>
+
+            <!-- Campaigns Table -->
+            <div class="campaigns-section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-list"></i>
+                        Campaign Overview
+                    </h2>
+                </div>
+
+                <table class="campaigns-table">
+                    <thead>
+                        <tr>
+                            <th>Campaign Details</th>
+                            <th>Financial Progress</th>
+                            <th>Performance</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($campaigns_data as $campaign) {
+                            $progress = ($campaign['raised'] / $campaign['goal']) * 100;
+                            $status_class = $progress >= 100 ? 'text-success' : ($progress >= 50 ? 'text-warning' : '');
+                        ?>
+                            <tr>
+                                <td class="campaign-info">
+                                    <div class="campaign-name"><?php echo htmlspecialchars($campaign['name']); ?></div>
+                                    <div class="campaign-description">
+                                        <?php echo htmlspecialchars(substr($campaign['description'], 0, 120)) . '...'; ?>
+                                    </div>
+                                </td>
+
+                                <td class="financial-info">
+                                    <div class="financial-row">
+                                        <span class="financial-label">Goal</span>
+                                        <span class="financial-value goal-amount">$<?php echo number_format($campaign['goal'], 0); ?></span>
+                                    </div>
+                                    <div class="financial-row">
+                                        <span class="financial-label">Raised</span>
+                                        <span class="financial-value raised-amount">$<?php echo number_format($campaign['raised'], 0); ?></span>
+                                    </div>
+                                    <div class="progress-container">
+                                        <div class="progress-bar" style="width: <?php echo min(100, $progress); ?>%"></div>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div class="progress-percentage <?php echo $status_class; ?>">
+                                        <?php echo number_format($progress, 1); ?>%
+                                    </div>
+                                    <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">
+                                        <?php
+                                        if ($progress >= 100) {
+                                            echo '<span class="text-success"><i class="fas fa-check-circle"></i> Goal Achieved</span>';
+                                        } elseif ($progress >= 75) {
+                                            echo '<span class="text-warning"><i class="fas fa-exclamation-circle"></i> Near Goal</span>';
+                                        } else {
+                                            echo '<span><i class="fas fa-clock"></i> In Progress</span>';
+                                        }
+                                        ?>
+                                    </div>
+                                </td>
+
+                                <td class="action-cell">
+                                    <form method="post" style="margin: 0;">
+                                        <input type="hidden" name="campaign_id" value="<?php echo $campaign['id']; ?>">
+                                        <button type="submit" class="generate-btn">
+                                            <i class="fas fa-download"></i>
+                                            Generate Report
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
+            </div>
+
         <?php
         } else {
-            echo '<div class="no-campaigns">No campaigns found. Create a campaign to generate reports.</div>';
+        ?>
+
+            <!-- Empty State -->
+            <div class="campaigns-section">
+                <div class="no-campaigns">
+                    <div class="empty-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="empty-title">No Campaigns Available</div>
+                    <div class="empty-description">
+                        Create your first campaign to start generating comprehensive reports and tracking progress.
+                    </div>
+                </div>
+            </div>
+
+        <?php
         }
         ?>
     </div>
+
+    <script>
+        // Add loading state to buttons when clicked
+        document.querySelectorAll('.generate-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+                this.disabled = true;
+
+                // Add loading class to the parent form
+                const form = this.closest('form');
+                if (form) {
+                    form.classList.add('loading');
+                }
+
+                // Automatically submit the form
+                form.submit();
+
+                // Re-enable button after 5 seconds in case submission fails
+                setTimeout(() => {
+                    this.innerHTML = '<i class="fas fa-download"></i> Generate Report';
+                    this.disabled = false;
+                    if (form) {
+                        form.classList.remove('loading');
+                    }
+                }, 3000);
+            });
+        });
+
+        // Add confirmation for successful PDF generation
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('report_generated')) {
+            alert('Report generated successfully! The download should start automatically.');
+        }
+    </script>
 </body>
+
 </html>
 
 <?php
