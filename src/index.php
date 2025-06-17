@@ -28,22 +28,22 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" href="#home">Home</a>
+                        <a class="nav-link btn btn-primary text-white px-3 active" href="#home">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#about">About</a>
+                        <a class="nav-link btn btn-primary text-white px-3" href="#about">About</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#gallery">Gallery</a>
+                        <a class="nav-link btn btn-primary text-white px-3" href="#gallery">Gallery</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#services">Services</a> <!-- Added Services Link -->
+                        <a class="nav-link btn btn-primary text-white px-3" href="#services">Services</a> <!-- Added Services Link -->
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#volunteer">Volunteer</a>
+                        <a class="nav-link btn btn-primary text-white px-3" href="#volunteer">Volunteer</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#contact">Contact</a>
+                        <a class="nav-link btn btn-primary text-white px-3" href="#contact">Contact</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link btn btn-primary text-white px-3" href="auth.php">Join Us</a>

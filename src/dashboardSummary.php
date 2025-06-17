@@ -187,14 +187,18 @@
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background-color: var(--light);
+            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 15px;
-            color: var(--primary);
-            font-weight: bold;
-            background-color: #e8f5e9;
+            background-color: #f0f0f0;
+            /* Fallback background */
+        }
+
+        .donation-avatar .profile-pic {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .donation-details h5 {
@@ -202,6 +206,7 @@
             margin-bottom: 5px;
             color: var(--dark);
         }
+
 
 
         .donation-details p {
@@ -291,7 +296,6 @@
                 </div>
             </div>
 
-            <!-- Donations Container (Right Side) -->
             <div class="donations-container">
                 <div class="section-header">
                     <div class="section-title">Latest Donations</div>
@@ -301,19 +305,19 @@
                     <?php
                     require_once 'config.php';
 
-                    $query = "SELECT u.fname, u.lname, d.amount, d.donation_date 
-                      FROM donations d
-                      JOIN users u ON d.user_id = u.id
-                      ORDER BY d.donation_date DESC
-                      LIMIT 5";
+                    $query = "SELECT u.fname, u.lname, u.picture, d.amount, d.donation_date 
+                  FROM donations d
+                  JOIN users u ON d.user_id = u.id
+                  ORDER BY d.donation_date DESC
+                  LIMIT 5";
 
                     $result = mysqli_query($conn, $query);
 
                     if (mysqli_num_rows($result) > 0) {
                         while ($row = mysqli_fetch_assoc($result)) {
-                            $initials = strtoupper(substr($row['fname'], 0, 1) . substr($row['lname'], 0, 1));
                             $name = htmlspecialchars($row['fname'] . ' ' . $row['lname']);
                             $amount = '$' . number_format($row['amount'], 2);
+                            $profile_pic = $row['picture']; // Directly use the path from database
 
                             // Format date
                             $date = new DateTime($row['donation_date']);
@@ -330,7 +334,14 @@
                     ?>
                             <li class="donation-item">
                                 <div class="donation-info">
-                                    <div class="donation-avatar"><?php echo $initials; ?></div>
+                                    <div class="donation-avatar">
+                                        <?php if (!empty($profile_pic)): ?>
+                                            <img src="<?php echo htmlspecialchars($profile_pic); ?>" alt="<?php echo $name; ?>" class="profile-pic">
+                                        <?php else: ?>
+                                            <!-- Fallback to initials if no picture -->
+                                            <?php echo strtoupper(substr($row['fname'], 0, 1) . substr($row['lname'], 0, 1)); ?>
+                                        <?php endif; ?>
+                                    </div>
                                     <div class="donation-details">
                                         <h5><?php echo $name; ?></h5>
                                         <p><?php echo $date_str; ?></p>

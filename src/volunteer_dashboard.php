@@ -10,12 +10,12 @@ checkAccess('volunteer');
 $user = getUserDetails($conn, $_SESSION['user_id']);
 
 // Get current page from URL parameter or use dashboard as default
-$current_page = isset($_GET['page']) ? $_GET['page'] : 'dashboardSummary';
-$valid_pages = ['dashboardSummary', 'assignments', 'message', 'campaign', 'reports', 'emergency', 'settings', 'profile'];
+$current_page = isset($_GET['page']) ? $_GET['page'] : 'dashboardSummaryVR';
+$valid_pages = ['dashboardSummaryVR', 'assignments', 'message', 'campaign', 'reports', 'emergency', 'settings', 'profile'];
 
 // Validate the page parameter
 if (!in_array($current_page, $valid_pages)) {
-    $current_page = 'dashboardSummary';
+    $current_page = 'dashboardSummaryVR';
 }
 
 // Set the page file to load
@@ -108,8 +108,8 @@ $page_file = $current_page . '.php';
             <span class="text">CrisisLink Network</span>
         </a>
         <ul class="side-menu top">
-            <li <?php echo ($current_page == 'dashboardSummary') ? 'class="active"' : ''; ?>>
-                <a href="?page=dashboardSummary">
+            <li <?php echo ($current_page == 'dashboardSummaryVR') ? 'class="active"' : ''; ?>>
+                <a href="?page=dashboardSummaryVR">
                     <i class='bx bxs-home'></i>
                     <span class="text">Dashboard Summary</span>
                 </a>

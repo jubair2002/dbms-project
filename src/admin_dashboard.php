@@ -11,7 +11,7 @@ $user = getUserDetails($conn, $_SESSION['user_id']);
 
 // Get current page from URL parameter or use dashboard as default
 $current_page = isset($_GET['page']) ? $_GET['page'] : 'dashboardSummary';
-$valid_pages = ['dashboardSummary', 'user_management', 'message', 'campaignSummary', 'report', 'settings', 'profile'];
+$valid_pages = ['dashboardSummary', 'user_management', 'message', 'campaignSummary', 'transections', 'settings', 'profile'];
 
 // Validate the page parameter
 if (!in_array($current_page, $valid_pages)) {
@@ -128,14 +128,14 @@ $page_file = $current_page . '.php';
             </li>
             <li <?php echo ($current_page == 'campaignSummary') ? 'class="active"' : ''; ?>>
                 <a href="?page=campaignSummary">
-                    <i class='bx bxs-help-circle'></i>
+                    <i class='bx bxs-flag'></i>
                     <span class="text">Campaign</span>
                 </a>
             </li>
-            <li <?php echo ($current_page == 'report') ? 'class="active"' : ''; ?>>
-                <a href="?page=report">
-                    <i class='bx bxs-file'></i>
-                    <span class="text">Report</span>
+            <li <?php echo ($current_page == 'transections') ? 'class="active"' : ''; ?>>
+                <a href="?page=transections">
+                    <i class='bx bxs-credit-card'></i>
+                    <span class="text">transections</span>
                 </a>
             </li>
         </ul>
