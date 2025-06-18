@@ -53,205 +53,274 @@ $result = mysqli_query($conn, $query);
     <title>Transaction History</title>
     <style>
         * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f8f9fa;
-            color: #333;
-            height: 100vh;
-            overflow: hidden;
-        }
-        
-        .app-container {
-            display: flex;
-            height: 100vh;
-        }
-        
-        .main-content {
-            flex: 1;
-            padding: 20px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 0;
-            margin-bottom: 20px;
-            border-bottom: 1px solid #e0e0e0;
-        }
-        
-        .header h1 {
-            font-size: 24px;
-            color: #2c3e50;
-        }
-        
-        .transaction-table-container {
-            flex: 1;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .transaction-table {
-            width: 100%;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            overflow: hidden;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            flex: 1;
-        }
-        
-        thead {
-            display: table;
-            width: 100%;
-            table-layout: fixed;
-        }
-        
-        tbody {
-            display: block;
-            overflow-y: auto;
-            width: 100%;
-        }
-        
-        tr {
-            display: table;
-            width: 100%;
-            table-layout: fixed;
-        }
-        
-        th {
-            background-color: #f1f5f9;
-            padding: 15px 20px;
-            text-align: left;
-            font-weight: 600;
-            color: #475569;
-            border-bottom: 2px solid #e2e8f0;
-        }
-        
-        td {
-            padding: 15px 20px;
-            border-bottom: 1px solid #e2e8f0;
-            vertical-align: middle;
-        }
-        
-        tr:last-child td {
-            border-bottom: none;
-        }
-        
-        tr:hover {
-            background-color: #f8fafc;
-        }
-        
-        .transaction-id {
-            font-family: 'Courier New', monospace;
-            font-weight: bold;
-            color: #1e40af;
-        }
-        
-        .user-info {
-            display: flex;
-            align-items: center;
-        }
-        
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: #e2e8f0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 12px;
-            overflow: hidden;
-        }
-        
-        .user-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .user-details {
-            line-height: 1.4;
-        }
-        
-        .user-name {
-            font-weight: 500;
-        }
-        
-        .user-email {
-            font-size: 13px;
-            color: #64748b;
-        }
-        
-        .campaign-name {
-            font-weight: 500;
-        }
-        
-        .amount {
-            font-weight: 600;
-            color: #16a34a;
-        }
-        
-        .donation-type {
-            display: inline-block;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 500;
-            text-transform: capitalize;
-        }
-        
-        .mobile_banking { background-color: #dcfce7; color: #166534; }
-        .credit_card { background-color: #dbeafe; color: #1e40af; }
-        .debit_card { background-color: #fef3c7; color: #92400e; }
-        .bank_transfer { background-color: #f3e8ff; color: #6b21a8; }
-        
-        .transaction-date {
-            color: #64748b;
-            font-size: 14px;
-        }
-        
-        .filter-dropdown {
-            padding: 10px 15px;
-            border: 1px solid #e2e8f0;
-            border-radius: 6px;
-            background-color: white;
-            font-size: 14px;
-            cursor: pointer;
-        }
-        
-        .no-results {
-            padding: 40px;
-            text-align: center;
-            color: #64748b;
-        }
-        
-        /* Hide scrollbar but keep functionality */
-        tbody::-webkit-scrollbar {
-            display: none;
-        }
-        
-        tbody {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.app-container {
+    display: flex;
+    flex: 1;
+    min-height: 0; /* Crucial for proper flexbox scrolling */
+}
+
+.main-content {
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    min-height: 0; /* Crucial for proper flexbox scrolling */
+    overflow: hidden;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #e0e0e0;
+    flex-shrink: 0; /* Prevent header from shrinking */
+}
+
+.header h1 {
+    font-size: 24px;
+    color: #2c3e50;
+}
+
+.transaction-table-container {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 0; /* Crucial for proper flexbox scrolling */
+}
+
+.transaction-table {
+    width: 100%;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+thead {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+tbody {
+    flex: 1;
+    display: block;
+    overflow-y: auto;
+    width: 100%;
+}
+
+tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+th {
+    background-color: #f1f5f9;
+    padding: 15px 20px;
+    text-align: left;
+    font-weight: 600;
+    color: #475569;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+td {
+    padding: 15px 20px;
+    border-bottom: 1px solid #e2e8f0;
+    vertical-align: middle;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+tr:hover {
+    background-color: #f8fafc;
+}
+
+.transaction-id {
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    color: #1e40af;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.user-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.user-details {
+    line-height: 1.4;
+    min-width: 0; /* Prevent text overflow */
+}
+
+.user-name {
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-email {
+    font-size: 13px;
+    color: #64748b;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.campaign-name {
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.amount {
+    font-weight: 600;
+    color: #16a34a;
+}
+
+.donation-type {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: capitalize;
+    white-space: nowrap;
+}
+
+.mobile_banking { background-color: #dcfce7; color: #166534; }
+.credit_card { background-color: #dbeafe; color: #1e40af; }
+.debit_card { background-color: #fef3c7; color: #92400e; }
+.bank_transfer { background-color: #f3e8ff; color: #6b21a8; }
+
+.transaction-date {
+    color: #64748b;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.filter-dropdown {
+    padding: 10px 15px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    background-color: white;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.filter-dropdown:hover {
+    border-color: #cbd5e1;
+}
+
+.no-results {
+    padding: 40px;
+    text-align: center;
+    color: #64748b;
+    display: table-cell;
+    vertical-align: middle;
+}
+
+/* Hide scrollbar but keep functionality */
+tbody::-webkit-scrollbar {
+    display: none;
+    width: 0;
+}
+
+tbody {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    
+    .header h1 {
+        font-size: 20px;
+    }
+    
+    th, td {
+        padding: 12px 15px;
+    }
+    
+    .user-avatar {
+        width: 32px;
+        height: 32px;
+        margin-right: 8px;
+    }
+    
+    .user-name {
+        font-size: 14px;
+    }
+    
+    .user-email {
+        font-size: 12px;
+    }
+    
+    .donation-type {
+        font-size: 11px;
+        padding: 4px 8px;
+    }
+    
+    .transaction-date {
+        font-size: 13px;
+    }
+}
     </style>
 </head>
 <body>

@@ -2,6 +2,72 @@
 session_start();
 require_once 'config.php';
 
+$districts = [
+    "Bagerhat",
+    "Bandarban",
+    "Barguna",
+    "Barishal",
+    "Bhola",
+    "Bogra",
+    "Brahmanbaria",
+    "Chandpur",
+    "Chapainawabganj",
+    "Chattogram",
+    "Chuadanga",
+    "Cox's Bazar",
+    "Cumilla",
+    "Dhaka",
+    "Dinajpur",
+    "Faridpur",
+    "Feni",
+    "Gaibandha",
+    "Gazipur",
+    "Gopalganj",
+    "Habiganj",
+    "Jamalpur",
+    "Jashore",
+    "Jhalokati",
+    "Jhenaidah",
+    "Joypurhat",
+    "Khagrachhari",
+    "Khulna",
+    "Kishoreganj",
+    "Kurigram",
+    "Kushtia",
+    "Lakshmipur",
+    "Lalmonirhat",
+    "Madaripur",
+    "Magura",
+    "Manikganj",
+    "Meherpur",
+    "Moulvibazar",
+    "Munshiganj",
+    "Mymensingh",
+    "Naogaon",
+    "Narail",
+    "Narayanganj",
+    "Narsingdi",
+    "Natore",
+    "Netrokona",
+    "Nilphamari",
+    "Noakhali",
+    "Pabna",
+    "Panchagarh",
+    "Patuakhali",
+    "Pirojpur",
+    "Rajbari",
+    "Rajshahi",
+    "Rangamati",
+    "Rangpur",
+    "Satkhira",
+    "Shariatpur",
+    "Sherpur",
+    "Sirajganj",
+    "Sunamganj",
+    "Sylhet",
+    "Tangail",
+    "Thakurgaon"
+];
 // Initialize variables
 $error = '';
 $success = '';
@@ -96,7 +162,7 @@ function handleRegistration($conn)
     // Insert new user
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
     $stmt = $conn->prepare("INSERT INTO users (fname, lname, email,phone, password, picture, location, user_type) VALUES (?, ?, ?, ?, ?, ?, ?,?)");
-    $stmt->bind_param("ssssssss", $fname, $lname, $email,$phone, $hashed_password, $picture_path, $location, $user_type);
+    $stmt->bind_param("ssssssss", $fname, $lname, $email, $phone, $hashed_password, $picture_path, $location, $user_type);
 
     if ($stmt->execute()) {
         $success = "Registration successful! Please login.";
@@ -281,7 +347,14 @@ function handleResetPassword($conn)
                             <i class="fas fa-eye toggle-password" data-target="confirm_password"></i>
                         </div>
                         <div class="mb-3">
-                            <input type="text" name="location" class="form-control" placeholder="Location" required>
+                            <select name="location" class="form-control" required>
+                                <option value="">Select Locations</option>
+                                <?php foreach ($districts as $district): ?>
+                                    <option value="<?php echo htmlspecialchars($district); ?>">
+                                        <?php echo htmlspecialchars($district); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
                         </div>
                         <div class="mb-3">
                             <input type="text" name="phone" class="form-control" placeholder="Phone Number" required>
