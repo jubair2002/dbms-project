@@ -31,7 +31,8 @@
                         <a class="nav-link btn btn-primary text-white px-3" href="#gallery">Gallery</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link btn btn-primary text-white px-3" href="#services">Services</a> </li>
+                        <a class="nav-link btn btn-primary text-white px-3" href="#services">Services</a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link btn btn-primary text-white px-3" href="#volunteer">Volunteer</a>
                     </li>
@@ -55,13 +56,13 @@
             <div class="hero-slide" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('assets/images/hero-bg4.jpg'); background-size: cover; background-position: center; transition: opacity 1s ease-in-out; opacity: 0;"></div>
         </div>
 
-        <div class="hero-content" style="position: relative; z-index: 2;">
-            <div class="container text-center">
-                <h1 class="display-3 mb-4" data-aos="fade-up">Bridge the Gap, Build a Future with CrisisLink</h1>
-                <p class="lead mb-5" data-aos="fade-up" data-aos-delay="200">Empowering communities through sustainable development and immediate relief.</p>
-                <a href="#about" class="btn btn-lg btn-light hero-btn" data-aos="fade-up" data-aos-delay="300">Learn More <i class="fas fa-arrow-down ms-2"></i></a>
-            </div>
-        </div>
+        <div class="hero-content" style="position: relative; z-index: 2; padding-top:30px; padding-bottom: 30px; top: 192px;">
+    <div class="container text-center">
+        <h1 class="display-3 mb-4" data-aos="fade-up">Bridge the Gap, Build a Future with CrisisLink</h1>
+        <p class="lead mb-5" data-aos="fade-up" data-aos-delay="200">Empowering communities through sustainable development and immediate relief.</p>
+        <a href="#about" class="btn btn-lg btn-light hero-btn" data-aos="fade-up" data-aos-delay="300">Learn More <i class="fas fa-arrow-down ms-2"></i></a>
+    </div>
+</div>
 
         <script>
             // Image slider functionality
@@ -70,19 +71,14 @@
                 let currentSlide = 0;
 
                 function nextSlide() {
-                    // Hide current slide
                     slides[currentSlide].style.opacity = 0;
                     slides[currentSlide].classList.remove('active');
-
-                    // Move to next slide
                     currentSlide = (currentSlide + 1) % slides.length;
 
-                    // Show new slide
                     slides[currentSlide].style.opacity = 1;
                     slides[currentSlide].classList.add('active');
                 }
-
-                // Change slides every 3 seconds
+                
                 setInterval(nextSlide, 3000);
             });
         </script>
@@ -95,27 +91,25 @@
                         class="img-fluid rounded shadow-lg">
                 </div>
                 <div class="col-lg-6" data-aos="fade-left">
-                    <h2 class="mb-4 display-5 fw-bold">About Our Organization</h2>
+                    <h2 class="mb-4 display-5 fw-bold">Building a Better Tomorrow</h2>
                     <div class="mb-4">
                         <h4 class="text-primary mb-3">Our Mission</h4>
-                        <p>To empower communities through sustainable development initiatives and create lasting
-                            positive change in people's lives. We strive to:</p>
+                        <p>At CrisisLink, our mission is to deliver immediate relief, empower through education, facilitate social development, and ensure transparent donation impact. We foster resilience and self-sufficiency in vulnerable communities worldwide by:</p>
                         <ul class="mission-list list-unstyled">
-                            <li><i class="fas fa-check-circle text-primary me-2"></i>Provide quality education to underprivileged children</li>
-                            <li><i class="fas fa-check-circle text-primary me-2"></i>Support healthcare initiatives in rural areas</li>
-                            <li><i class="fas fa-check-circle text-primary me-2"></i>Create sustainable livelihood opportunities</li>
-                            <li><i class="fas fa-check-circle text-primary me-2"></i>Promote environmental conservation</li>
+                            <li><i class="fas fa-check-circle text-primary me-2"></i>Providing critical humanitarian relief and aid</li>
+                            <li><i class="fas fa-check-circle text-primary me-2"></i>Empowering individuals through quality education programs</li>
+                            <li><i class="fas fa-check-circle text-primary me-2"></i>Driving sustainable social and economic development initiatives</li>
+                            <li><i class="fas fa-check-circle text-primary me-2"></i>Facilitating impactful donations to reach those in need</li>
                         </ul>
                     </div>
                     <div class="mb-4">
                         <h4 class="text-primary mb-3">Our Vision</h4>
-                        <p>A world where every individual has access to basic necessities, education, and opportunities
-                            for growth. We envision:</p>
+                        <p>We envision a world where every individual has access to essential resources, transformative education, and opportunities for dignified growth. Our aspirations include:</p>
                         <ul class="vision-list list-unstyled">
-                            <li><i class="fas fa-lightbulb text-primary me-2"></i>Equal opportunities for all, regardless of background</li>
-                            <li><i class="fas fa-lightbulb text-primary me-2"></i>Self-sustaining communities</li>
-                            <li><i class="fas fa-lightbulb text-primary me-2"></i>Global partnership for social change</li>
-                            <li><i class="fas fa-lightbulb text-primary me-2"></i>Innovation in charitable initiatives</li>
+                            <li><i class="fas fa-lightbulb text-primary me-2"></i>Creating self-reliant communities through holistic social development</li>
+                            <li><i class="fas fa-lightbulb text-primary me-2"></i>Advancing global access to empowering educational resources</li>
+                            <li><i class="fas fa-lightbulb text-primary me-2"></i>Establishing robust systems for effective relief and transparent donations</li>
+                            <li><i class="fas fa-lightbulb text-primary me-2"></i>Fostering collaborative global partnerships for lasting positive change</li>
                         </ul>
                     </div>
                 </div>
@@ -236,7 +230,7 @@
                         class="img-fluid">
                 </div>
 
-                <div class="col-lg-6 col-md-12 right-side bg-white p-5">
+                <div class="col-lg-6 col-md-12 right-side p-5">
                     <h2 class="mb-4 display-5 fw-bold">Become a Volunteer</h2>
                     <p class="lead mb-4">Join our community of passionate volunteers and make a tangible difference in people's lives today. Your help can change the world!</p>
                     <a href="auth.php" class="btn btn-primary btn-lg">Join Us Today <i class="fas fa-hands-helping ms-2"></i></a>
@@ -413,20 +407,20 @@
         </div>
     </section>
 
-
-    <section class="newsletter py-5 section-padding" style="background-color: #f7f7f7;">
+  <section class="newsletter py-5 bg-white">
         <div class="container">
             <div class="row justify-content-center text-center">
                 <div class="col-lg-8">
-                    <h3 class="mb-4 display-6 fw-bold" data-aos="fade-up">Subscribe to Our Newsletter</h3>
-                    <p class="lead mb-4" data-aos="fade-up" data-aos-delay="100">
+                    <h3 class="mb-4 display-6 fw-bold text-dark" data-aos="fade-up">Subscribe to Our Newsletter</h3>
+                    <p class="lead mb-4 text-dark" data-aos="fade-up" data-aos-delay="100">
                         Stay updated with our latest news, initiatives, and ways you can make a difference. Join our mailing list for important updates.
                     </p>
-                    <form id="newsletter-form" class="d-flex justify-content-center" data-aos="fade-up"
-                        data-aos-delay="200">
+                    <form id="newsletter-form" class="d-flex justify-content-center" data-aos="fade-up" data-aos-delay="200">
                         <div class="input-group">
-                            <input type="email" class="form-control form-control-lg rounded-pill" placeholder="Enter your email" required>
-                            <button type="submit" class="btn btn-primary btn-lg rounded-pill ms-2">Subscribe <i class="fas fa-envelope-open-text ms-2"></i></button>
+                            <input type="email" class="form-control form-control-lg rounded-pill text-dark" placeholder="Enter your email" required style="border-color: #ced4da;">
+                            <button type="submit" class="btn btn-lg rounded-pill ms-2" style="background-color: #e84545; color: white;">
+                                Subscribe <i class="fas fa-envelope-open-text ms-2"></i>
+                            </button>
                         </div>
                     </form>
                 </div>

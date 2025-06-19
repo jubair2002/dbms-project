@@ -51,32 +51,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit();
     }
 
-    // Change Password
-    if (isset($_POST['change_password'])) {
-        $current_password = $_POST['current_password'];
-        $new_password = password_hash($_POST['new_password'], PASSWORD_DEFAULT);
-
-        // Verify old password
-        $passQuery = $conn->prepare("SELECT password FROM users WHERE id = ?");
-        $passQuery->bind_param("i", $user_id); // Bind the parameter
-        $passQuery->execute(); // Execute the query
-        $passQuery->store_result(); // Store the result
-        $passQuery->bind_result($stored_password); // Bind the result to a variable
-        $passQuery->fetch(); // Fetch the result
-
-        if (password_verify($current_password, $stored_password)) {
-            $updatePass = $conn->prepare("UPDATE users SET password = ? WHERE id = ?");
-            $updatePass->bind_param("si", $new_password, $user_id); // Bind parameters
-            $updatePass->execute(); // Execute the query
-
-            $_SESSION['success'] = "Password changed successfully!";
-        } else {
-            $_SESSION['error'] = "Incorrect current password!";
-        }
-        header("Location: profile.php");
-        exit();
-    }
-
     // Update Profile Picture
     if (isset($_POST['upload_picture']) && isset($_FILES['picture'])) {
         $img_name = $_FILES['picture']['name'];
@@ -174,10 +148,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <i class="fas fa-user"></i>
                     <span>Profile Info</span>
                 </div>
-                <div class="menu-item" data-tab="security">
-                    <i class="fas fa-shield-alt"></i>
-                    <span>Security</span>
-                </div>
             </div>
         </div>
         
@@ -185,7 +155,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="profile-content">
             <div class="content-header">
                 <h1 class="content-title">Profile Information</h1>
-                <p class="content-subtitle">Manage your personal information and profile settings</p>
+                <p class="content-subtitle">Manage your personal information</p>
             </div>
             
             <div class="content-body">
@@ -274,61 +244,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     <i class="fas fa-upload"></i> Upload Picture
                                 </button>
                             </form>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Security Tab -->
-                <div class="tab-content" id="security">
-                    <div class="form-section">
-                        <div class="form-section-header">
-                            <div class="section-title">
-                                <i class="fas fa-lock"></i>
-                                Change Password
-                            </div>
-                            <span class="edit-badge">Security</span>
-                        </div>
-                        <div class="form-section-body">
-                            <form method="POST" id="password-form" novalidate>
-                                <div class="form-group">
-                                    <label class="form-label">Current Password</label>
-                                    <input type="password" name="current_password" class="form-control" required>
-                                    <div class="form-text">Enter your current password to confirm changes</div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">New Password</label>
-                                    <input type="password" name="new_password" class="form-control" required minlength="6">
-                                    <div class="form-text">Password must be at least 6 characters long</div>
-                                </div>
-                                <button type="submit" name="change_password" class="btn btn-warning">
-                                    <i class="fas fa-key"></i> Change Password
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                    
-                    <!-- Security Info Section -->
-                    <div class="form-section">
-                        <div class="form-section-header">
-                            <div class="section-title">
-                                <i class="fas fa-shield-alt"></i>
-                                Security Information
-                            </div>
-                            <span class="edit-badge">Info</span>
-                        </div>
-                        <div class="form-section-body">
-                            <div style="padding: 20px; background: rgba(76, 175, 80, 0.05); border-radius: 8px; border-left: 4px solid var(--primary-color);">
-                                <h4 style="margin-bottom: 15px; color: var(--dark-color);">
-                                    <i class="fas fa-info-circle" style="color: var(--primary-color);"></i>
-                                    Security Tips
-                                </h4>
-                                <ul style="margin: 0; padding-left: 20px; line-height: 1.6; color: #666;">
-                                    <li>Use a strong, unique password for your account</li>
-                                    <li>Don't share your login credentials with others</li>
-                                    <li>Log out from shared or public devices</li>
-                                    <li>Contact support if you notice any suspicious activity</li>
-                                </ul>
-                            </div>
                         </div>
                     </div>
                 </div>
