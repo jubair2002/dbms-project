@@ -39,6 +39,9 @@ if ($result === false) {
     <div class="container">
         <div class="header">
             <h1><i class="fas fa-chart-line"></i> Track Task Progress</h1>
+            <a href="campaignSummary.php" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Back to Campaigns
+            </a>
         </div>
         
         <table class="task-table">

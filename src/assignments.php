@@ -11,12 +11,12 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_type'] != 'volunteer') {
 
 $volunteer_id = $_SESSION['user_id'];  
 
-// Fetch the tasks assigned to this volunteer
+// Fetch all tasks assigned to this volunteer, regardless of completion status
 $sql = "SELECT tasks.id AS task_id, tasks.task_name, tasks.description, tasks.priority, tasks.deadline,
                tasks.status AS task_status, assignments.status AS assignment_status 
         FROM tasks
         INNER JOIN assignments ON tasks.assignment_id = assignments.id
-        WHERE assignments.volunteer_id = ? AND assignments.status != 'completed'
+        WHERE assignments.volunteer_id = ? 
         ORDER BY tasks.deadline ASC";
 
 $stmt = $conn->prepare($sql);
@@ -32,7 +32,6 @@ $result = $stmt->get_result();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Tasks - Volunteer Dashboard</title>
     
-    <!-- External CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="assets/css/assignments.css">
 </head>
@@ -109,7 +108,6 @@ $result = $stmt->get_result();
         </table>
     </div>
 
-    <!-- External JavaScript -->
     <script src="assets/js/assignments.js"></script>
 </body>
 </html>

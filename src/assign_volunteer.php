@@ -47,9 +47,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['assign_tasks'])) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary:rgb(113, 143, 189);
-            --secondary: #166088;
-            --accent: #4fc3a1;
+            --primary: #ffffff;
+            --secondary: #000000;
+            --secondary-hover: #333333;
+            --accent: #000000;
             --light: #f8f9fa;
             --dark: #212529;
             --gray: #6c757d;
@@ -75,20 +76,45 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['assign_tasks'])) {
             border-radius: var(--border-radius);
             box-shadow: var(--box-shadow);
             overflow: hidden;
+            position: relative;
         }
 
         .header {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            padding: 0.80rem;
+            background: var(--primary);
+            color: var(--secondary);
+            padding: 1rem;
             text-align: center;
+            border-bottom: 2px solid white;
+            position: relative;
         }
 
         .header h1 {
             margin: 0;
             font-size: 1.75rem;
             font-weight: 600;
+            color: var(--secondary);
         }
+.top-right-btn {
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 8px 16px;
+    background-color: var(--secondary);
+    color: white;
+    text-decoration: none;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.top-right-btn:hover {
+    background-color: var(--secondary-hover);
+}
 
         .alert {
             padding: 1rem;
@@ -169,7 +195,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['assign_tasks'])) {
         }
 
         .btn-primary:hover {
-            background-color: #3daa8a;
+            background-color: #333333;
         }
 
         .modal {
@@ -256,14 +282,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['assign_tasks'])) {
 
         .volunteer-card.selected {
             border-color: var(--accent);
-            background-color: #f0fdf9;
+            background-color: #f0f0f0;
         }
 
         .volunteer-avatar {
             width: 36px;
             height: 36px;
             border-radius: 50%;
-            background-color: var(--primary);
+            background-color: var(--secondary);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -328,7 +354,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['assign_tasks'])) {
 
         .form-control:focus {
             border-color: var(--accent);
-            box-shadow: 0 0 0 0.2rem rgba(79, 195, 161, 0.25);
+            box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.1);
             outline: none;
         }
 
@@ -354,7 +380,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['assign_tasks'])) {
         }
 
         .btn-add-task:hover {
-            background-color: #f0fdf9;
+            background-color: #f0f0f0;
         }
 
         .btn-submit {
@@ -365,7 +391,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['assign_tasks'])) {
         }
 
         .btn-submit:hover {
-            background-color: #3daa8a;
+            background-color: #333333;
         }
 
         .empty-state {
@@ -393,6 +419,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['assign_tasks'])) {
                 flex-direction: column;
                 gap: 0;
             }
+            
+            .top-right-btn {
+                position: relative;
+                right: auto;
+                top: auto;
+                margin: 0.5rem auto;
+                display: block;
+                width: fit-content;
+            }
         }
     </style>
 </head>
@@ -400,6 +435,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['assign_tasks'])) {
 <body>
     <div class="container">
         <div class="header">
+            <button class="top-right-btn" onclick="location.href='campaignSummary.php'">
+                <i class="fas fa-tachometer-alt"></i> Back To Campaign
+            </button>
             <h1><i class="fas fa-user-friends"></i> Assign Volunteers to Campaigns</h1>
         </div>
 

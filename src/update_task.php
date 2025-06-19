@@ -1,5 +1,4 @@
 <?php
-// Include the database configuration file
 require_once 'config.php';
 session_start();
 

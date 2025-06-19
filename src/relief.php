@@ -123,7 +123,10 @@ if (isset($_POST['allocate']) && $campaign_id > 0) {
 <body>
     <div class="container">
         <div>
-        <h1>Relief Resource Allocation</h1>
+        <div class="header">
+            <h1>Relief Resource Allocation</h1>
+            <a href="campaignSummary.php" class="back-btn">← Back To Camapaign</a>
+        </div>
         
         <?php if ($message): ?>
             <div class="message success"><?php echo htmlspecialchars($message); ?></div>

@@ -97,7 +97,7 @@ $user_role = $_SESSION['user_type'];
         }
 
         .card-icon i {
-            color: var(--accent-color);
+            color: var(--accent-color); /* Icons remain red for accent */
         }
 
         .dashboard-card h2 {
@@ -127,57 +127,32 @@ $user_role = $_SESSION['user_type'];
             text-decoration: none;
             transition: var(--transition);
             width: 100%;
-            color: var(--light-color);
+            color: var(--light-color); /* White text for all buttons */
             font-weight: 500;
+
+            /* Unified button style */
+            background-color: var(--primary-color); /* Black button color */
         }
 
-        .btn-primary {
-            background-color: var(--accent-color);
+        .btn:hover {
+            background-color: var(--secondary-color); /* Darker gray on hover for all buttons */
         }
 
-        .btn-primary:hover {
-            background-color: #cc0000;
-        }
-
-        .btn-info {
-            background-color: #17a2b8;
-        }
-
-        .btn-info:hover {
-            background-color: #138496;
-        }
-
-        .btn-success {
-            background-color: #28a745;
-        }
-
-        .btn-success:hover {
-            background-color: #218838;
-        }
-
-        .btn-secondary {
-            background-color: var(--secondary-color);
-        }
-
-        .btn-secondary:hover {
-            background-color: var(--primary-color);
-        }
-        
-        .btn-warning {
-            background-color: #ffc107;
-        }
-        
-        .btn-warning:hover {
-            background-color: #e0a800;
-        }
-        
-        .btn-purple {
-            background-color: #6f42c1;
-        }
-        
-        .btn-purple:hover {
-            background-color: #5a32a3;
-        }
+        /* Remove specific button styles, as they are now unified */
+        /*
+        .btn-primary { background-color: var(--accent-color); }
+        .btn-primary:hover { background-color: #cc0000; }
+        .btn-info { background-color: #17a2b8; }
+        .btn-info:hover { background-color: #138496; }
+        .btn-success { background-color: #28a745; }
+        .btn-success:hover { background-color: #218838; }
+        .btn-secondary { background-color: var(--secondary-color); }
+        .btn-secondary:hover { background-color: var(--primary-color); }
+        .btn-warning { background-color: #ffc107; }
+        .btn-warning:hover { background-color: #e0a800; }
+        .btn-purple { background-color: #6f42c1; }
+        .btn-purple:hover { background-color: #5a32a3; }
+        */
 
         /* Disabled card for non-admin users */
         .card-disabled {
@@ -192,6 +167,7 @@ $user_role = $_SESSION['user_type'];
         .card-disabled .btn {
             background-color: #999;
             cursor: not-allowed;
+            color: #ccc; /* Lighter text for disabled button */
         }
 
         /* Loading Animation */
@@ -212,7 +188,7 @@ $user_role = $_SESSION['user_type'];
             width: 50px;
             height: 50px;
             border: 5px solid #f3f3f3;
-            border-top: 5px solid var(--accent-color);
+            border-top: 5px solid var(--accent-color); /* Accent color for spinner */
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
@@ -234,21 +210,21 @@ $user_role = $_SESSION['user_type'];
                 grid-template-columns: repeat(2, 1fr);
                 gap: 15px;
             }
-            
+
             .dashboard-card {
                 min-height: 200px;
                 padding: 15px;
             }
-            
+
             .card-icon {
                 font-size: 30px;
                 height: 40px;
             }
-            
+
             .dashboard-card h2 {
                 font-size: 16px;
             }
-            
+
             .dashboard-card p {
                 font-size: 12px;
             }
@@ -263,12 +239,12 @@ $user_role = $_SESSION['user_type'];
             .container {
                 padding: 15px;
             }
-            
+
             .dashboard-grid {
                 grid-template-columns: 1fr;
                 gap: 15px;
             }
-            
+
             .dashboard-title h1 {
                 font-size: 24px;
             }
@@ -276,7 +252,6 @@ $user_role = $_SESSION['user_type'];
     </style>
 </head>
 <body>
-    <!-- Loading Screen -->
     <div class="loading" id="loadingScreen">
         <div class="loading-spinner"></div>
     </div>
@@ -287,21 +262,17 @@ $user_role = $_SESSION['user_type'];
         </div>
 
         <div class="dashboard-grid">
-            <!-- First Row -->
-            
-            <!-- Create Campaign Card -->
             <div class="dashboard-card">
                 <div class="card-icon">
                     <i class="fas fa-plus-circle"></i>
                 </div>
                 <h2>Create Campaign</h2>
                 <p>Start a new campaign and make a difference</p>
-                <a href="createCampaign.php" class="btn btn-primary" onclick="showLoading()">
+                <a href="createCampaign.php" class="btn" onclick="showLoading()">
                     <i class="fas fa-rocket"></i> Create
                 </a>
             </div>
 
-            <!-- Campaign Requests Card -->
             <div class="<?php echo ($user_role != 'admin') ? 'card-disabled' : ''; ?>">
                 <div class="dashboard-card">
                     <div class="card-icon">
@@ -310,7 +281,7 @@ $user_role = $_SESSION['user_type'];
                     <h2>Campaign Requests</h2>
                     <p>Review and approve pending requests</p>
                     <?php if($user_role == 'admin'): ?>
-                        <a href="campaignRequest.php" class="btn btn-info" onclick="showLoading()">
+                        <a href="campaignRequest.php" class="btn" onclick="showLoading()">
                             <i class="fas fa-tasks"></i> Manage
                         </a>
                     <?php else: ?>
@@ -319,7 +290,6 @@ $user_role = $_SESSION['user_type'];
                 </div>
             </div>
 
-            <!-- Track Task Progress Card -->
             <div class="<?php echo ($user_role != 'admin') ? 'card-disabled' : ''; ?>">
                 <div class="dashboard-card">
                     <div class="card-icon">
@@ -328,7 +298,7 @@ $user_role = $_SESSION['user_type'];
                     <h2>Track Progress</h2>
                     <p>Monitor volunteer tasks in real-time</p>
                     <?php if($user_role == 'admin'): ?>
-                        <a href="track_task_progress.php" class="btn btn-success" onclick="showLoading()">
+                        <a href="track_task_progress.php" class="btn" onclick="showLoading()">
                             <i class="fas fa-analytics"></i> View
                         </a>
                     <?php else: ?>
@@ -336,41 +306,36 @@ $user_role = $_SESSION['user_type'];
                     <?php endif; ?>
                 </div>
             </div>
-            
-            <!-- Second Row -->
-            
-            <!-- View All Campaigns Card -->
+
             <div class="dashboard-card">
                 <div class="card-icon">
                     <i class="fas fa-list-alt"></i>
                 </div>
                 <h2>All Campaigns</h2>
                 <p>Browse and explore active campaigns</p>
-                <a href="campaign.php" class="btn btn-secondary" onclick="showLoading()">
+                <a href="campaign.php" class="btn" onclick="showLoading()">
                     <i class="fas fa-eye"></i> View All
                 </a>
             </div>
-            
-            <!-- Assign Volunteer Card (New) -->
+
             <div class="dashboard-card">
                 <div class="card-icon">
                     <i class="fas fa-users"></i>
                 </div>
                 <h2>Assign Volunteers</h2>
                 <p>Manage and assign volunteers to campaigns</p>
-                <a href="assign_volunteer.php" class="btn btn-warning" onclick="showLoading()">
+                <a href="assign_volunteer.php" class="btn" onclick="showLoading()">
                     <i class="fas fa-user-plus"></i> Assign
                 </a>
             </div>
-            
-            <!-- Relief Allocation Card (New) -->
+
             <div class="dashboard-card">
                 <div class="card-icon">
                     <i class="fas fa-hands-helping"></i>
                 </div>
                 <h2>Relief Allocation</h2>
                 <p>Manage and distribute relief resources</p>
-                <a href="relief.php" class="btn btn-purple" onclick="showLoading()">
+                <a href="relief.php" class="btn" onclick="showLoading()">
                     <i class="fas fa-box-open"></i> Allocate
                 </a>
             </div>

@@ -255,7 +255,7 @@ $result = $conn->query($sql);
         :root {
             --primary-color: #1a1a1a;
             --secondary-color: #f8f9fa;
-            --accent-color: #2563eb;
+            --accent-color:rgb(38, 50, 41);
             --text-primary: #1f2937;
             --text-secondary: #6b7280;
             --border-color: #e5e7eb;
@@ -281,14 +281,11 @@ $result = $conn->query($sql);
             font-size: 14px;
         }
 
-        /* Main Container */
         .container {
-            max-width: 1400px;
             margin: 0 auto;
             padding: 2rem;
         }
 
-        /* Campaigns Table */
         .campaigns-section {
             background: var(--surface-white);
             border-radius: 12px;
@@ -444,7 +441,7 @@ $result = $conn->query($sql);
         }
 
         .generate-btn {
-            background: linear-gradient(135deg, var(--accent-color), #3b82f6);
+            background: linear-gradient(135deg, var(--accent-color),rgb(5, 5, 5));
             color: white;
             border: none;
             padding: 10px 20px;
